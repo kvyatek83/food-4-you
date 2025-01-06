@@ -177,6 +177,12 @@
   }
 </style>
 
+<h1>{{ "welcomeMessage" | translate }}</h1>
+<h1>{{ "param" | translate : { val: 2 } }}</h1>
+
+<button (click)="changeLanguage('en')">English</button>
+<button (click)="changeLanguage('he')">עברית</button>
+
 <main class="main">
   <div class="content">
     <div class="left-side">

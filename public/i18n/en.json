@@ -1,0 +1,4 @@
+{
+  "welcomeMessage": "Welcome to Food 4 You!",
+  "param": "Test {{val}} parameter value"
+}
