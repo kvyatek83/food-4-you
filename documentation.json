@@ -1,0 +1,2770 @@
+{
+    "pipes": [],
+    "interfaces": [
+        {
+            "name": "AuthResponse",
+            "id": "interface-AuthResponse-48d13e0502ee14642ddd23c7d68130936395d7f3389240b56125c6241115f355338021fca2c296dce253ad3990bd6bd9c1929f0905da8b6f4a831447e2458944",
+            "file": "src/app/services/auth.service.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "interface",
+            "sourceCode": "import { HttpClient } from '@angular/common/http';\nimport { Injectable } from '@angular/core';\nimport { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';\nimport { NotificationsService } from './notifications.service';\nimport { TranslateService } from '@ngx-translate/core';\n\ninterface AuthResponse {\n  auth: boolean;\n  token: string;\n}\n\nexport interface GuestDetails {\n  confirmation: boolean;\n  email?: string;\n  hebrewname: string;\n  id: string;\n  participants: string;\n  phone: string;\n  transport: boolean;\n  username?: string;\n}\n\n@Injectable({\n  providedIn: 'root',\n})\nexport class AuthService {\n  private _guestDetails$ = new BehaviorSubject<GuestDetails | null>(null);\n\n  get guestDetails$(): Observable<GuestDetails | null> {\n    return this._guestDetails$.asObservable();\n  }\n\n  get guestDetails(): GuestDetails | null {\n    return this._guestDetails$.value;\n  }\n\n  constructor(\n    private http: HttpClient,\n    private notificationsService: NotificationsService,\n    private translate: TranslateService\n  ) {}\n\n  login(username: string, password: string): Observable<boolean> {\n    return this.http\n      .post<AuthResponse>('/api/login', { username, password })\n      .pipe(\n        tap((authResponse: AuthResponse) => {\n          window.localStorage.removeItem('auth-user');\n          window.localStorage.setItem(\n            'auth-user',\n            JSON.stringify(authResponse.token)\n          );\n        }),\n        map((authResponse: AuthResponse) => {\n          return authResponse.auth;\n        }),\n        catchError((error) => {\n          if (error.status === 404) {\n            this.notificationsService.setNotification({\n              type: 'ERROR',\n              message: this.translate.instant(\n                `notifications.errors.${error.error.message}`,\n                { user: error.error.params }\n              ),\n            });\n          } else if (error.status === 401) {\n            this.notificationsService.setNotification({\n              type: 'ERROR',\n              message: this.translate.instant(\n                `notifications.errors.${error.error.message}`,\n                { user: error.error.params }\n              ),\n            });\n          } else {\n            this.notificationsService.setNotification({\n              type: 'ERROR',\n              message: this.translate.instant('notifications.errors.general'),\n            });\n          }\n\n          console.error(error);\n          return of(false);\n        })\n      );\n  }\n}\n",
+            "properties": [
+                {
+                    "name": "auth",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "boolean",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 8
+                },
+                {
+                    "name": "token",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 9
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 171,
+            "methods": [],
+            "extends": []
+        },
+        {
+            "name": "GuestDetails",
+            "id": "interface-GuestDetails-48d13e0502ee14642ddd23c7d68130936395d7f3389240b56125c6241115f355338021fca2c296dce253ad3990bd6bd9c1929f0905da8b6f4a831447e2458944",
+            "file": "src/app/services/auth.service.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "interface",
+            "sourceCode": "import { HttpClient } from '@angular/common/http';\nimport { Injectable } from '@angular/core';\nimport { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';\nimport { NotificationsService } from './notifications.service';\nimport { TranslateService } from '@ngx-translate/core';\n\ninterface AuthResponse {\n  auth: boolean;\n  token: string;\n}\n\nexport interface GuestDetails {\n  confirmation: boolean;\n  email?: string;\n  hebrewname: string;\n  id: string;\n  participants: string;\n  phone: string;\n  transport: boolean;\n  username?: string;\n}\n\n@Injectable({\n  providedIn: 'root',\n})\nexport class AuthService {\n  private _guestDetails$ = new BehaviorSubject<GuestDetails | null>(null);\n\n  get guestDetails$(): Observable<GuestDetails | null> {\n    return this._guestDetails$.asObservable();\n  }\n\n  get guestDetails(): GuestDetails | null {\n    return this._guestDetails$.value;\n  }\n\n  constructor(\n    private http: HttpClient,\n    private notificationsService: NotificationsService,\n    private translate: TranslateService\n  ) {}\n\n  login(username: string, password: string): Observable<boolean> {\n    return this.http\n      .post<AuthResponse>('/api/login', { username, password })\n      .pipe(\n        tap((authResponse: AuthResponse) => {\n          window.localStorage.removeItem('auth-user');\n          window.localStorage.setItem(\n            'auth-user',\n            JSON.stringify(authResponse.token)\n          );\n        }),\n        map((authResponse: AuthResponse) => {\n          return authResponse.auth;\n        }),\n        catchError((error) => {\n          if (error.status === 404) {\n            this.notificationsService.setNotification({\n              type: 'ERROR',\n              message: this.translate.instant(\n                `notifications.errors.${error.error.message}`,\n                { user: error.error.params }\n              ),\n            });\n          } else if (error.status === 401) {\n            this.notificationsService.setNotification({\n              type: 'ERROR',\n              message: this.translate.instant(\n                `notifications.errors.${error.error.message}`,\n                { user: error.error.params }\n              ),\n            });\n          } else {\n            this.notificationsService.setNotification({\n              type: 'ERROR',\n              message: this.translate.instant('notifications.errors.general'),\n            });\n          }\n\n          console.error(error);\n          return of(false);\n        })\n      );\n  }\n}\n",
+            "properties": [
+                {
+                    "name": "confirmation",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "boolean",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 13
+                },
+                {
+                    "name": "email",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": true,
+                    "description": "",
+                    "line": 14
+                },
+                {
+                    "name": "hebrewname",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 15
+                },
+                {
+                    "name": "id",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 16
+                },
+                {
+                    "name": "participants",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 17
+                },
+                {
+                    "name": "phone",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 18
+                },
+                {
+                    "name": "transport",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "boolean",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 19
+                },
+                {
+                    "name": "username",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": true,
+                    "description": "",
+                    "line": 20
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 171,
+            "methods": [],
+            "extends": []
+        },
+        {
+            "name": "MessagesRes",
+            "id": "interface-MessagesRes-2464518be087d289300aff85d531e5ca2c7ae373734c974f532661c3625a8307013c9732adb7ff13f21931aca017ca81bdd37638d1000c7d57e8ff4825bf8786",
+            "file": "src/app/admin/admin.service.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "interface",
+            "sourceCode": "import { HttpClient } from '@angular/common/http';\nimport { Injectable } from '@angular/core';\nimport { Observable, take } from 'rxjs';\nimport { NotificationType } from '../services/notifications.service';\n\nexport interface WeddingGuest {\n  confirmation: boolean;\n  email?: string;\n  hebrewname: string;\n  id: string;\n  participants: string;\n  phone: string;\n  transport: boolean;\n  username?: string;\n  role?: string;\n  editing?: boolean;\n  deleted?: boolean;\n}\n\nexport interface MessagesRes {\n  status: NotificationType;\n  messages: string;\n  params: { sent: number; failed: number };\n}\n\n@Injectable({\n  providedIn: 'root',\n})\nexport class AdminService {\n  constructor(private http: HttpClient) {}\n\n  getAllGuests(): Observable<WeddingGuest[]> {\n    return this.http\n      .get<WeddingGuest[]>(`/api/admin/get-all-guests`)\n      .pipe(take(1));\n  }\n\n  downloadDb(): Observable<Blob> {\n    return this.http\n      .get<Blob>('/api/admin/download-db', { responseType: 'blob' as 'json' })\n      .pipe(take(1));\n  }\n\n  downloadGuestList(): Observable<Blob> {\n    return this.http\n      .get<Blob>('/api/admin/download', { responseType: 'blob' as 'json' })\n      .pipe(take(1));\n  }\n\n  replaceDB(guests: WeddingGuest[]): Observable<WeddingGuest[]> {\n    return this.http\n      .post<WeddingGuest[]>('/api/admin/replace-db', { users: guests })\n      .pipe(take(1));\n  }\n\n  saveChangesToDB(guests: WeddingGuest[]): Observable<WeddingGuest[]> {\n    return this.http\n      .post<WeddingGuest[]>('/api/admin/save-changes-to-db', { users: guests })\n      .pipe(take(1));\n  }\n\n  sendMessage(\n    message: string,\n    invitation: boolean,\n    users: WeddingGuest[]\n  ): Observable<MessagesRes> {\n    return this.http\n      .post<MessagesRes>('/api/admin/send-message', {\n        message,\n        invitation,\n        users,\n      })\n      .pipe(take(1));\n  }\n\n  getBotStatus(): Observable<boolean> {\n    return this.http\n      .get<boolean>('/api/admin/bot-status');\n  }\n\n  getBotQrCode(): Observable<string> {\n    return this.http\n      .get('/api/admin/bot-qr', {responseType: 'text'}\n      )\n      .pipe(take(1));\n  }\n\n  downloadGuestMessages(): Observable<Blob> {\n    return this.http\n      .get<Blob>('/api/admin/download-all-guests-messages', { responseType: 'blob' as 'json' })\n      .pipe(take(1));\n  }\n}\n",
+            "properties": [
+                {
+                    "name": "messages",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 22
+                },
+                {
+                    "name": "params",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "literal type",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 23
+                },
+                {
+                    "name": "status",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "NotificationType",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 21
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 171,
+            "methods": [],
+            "extends": []
+        },
+        {
+            "name": "Notification",
+            "id": "interface-Notification-33798608b3df22132a604616ab5a3edaa794819dddcc7d5ee1d4b42bf8ba30abe1ca1425db09152a41c0f1bc6c1030628bc2831689996ff35ea95d087345fd42",
+            "file": "src/app/services/notifications.service.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "interface",
+            "sourceCode": "import { Injectable } from '@angular/core';\nimport { BehaviorSubject, Observable } from 'rxjs';\n\nexport type NotificationType = 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR';\n\nexport interface Notification {\n    type: NotificationType;\n    message: string;\n}\n\n@Injectable({\n  providedIn: 'root',\n})\nexport class NotificationsService {\n  \n  private _notification$ = new BehaviorSubject<Notification | null>(null);\n\n  get notification$(): Observable<Notification | null> {\n    return this._notification$.asObservable();\n  }\n\n  setNotification(notification: Notification | null): void {\n    this._notification$.next(notification);\n  }\n}\n",
+            "properties": [
+                {
+                    "name": "message",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 8
+                },
+                {
+                    "name": "type",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "NotificationType",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 7
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 171,
+            "methods": [],
+            "extends": []
+        },
+        {
+            "name": "NotificationConfigurations",
+            "id": "interface-NotificationConfigurations-f275dc3665accc9aa5ff6e6cf9d9310098709acc9f8eda0f42f180b83aa6d12462aab243079ad6f1b0c083fb36c9117962ade82130d3566009743bb44c16e453",
+            "file": "src/app/components/notification/notification.component.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "interface",
+            "sourceCode": "import {\n  trigger,\n  state,\n  style,\n  transition,\n  animate,\n} from '@angular/animations';\nimport { Component, OnDestroy } from '@angular/core';\nimport { Subject, takeUntil } from 'rxjs';\nimport { LanguageService } from '../../services/lang.service';\nimport {\n  NotificationsService,\n  NotificationType,\n  Notification,\n} from '../../services/notifications.service';\nimport { TranslateService } from '@ngx-translate/core';\nimport { CommonModule } from '@angular/common';\nimport { MaterialModule } from '../../material.module';\n\ntype NotificationTitle = 'info' | 'success' | 'warning' | 'error';\ntype NotificationIcon =\n  | 'info_outline'\n  | 'done'\n  | 'warning_amber_outline'\n  | 'close_outline';\ntype NotificationColor = '#4070f4' | '#12c99b' | '#f2a600' | '#e41749';\n\ninterface NotificationConfigurations {\n  title: NotificationTitle;\n  icon: NotificationIcon;\n  color: NotificationColor;\n}\n\n@Component({\n  selector: 'app-notification',\n  imports: [CommonModule, MaterialModule],\n  templateUrl: './notification.component.html',\n  styleUrls: ['./notification.component.scss'],\n  animations: [\n    trigger('showHideNotification', [\n      state(\n        'hide',\n        style({\n          transform: 'translateX(calc(100vw + 30px))',\n        })\n      ),\n      state(\n        'show',\n        style({\n          transform: 'translateX(0)',\n        })\n      ),\n      transition('show => hide', [animate('0.5s')]),\n      transition('hide => show', [animate('0.2s')]),\n    ]),\n  ],\n})\n// export class NotificationComponent {\nexport class NotificationComponent implements OnDestroy {\n  private readonly NOTIFICATIONS = new Map<\n    NotificationType,\n    NotificationConfigurations\n  >([\n    [\n      'INFO',\n      {\n        title: 'info',\n        color: '#4070f4',\n        icon: 'info_outline',\n      },\n    ],\n    [\n      'ERROR',\n      {\n        title: 'error',\n        color: '#e41749',\n        icon: 'close_outline',\n      },\n    ],\n    [\n      'SUCCESS',\n      {\n        title: 'success',\n        color: '#12c99b',\n        icon: 'done',\n      },\n    ],\n    [\n      'WARNING',\n      {\n        title: 'warning',\n        color: '#f2a600',\n        icon: 'warning_amber_outline',\n      },\n    ],\n  ]);\n  show = false;\n  showNotification: 'hide' | 'show' = 'hide';\n  isRtl = false;\n  title: NotificationTitle | undefined;\n  icon: NotificationIcon | undefined;\n  color: NotificationColor | undefined;\n  message: string | undefined;\n  private notificationShowId: NodeJS.Timeout | undefined;\n  private destroy$: Subject<void> = new Subject();\n  constructor(\n    private languageService: LanguageService,\n    private notificationsService: NotificationsService,\n    private translate: TranslateService\n  ) {\n    this.languageService.rtl$\n      .pipe(takeUntil(this.destroy$))\n      .subscribe((rtl) => (this.isRtl = rtl));\n    this.notificationsService.notification$\n      .pipe(takeUntil(this.destroy$))\n      .subscribe((notification: Notification | null) => {\n        if (!!notification) {\n          const currentNotification = this.NOTIFICATIONS.get(notification.type);\n          this.message = notification.message;\n          this.title = this.translate.instant(\n            `notifications.title.${currentNotification?.title}`\n          );\n          this.icon = currentNotification?.icon;\n          this.color = currentNotification?.color;\n          this.show = true;\n          setTimeout(() => (this.showNotification = 'show'), 100);\n          this.notificationShowId = setTimeout(() => {\n            this.showNotification = 'hide';\n            this.notificationsService.setNotification(null);\n            setTimeout(() => (this.show = false), 1000);\n          }, 500000);\n        }\n      });\n  }\n\n  ngOnDestroy(): void {\n    this.destroy$.next();\n    this.destroy$.complete();\n  }\n\n  close(): void {\n    this.showNotification = 'hide';\n    setTimeout(() => (this.show = false), 1000);\n    clearTimeout(this.notificationShowId);\n    this.notificationsService.setNotification(null);\n  }\n}\n",
+            "properties": [
+                {
+                    "name": "color",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "NotificationColor",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 31
+                },
+                {
+                    "name": "icon",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "NotificationIcon",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 30
+                },
+                {
+                    "name": "title",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "NotificationTitle",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 29
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 171,
+            "methods": [],
+            "extends": []
+        },
+        {
+            "name": "User",
+            "id": "interface-User-d4821beac0e4a852e513391b7470981c4353fdd95a18628bb68136c8695b489ee15b926e2e5031bc26cf30e1508e0a362c3ee13a06734702b4d15af140e485d5",
+            "file": "src/stories/user.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "interface",
+            "sourceCode": "export interface User {\n  name: string;\n}\n",
+            "properties": [
+                {
+                    "name": "name",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 2
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 171,
+            "methods": [],
+            "extends": []
+        },
+        {
+            "name": "WeddingGuest",
+            "id": "interface-WeddingGuest-2464518be087d289300aff85d531e5ca2c7ae373734c974f532661c3625a8307013c9732adb7ff13f21931aca017ca81bdd37638d1000c7d57e8ff4825bf8786",
+            "file": "src/app/admin/admin.service.ts",
+            "deprecated": false,
+            "deprecationMessage": "",
+            "type": "interface",
+            "sourceCode": "import { HttpClient } from '@angular/common/http';\nimport { Injectable } from '@angular/core';\nimport { Observable, take } from 'rxjs';\nimport { NotificationType } from '../services/notifications.service';\n\nexport interface WeddingGuest {\n  confirmation: boolean;\n  email?: string;\n  hebrewname: string;\n  id: string;\n  participants: string;\n  phone: string;\n  transport: boolean;\n  username?: string;\n  role?: string;\n  editing?: boolean;\n  deleted?: boolean;\n}\n\nexport interface MessagesRes {\n  status: NotificationType;\n  messages: string;\n  params: { sent: number; failed: number };\n}\n\n@Injectable({\n  providedIn: 'root',\n})\nexport class AdminService {\n  constructor(private http: HttpClient) {}\n\n  getAllGuests(): Observable<WeddingGuest[]> {\n    return this.http\n      .get<WeddingGuest[]>(`/api/admin/get-all-guests`)\n      .pipe(take(1));\n  }\n\n  downloadDb(): Observable<Blob> {\n    return this.http\n      .get<Blob>('/api/admin/download-db', { responseType: 'blob' as 'json' })\n      .pipe(take(1));\n  }\n\n  downloadGuestList(): Observable<Blob> {\n    return this.http\n      .get<Blob>('/api/admin/download', { responseType: 'blob' as 'json' })\n      .pipe(take(1));\n  }\n\n  replaceDB(guests: WeddingGuest[]): Observable<WeddingGuest[]> {\n    return this.http\n      .post<WeddingGuest[]>('/api/admin/replace-db', { users: guests })\n      .pipe(take(1));\n  }\n\n  saveChangesToDB(guests: WeddingGuest[]): Observable<WeddingGuest[]> {\n    return this.http\n      .post<WeddingGuest[]>('/api/admin/save-changes-to-db', { users: guests })\n      .pipe(take(1));\n  }\n\n  sendMessage(\n    message: string,\n    invitation: boolean,\n    users: WeddingGuest[]\n  ): Observable<MessagesRes> {\n    return this.http\n      .post<MessagesRes>('/api/admin/send-message', {\n        message,\n        invitation,\n        users,\n      })\n      .pipe(take(1));\n  }\n\n  getBotStatus(): Observable<boolean> {\n    return this.http\n      .get<boolean>('/api/admin/bot-status');\n  }\n\n  getBotQrCode(): Observable<string> {\n    return this.http\n      .get('/api/admin/bot-qr', {responseType: 'text'}\n      )\n      .pipe(take(1));\n  }\n\n  downloadGuestMessages(): Observable<Blob> {\n    return this.http\n      .get<Blob>('/api/admin/download-all-guests-messages', { responseType: 'blob' as 'json' })\n      .pipe(take(1));\n  }\n}\n",
+            "properties": [
+                {
+                    "name": "confirmation",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "boolean",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 7
+                },
+                {
+                    "name": "deleted",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "boolean",
+                    "indexKey": "",
+                    "optional": true,
+                    "description": "",
+                    "line": 17
+                },
+                {
+                    "name": "editing",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "boolean",
+                    "indexKey": "",
+                    "optional": true,
+                    "description": "",
+                    "line": 16
+                },
+                {
+                    "name": "email",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": true,
+                    "description": "",
+                    "line": 8
+                },
+                {
+                    "name": "hebrewname",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 9
+                },
+                {
+                    "name": "id",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 10
+                },
+                {
+                    "name": "participants",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 11
+                },
+                {
+                    "name": "phone",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 12
+                },
+                {
+                    "name": "role",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": true,
+                    "description": "",
+                    "line": 15
+                },
+                {
+                    "name": "transport",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "boolean",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 13
+                },
+                {
+                    "name": "username",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": true,
+                    "description": "",
+                    "line": 14
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 171,
+            "methods": [],
+            "extends": []
+        }
+    ],
+    "injectables": [
+        {
+            "name": "AdminService",
+            "id": "injectable-AdminService-2464518be087d289300aff85d531e5ca2c7ae373734c974f532661c3625a8307013c9732adb7ff13f21931aca017ca81bdd37638d1000c7d57e8ff4825bf8786",
+            "file": "src/app/admin/admin.service.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "downloadDb",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "Observable<Blob>",
+                    "typeParameters": [],
+                    "line": 38,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "downloadGuestList",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "Observable<Blob>",
+                    "typeParameters": [],
+                    "line": 44,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "downloadGuestMessages",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "Observable<Blob>",
+                    "typeParameters": [],
+                    "line": 88,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "getAllGuests",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "Observable<WeddingGuest[]>",
+                    "typeParameters": [],
+                    "line": 32,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "getBotQrCode",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "Observable<string>",
+                    "typeParameters": [],
+                    "line": 81,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "getBotStatus",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "Observable<boolean>",
+                    "typeParameters": [],
+                    "line": 76,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "replaceDB",
+                    "args": [
+                        {
+                            "name": "guests",
+                            "type": "WeddingGuest[]",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Observable<WeddingGuest[]>",
+                    "typeParameters": [],
+                    "line": 50,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "guests",
+                            "type": "WeddingGuest[]",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "saveChangesToDB",
+                    "args": [
+                        {
+                            "name": "guests",
+                            "type": "WeddingGuest[]",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Observable<WeddingGuest[]>",
+                    "typeParameters": [],
+                    "line": 56,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "guests",
+                            "type": "WeddingGuest[]",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "sendMessage",
+                    "args": [
+                        {
+                            "name": "message",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        },
+                        {
+                            "name": "invitation",
+                            "type": "boolean",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        },
+                        {
+                            "name": "users",
+                            "type": "WeddingGuest[]",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Observable<MessagesRes>",
+                    "typeParameters": [],
+                    "line": 62,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "message",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        },
+                        {
+                            "name": "invitation",
+                            "type": "boolean",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        },
+                        {
+                            "name": "users",
+                            "type": "WeddingGuest[]",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { HttpClient } from '@angular/common/http';\nimport { Injectable } from '@angular/core';\nimport { Observable, take } from 'rxjs';\nimport { NotificationType } from '../services/notifications.service';\n\nexport interface WeddingGuest {\n  confirmation: boolean;\n  email?: string;\n  hebrewname: string;\n  id: string;\n  participants: string;\n  phone: string;\n  transport: boolean;\n  username?: string;\n  role?: string;\n  editing?: boolean;\n  deleted?: boolean;\n}\n\nexport interface MessagesRes {\n  status: NotificationType;\n  messages: string;\n  params: { sent: number; failed: number };\n}\n\n@Injectable({\n  providedIn: 'root',\n})\nexport class AdminService {\n  constructor(private http: HttpClient) {}\n\n  getAllGuests(): Observable<WeddingGuest[]> {\n    return this.http\n      .get<WeddingGuest[]>(`/api/admin/get-all-guests`)\n      .pipe(take(1));\n  }\n\n  downloadDb(): Observable<Blob> {\n    return this.http\n      .get<Blob>('/api/admin/download-db', { responseType: 'blob' as 'json' })\n      .pipe(take(1));\n  }\n\n  downloadGuestList(): Observable<Blob> {\n    return this.http\n      .get<Blob>('/api/admin/download', { responseType: 'blob' as 'json' })\n      .pipe(take(1));\n  }\n\n  replaceDB(guests: WeddingGuest[]): Observable<WeddingGuest[]> {\n    return this.http\n      .post<WeddingGuest[]>('/api/admin/replace-db', { users: guests })\n      .pipe(take(1));\n  }\n\n  saveChangesToDB(guests: WeddingGuest[]): Observable<WeddingGuest[]> {\n    return this.http\n      .post<WeddingGuest[]>('/api/admin/save-changes-to-db', { users: guests })\n      .pipe(take(1));\n  }\n\n  sendMessage(\n    message: string,\n    invitation: boolean,\n    users: WeddingGuest[]\n  ): Observable<MessagesRes> {\n    return this.http\n      .post<MessagesRes>('/api/admin/send-message', {\n        message,\n        invitation,\n        users,\n      })\n      .pipe(take(1));\n  }\n\n  getBotStatus(): Observable<boolean> {\n    return this.http\n      .get<boolean>('/api/admin/bot-status');\n  }\n\n  getBotQrCode(): Observable<string> {\n    return this.http\n      .get('/api/admin/bot-qr', {responseType: 'text'}\n      )\n      .pipe(take(1));\n  }\n\n  downloadGuestMessages(): Observable<Blob> {\n    return this.http\n      .get<Blob>('/api/admin/download-all-guests-messages', { responseType: 'blob' as 'json' })\n      .pipe(take(1));\n  }\n}\n",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "http",
+                        "type": "HttpClient",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 29,
+                "jsdoctags": [
+                    {
+                        "name": "http",
+                        "type": "HttpClient",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "extends": [],
+            "type": "injectable"
+        },
+        {
+            "name": "AuthService",
+            "id": "injectable-AuthService-48d13e0502ee14642ddd23c7d68130936395d7f3389240b56125c6241115f355338021fca2c296dce253ad3990bd6bd9c1929f0905da8b6f4a831447e2458944",
+            "file": "src/app/services/auth.service.ts",
+            "properties": [
+                {
+                    "name": "_guestDetails$",
+                    "defaultValue": "new BehaviorSubject<GuestDetails | null>(null)",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 27,
+                    "modifierKind": [
+                        123
+                    ]
+                }
+            ],
+            "methods": [
+                {
+                    "name": "login",
+                    "args": [
+                        {
+                            "name": "username",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        },
+                        {
+                            "name": "password",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Observable<boolean>",
+                    "typeParameters": [],
+                    "line": 43,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "username",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        },
+                        {
+                            "name": "password",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { HttpClient } from '@angular/common/http';\nimport { Injectable } from '@angular/core';\nimport { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';\nimport { NotificationsService } from './notifications.service';\nimport { TranslateService } from '@ngx-translate/core';\n\ninterface AuthResponse {\n  auth: boolean;\n  token: string;\n}\n\nexport interface GuestDetails {\n  confirmation: boolean;\n  email?: string;\n  hebrewname: string;\n  id: string;\n  participants: string;\n  phone: string;\n  transport: boolean;\n  username?: string;\n}\n\n@Injectable({\n  providedIn: 'root',\n})\nexport class AuthService {\n  private _guestDetails$ = new BehaviorSubject<GuestDetails | null>(null);\n\n  get guestDetails$(): Observable<GuestDetails | null> {\n    return this._guestDetails$.asObservable();\n  }\n\n  get guestDetails(): GuestDetails | null {\n    return this._guestDetails$.value;\n  }\n\n  constructor(\n    private http: HttpClient,\n    private notificationsService: NotificationsService,\n    private translate: TranslateService\n  ) {}\n\n  login(username: string, password: string): Observable<boolean> {\n    return this.http\n      .post<AuthResponse>('/api/login', { username, password })\n      .pipe(\n        tap((authResponse: AuthResponse) => {\n          window.localStorage.removeItem('auth-user');\n          window.localStorage.setItem(\n            'auth-user',\n            JSON.stringify(authResponse.token)\n          );\n        }),\n        map((authResponse: AuthResponse) => {\n          return authResponse.auth;\n        }),\n        catchError((error) => {\n          if (error.status === 404) {\n            this.notificationsService.setNotification({\n              type: 'ERROR',\n              message: this.translate.instant(\n                `notifications.errors.${error.error.message}`,\n                { user: error.error.params }\n              ),\n            });\n          } else if (error.status === 401) {\n            this.notificationsService.setNotification({\n              type: 'ERROR',\n              message: this.translate.instant(\n                `notifications.errors.${error.error.message}`,\n                { user: error.error.params }\n              ),\n            });\n          } else {\n            this.notificationsService.setNotification({\n              type: 'ERROR',\n              message: this.translate.instant('notifications.errors.general'),\n            });\n          }\n\n          console.error(error);\n          return of(false);\n        })\n      );\n  }\n}\n",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "http",
+                        "type": "HttpClient",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "notificationsService",
+                        "type": "NotificationsService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 35,
+                "jsdoctags": [
+                    {
+                        "name": "http",
+                        "type": "HttpClient",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "notificationsService",
+                        "type": "NotificationsService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "accessors": {
+                "guestDetails$": {
+                    "name": "guestDetails$",
+                    "getSignature": {
+                        "name": "guestDetails$",
+                        "type": "",
+                        "returnType": "Observable<GuestDetails | null>",
+                        "line": 29
+                    }
+                },
+                "guestDetails": {
+                    "name": "guestDetails",
+                    "getSignature": {
+                        "name": "guestDetails",
+                        "type": "",
+                        "returnType": "GuestDetails | null",
+                        "line": 33
+                    }
+                }
+            },
+            "extends": [],
+            "type": "injectable"
+        },
+        {
+            "name": "LanguageService",
+            "id": "injectable-LanguageService-eb84ce5fe5ce26560d90601c6e740205f8be08d917dada96eaa55654e519eda038c0fabc1ab0730a3f47813fb38dea2a0066e5d8daec24a82575302b907a4954",
+            "file": "src/app/services/lang.service.ts",
+            "properties": [
+                {
+                    "name": "_rtl$",
+                    "defaultValue": "new BehaviorSubject<boolean>(false)",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 17,
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "languageMap",
+                    "defaultValue": "new Map<LanguageType, LanguageDirection>([\n    ['en', 'ltr'],\n    ['es', 'ltr'],\n    ['he', 'rtl'],\n  ])",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 12,
+                    "modifierKind": [
+                        123,
+                        148
+                    ]
+                }
+            ],
+            "methods": [
+                {
+                    "name": "getActiveLanguage",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "LanguageType",
+                    "typeParameters": [],
+                    "line": 34,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { Injectable } from '@angular/core';\nimport { LangChangeEvent, TranslateService } from '@ngx-translate/core';\nimport { BehaviorSubject, Observable } from 'rxjs';\n\nexport type LanguageType = 'en' | 'es' | 'he';\ntype LanguageDirection = 'rtl' | 'ltr';\n\n@Injectable({\n  providedIn: 'root',\n})\nexport class LanguageService {\n  private readonly languageMap = new Map<LanguageType, LanguageDirection>([\n    ['en', 'ltr'],\n    ['es', 'ltr'],\n    ['he', 'rtl'],\n  ]);\n  private _rtl$ = new BehaviorSubject<boolean>(false);\n\n  get rtl$(): Observable<boolean> {\n    return this._rtl$.asObservable();\n  }\n\n  get rtl(): boolean {\n    return this._rtl$.value;\n  }\n\n  constructor(private translate: TranslateService) {\n    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {\n      const langDirection = this.languageMap.get(event.lang as LanguageType);\n      this._rtl$.next(langDirection === 'rtl');\n    });\n  }\n\n  getActiveLanguage(): LanguageType {\n    return this.translate.currentLang as LanguageType;\n  }\n}\n",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 25,
+                "jsdoctags": [
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "accessors": {
+                "rtl$": {
+                    "name": "rtl$",
+                    "getSignature": {
+                        "name": "rtl$",
+                        "type": "",
+                        "returnType": "Observable<boolean>",
+                        "line": 19
+                    }
+                },
+                "rtl": {
+                    "name": "rtl",
+                    "getSignature": {
+                        "name": "rtl",
+                        "type": "boolean",
+                        "returnType": "boolean",
+                        "line": 23
+                    }
+                }
+            },
+            "extends": [],
+            "type": "injectable"
+        },
+        {
+            "name": "NotificationsService",
+            "id": "injectable-NotificationsService-33798608b3df22132a604616ab5a3edaa794819dddcc7d5ee1d4b42bf8ba30abe1ca1425db09152a41c0f1bc6c1030628bc2831689996ff35ea95d087345fd42",
+            "file": "src/app/services/notifications.service.ts",
+            "properties": [
+                {
+                    "name": "_notification$",
+                    "defaultValue": "new BehaviorSubject<Notification | null>(null)",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 16,
+                    "modifierKind": [
+                        123
+                    ]
+                }
+            ],
+            "methods": [
+                {
+                    "name": "setNotification",
+                    "args": [
+                        {
+                            "name": "notification",
+                            "type": "Notification | null",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 22,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "notification",
+                            "type": "Notification | null",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { Injectable } from '@angular/core';\nimport { BehaviorSubject, Observable } from 'rxjs';\n\nexport type NotificationType = 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR';\n\nexport interface Notification {\n    type: NotificationType;\n    message: string;\n}\n\n@Injectable({\n  providedIn: 'root',\n})\nexport class NotificationsService {\n  \n  private _notification$ = new BehaviorSubject<Notification | null>(null);\n\n  get notification$(): Observable<Notification | null> {\n    return this._notification$.asObservable();\n  }\n\n  setNotification(notification: Notification | null): void {\n    this._notification$.next(notification);\n  }\n}\n",
+            "accessors": {
+                "notification$": {
+                    "name": "notification$",
+                    "getSignature": {
+                        "name": "notification$",
+                        "type": "",
+                        "returnType": "Observable<Notification | null>",
+                        "line": 18
+                    }
+                }
+            },
+            "extends": [],
+            "type": "injectable"
+        }
+    ],
+    "guards": [
+        {
+            "name": "AuthGuard",
+            "id": "injectable-AuthGuard-c9ed0a6b5f44c83c1dec0902eb70ee7f6dcc6bad27d0ae8452a9235ecb027cbb98454efd52e0c3f3dac34fdc2e086371ba0bd5e51639b1f1eabb5b32f9dbcb34",
+            "file": "src/app/auth.guard.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "canActivate",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "Observable | Promise | boolean | UrlTree",
+                    "typeParameters": [],
+                    "line": 17,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { Injectable } from '@angular/core';\nimport {\n  ActivatedRouteSnapshot,\n  CanActivate,\n  Router,\n  RouterStateSnapshot,\n  UrlTree,\n} from '@angular/router';\nimport { Observable } from 'rxjs';\n\n@Injectable({\n  providedIn: 'root',\n})\nexport class AuthGuard implements CanActivate {\n  constructor(private router: Router) {}\n\n  canActivate():\n    | Observable<boolean | UrlTree>\n    | Promise<boolean | UrlTree>\n    | boolean\n    | UrlTree {\n    const authUser = window.localStorage.getItem('auth-user');\n    if (authUser) {\n      const token = JSON.parse(authUser);\n      if (token) {\n        const tokenPayload = JSON.parse(window.atob(token.split('.')[1]));\n\n        if (tokenPayload.role === 'admin') {\n          return true;\n        }\n      }\n    }\n\n    // Redirect to login page or any other non-admin page\n    this.router.navigate(['/login']);\n\n    return false;\n  }\n}\n",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "router",
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 14,
+                "jsdoctags": [
+                    {
+                        "name": "router",
+                        "type": "Router",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "extends": [],
+            "type": "guard"
+        }
+    ],
+    "interceptors": [
+        {
+            "name": "JwtInterceptor",
+            "id": "injectable-JwtInterceptor-8824280aebfaec4524214d8b8a6e58ac99d48f3a3d54819c0e93acc87f55658a8a2c79ea49829d41a04b2337e3d0d176770f4c797d8e9aba434f4cdba0447d37",
+            "file": "src/app/admin/jwt.interceptor.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "intercept",
+                    "args": [
+                        {
+                            "name": "req",
+                            "type": "HttpRequest<any>",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        },
+                        {
+                            "name": "next",
+                            "type": "HttpHandler",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "Observable<HttpEvent<any>>",
+                    "typeParameters": [],
+                    "line": 13,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "req",
+                            "type": "HttpRequest<any>",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        },
+                        {
+                            "name": "next",
+                            "type": "HttpHandler",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "description": "",
+            "rawdescription": "\n",
+            "sourceCode": "import { Injectable } from '@angular/core';\nimport {\n  HttpEvent,\n  HttpInterceptor,\n  HttpHandler,\n  HttpRequest,\n} from '@angular/common/http';\nimport { Observable } from 'rxjs';\nconst TOKEN_HEADER_KEY = 'authorization';\n\n@Injectable()\nexport class JwtInterceptor implements HttpInterceptor {\n  intercept(\n    req: HttpRequest<any>,\n    next: HttpHandler\n  ): Observable<HttpEvent<any>> {\n    if (!req.url.includes('admin')) {\n      return next.handle(req);\n    }\n\n    var authReq = req;\n    const authUser = window.localStorage.getItem('auth-user');\n    if (authUser) {\n      const token = JSON.parse(authUser);\n\n      if (token) {\n        authReq = req.clone({\n          headers: req.headers.set(TOKEN_HEADER_KEY, token),\n        });\n      }\n    }\n\n    return next.handle(authReq);\n  }\n}\n",
+            "extends": [],
+            "type": "interceptor"
+        }
+    ],
+    "classes": [],
+    "directives": [],
+    "components": [
+        {
+            "name": "AppComponent",
+            "id": "component-AppComponent-b8e5fbcfba14af908fdf31772e1f73159bbb7f1b845f1baacb91ab402322d874aaed8bf07b0566e2df0129b145e9925ef16bf2a2f59f41709d27538d998ab221",
+            "file": "src/app/app.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-root",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./app.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "title",
+                    "defaultValue": "'food-4-you'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 24
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "ngOnInit",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 33,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [
+                {
+                    "name": "RouterOutlet"
+                },
+                {
+                    "name": "NotificationComponent",
+                    "type": "component"
+                },
+                {
+                    "name": "TranslateModule",
+                    "type": "module"
+                },
+                {
+                    "name": "CommonModule",
+                    "type": "module"
+                },
+                {
+                    "name": "MaterialModule",
+                    "type": "module"
+                }
+            ],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\nimport { RouterOutlet } from '@angular/router';\nimport { MatSlideToggleModule } from '@angular/material/slide-toggle';\n\nimport { TranslateModule, TranslateService } from '@ngx-translate/core';\nimport { CommonModule } from '@angular/common';\nimport { NotificationComponent } from './components/notification/notification.component';\nimport { MaterialModule } from './material.module';\nimport { NotificationsService } from './services/notifications.service';\n\n@Component({\n  selector: 'app-root',\n  imports: [\n    RouterOutlet,\n    NotificationComponent,\n    TranslateModule,\n    CommonModule,\n    MaterialModule,\n  ],\n  templateUrl: './app.component.html',\n  styleUrl: './app.component.scss',\n})\nexport class AppComponent {\n  title = 'food-4-you';\n\n  constructor(\n    private translate: TranslateService,\n    private notificationsService: NotificationsService\n  ) {\n    translate.setDefaultLang('en');\n  }\n\n  ngOnInit() {\n    this.translate.use('en');\n    setTimeout(() => {\n      this.notificationsService.setNotification({\n        type: 'ERROR',\n        message: 'Test test 123',\n      });\n    }, 2000);\n  }\n}\n",
+            "styleUrl": "./app.component.scss",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "notificationsService",
+                        "type": "NotificationsService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 24,
+                "jsdoctags": [
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "notificationsService",
+                        "type": "NotificationsService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "extends": [],
+            "templateData": "<div class=\"notification\">\n  <app-notification></app-notification>\n</div>\n\n<router-outlet />\n"
+        },
+        {
+            "name": "ButtonComponent",
+            "id": "component-ButtonComponent-d7bf0323e6da130e2609e2af0117b4a8d7cd874132206af50bf43dfc37044485fe50f2867ea76525730dd195b9b95a43802a12dadc6ad5cd7bf2faa07f19f0da",
+            "file": "src/stories/button.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "storybook-button",
+            "styleUrls": [
+                "./button.css"
+            ],
+            "styles": [],
+            "template": " <button  type=\"button\"\n  (click)=\"onClick.emit($event)\"\n  [ngClass]=\"classes\"\n  [ngStyle]=\"{ 'background-color': backgroundColor }\"\n>\n  {{ label }}\n</button>",
+            "templateUrl": [],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [
+                {
+                    "name": "backgroundColor",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\nWhat background color to use",
+                    "description": "<p>What background color to use</p>\n",
+                    "line": 25,
+                    "type": "string",
+                    "decorators": []
+                },
+                {
+                    "name": "label",
+                    "defaultValue": "'Button'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "pos": 760,
+                            "end": 773,
+                            "kind": 327,
+                            "id": 0,
+                            "flags": 16842752,
+                            "modifierFlagsCache": 0,
+                            "transformFlags": 0,
+                            "tagName": {
+                                "pos": 761,
+                                "end": 769,
+                                "kind": 80,
+                                "id": 0,
+                                "flags": 16842752,
+                                "transformFlags": 0,
+                                "escapedText": "required"
+                            },
+                            "comment": ""
+                        }
+                    ],
+                    "rawdescription": "\n\nButton contents\n\n",
+                    "description": "<p>Button contents</p>\n",
+                    "line": 37,
+                    "type": "string",
+                    "decorators": []
+                },
+                {
+                    "name": "primary",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\nIs this the principal call to action on the page?",
+                    "description": "<p>Is this the principal call to action on the page?</p>\n",
+                    "line": 21,
+                    "type": "boolean",
+                    "decorators": []
+                },
+                {
+                    "name": "size",
+                    "defaultValue": "'medium'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\nHow large should the button be?",
+                    "description": "<p>How large should the button be?</p>\n",
+                    "line": 29,
+                    "type": "\"small\" | \"medium\" | \"large\"",
+                    "decorators": []
+                }
+            ],
+            "outputsClass": [
+                {
+                    "name": "onClick",
+                    "defaultValue": "new EventEmitter<Event>()",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\nOptional click handler",
+                    "description": "<p>Optional click handler</p>\n",
+                    "line": 41,
+                    "type": "EventEmitter"
+                }
+            ],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": true,
+            "imports": [
+                {
+                    "name": "CommonModule",
+                    "type": "module"
+                }
+            ],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { CommonModule } from '@angular/common';\nimport { Component, Input, Output, EventEmitter } from '@angular/core';\n\n@Component({\n  selector: 'storybook-button',\n  standalone: true,\n  imports: [CommonModule],\n  template: ` <button\n  type=\"button\"\n  (click)=\"onClick.emit($event)\"\n  [ngClass]=\"classes\"\n  [ngStyle]=\"{ 'background-color': backgroundColor }\"\n>\n  {{ label }}\n</button>`,\n  styleUrls: ['./button.css'],\n})\nexport class ButtonComponent {\n  /** Is this the principal call to action on the page? */\n  @Input()\n  primary = false;\n\n  /** What background color to use */\n  @Input()\n  backgroundColor?: string;\n\n  /** How large should the button be? */\n  @Input()\n  size: 'small' | 'medium' | 'large' = 'medium';\n\n  /**\n   * Button contents\n   *\n   * @required\n   */\n  @Input()\n  label = 'Button';\n\n  /** Optional click handler */\n  @Output()\n  onClick = new EventEmitter<Event>();\n\n  public get classes(): string[] {\n    const mode = this.primary ? 'storybook-button--primary' : 'storybook-button--secondary';\n\n    return ['storybook-button', `storybook-button--${this.size}`, mode];\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": ".storybook-button {\n  display: inline-block;\n  cursor: pointer;\n  border: 0;\n  border-radius: 3em;\n  font-weight: 700;\n  line-height: 1;\n  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;\n}\n.storybook-button--primary {\n  background-color: #1ea7fd;\n  color: white;\n}\n.storybook-button--secondary {\n  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px inset;\n  background-color: transparent;\n  color: #333;\n}\n.storybook-button--small {\n  padding: 10px 16px;\n  font-size: 12px;\n}\n.storybook-button--medium {\n  padding: 11px 20px;\n  font-size: 14px;\n}\n.storybook-button--large {\n  padding: 12px 24px;\n  font-size: 16px;\n}\n",
+                    "styleUrl": "./button.css"
+                }
+            ],
+            "stylesData": "",
+            "extends": [],
+            "accessors": {
+                "classes": {
+                    "name": "classes",
+                    "getSignature": {
+                        "name": "classes",
+                        "type": "[]",
+                        "returnType": "string[]",
+                        "line": 43
+                    }
+                }
+            }
+        },
+        {
+            "name": "CartComponent",
+            "id": "component-CartComponent-1b44afb64b448cfd137873cb2fd17644157ec19f662974a199a524a736fe9dd26e3fa36d1c8fe3b6bd8f1df6daf8aaed7f5954c977e2cc95220d2aa6e989b3b1",
+            "file": "src/app/travler/cart/cart.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-cart",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./cart.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-cart',\n  imports: [],\n  templateUrl: './cart.component.html',\n  styleUrl: './cart.component.scss'\n})\nexport class CartComponent {\n\n}\n",
+            "styleUrl": "./cart.component.scss",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "extends": [],
+            "templateData": "<p>cart works!</p>\n"
+        },
+        {
+            "name": "CategoryComponent",
+            "id": "component-CategoryComponent-2aa2672dbdadca21bf6af65303fbff73a5b483198d2380b81c58b08773d9fcaeca42843772cabe8bba734064e8626a18106b31b0201ee729aa13172f6e0856eb",
+            "file": "src/app/travler/category/category.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-category",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./category.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-category',\n  imports: [],\n  templateUrl: './category.component.html',\n  styleUrl: './category.component.scss'\n})\nexport class CategoryComponent {\n\n}\n",
+            "styleUrl": "./category.component.scss",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "extends": [],
+            "templateData": "<p>category works!</p>\n"
+        },
+        {
+            "name": "DashboardComponent",
+            "id": "component-DashboardComponent-ce8bdf690d3866a69d0eeaef8b809e58d92d45c22fc2bd1d4480d58a51118fcd545825ad2467ffc6ee4877d5f1f5c1226afcc44fba9f3ca1f05f90b3329c5d70",
+            "file": "src/app/admin/dashboard/dashboard.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-dashboard",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./dashboard.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-dashboard',\n  imports: [],\n  templateUrl: './dashboard.component.html',\n  styleUrl: './dashboard.component.scss'\n})\nexport class DashboardComponent {\n\n}\n",
+            "styleUrl": "./dashboard.component.scss",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "extends": [],
+            "templateData": "<p>dashboard works!</p>\n"
+        },
+        {
+            "name": "HeaderComponent",
+            "id": "component-HeaderComponent-48b9abe37706bc42f20cfa97ed9f943678344ea7d254c0c82183c657750c2191b43486fe730c778627b2ea6aa0e2f33a7abcf3ce08b68ad18b062ad99ea97acb",
+            "file": "src/stories/header.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "storybook-header",
+            "styleUrls": [
+                "./header.css"
+            ],
+            "styles": [],
+            "template": "<header>  <div class=\"storybook-header\">\n    <div>\n      <svg width=\"32\" height=\"32\" viewBox=\"0 0 32 32\" xmlns=\"http://www.w3.org/2000/svg\">\n        <g fill=\"none\" fillRule=\"evenodd\">\n          <path\n            d=\"M10 0h12a10 10 0 0110 10v12a10 10 0 01-10 10H10A10 10 0 010 22V10A10 10 0 0110 0z\"\n            fill=\"#FFF\"\n          />\n          <path\n            d=\"M5.3 10.6l10.4 6v11.1l-10.4-6v-11zm11.4-6.2l9.7 5.5-9.7 5.6V4.4z\"\n            fill=\"#555AB9\"\n          />\n          <path d=\"M27.2 10.6v11.2l-10.5 6V16.5l10.5-6zM15.7 4.4v11L6 10l9.7-5.5z\" fill=\"#91BAF8\" />\n        </g>\n      </svg>\n      <h1>Acme</h1>\n    </div>\n    <div>\n      <div *ngIf=\"user\">\n        <span class=\"welcome\">\n          Welcome, <b>{{ user.name }}</b\n          >!\n        </span>\n        <storybook-button\n          *ngIf=\"user\"\n          size=\"small\"\n          (onClick)=\"onLogout.emit($event)\"\n          label=\"Log out\"\n        ></storybook-button>\n      </div>\n      <div *ngIf=\"!user\">\n        <storybook-button\n          *ngIf=\"!user\"\n          size=\"small\"\n          class=\"margin-left\"\n          (onClick)=\"onLogin.emit($event)\"\n          label=\"Log in\"\n        ></storybook-button>\n        <storybook-button\n          *ngIf=\"!user\"\n          size=\"small\"\n          [primary]=\"true\"\n          class=\"margin-left\"\n          (onClick)=\"onCreateAccount.emit($event)\"\n          label=\"Sign up\"\n        ></storybook-button>\n      </div>\n    </div>\n  </div>\n</header>",
+            "templateUrl": [],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [
+                {
+                    "name": "user",
+                    "defaultValue": "null",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 66,
+                    "type": "User | null",
+                    "decorators": []
+                }
+            ],
+            "outputsClass": [
+                {
+                    "name": "onCreateAccount",
+                    "defaultValue": "new EventEmitter<Event>()",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 75,
+                    "type": "EventEmitter"
+                },
+                {
+                    "name": "onLogin",
+                    "defaultValue": "new EventEmitter<Event>()",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 69,
+                    "type": "EventEmitter"
+                },
+                {
+                    "name": "onLogout",
+                    "defaultValue": "new EventEmitter<Event>()",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "line": 72,
+                    "type": "EventEmitter"
+                }
+            ],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": true,
+            "imports": [
+                {
+                    "name": "CommonModule",
+                    "type": "module"
+                },
+                {
+                    "name": "ButtonComponent",
+                    "type": "component"
+                }
+            ],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component, Input, Output, EventEmitter } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\nimport { ButtonComponent } from './button.component';\nimport type { User } from './user';\n\n@Component({\n  selector: 'storybook-header',\n  standalone: true,\n  imports: [CommonModule, ButtonComponent],\n  template: `<header>\n  <div class=\"storybook-header\">\n    <div>\n      <svg width=\"32\" height=\"32\" viewBox=\"0 0 32 32\" xmlns=\"http://www.w3.org/2000/svg\">\n        <g fill=\"none\" fillRule=\"evenodd\">\n          <path\n            d=\"M10 0h12a10 10 0 0110 10v12a10 10 0 01-10 10H10A10 10 0 010 22V10A10 10 0 0110 0z\"\n            fill=\"#FFF\"\n          />\n          <path\n            d=\"M5.3 10.6l10.4 6v11.1l-10.4-6v-11zm11.4-6.2l9.7 5.5-9.7 5.6V4.4z\"\n            fill=\"#555AB9\"\n          />\n          <path d=\"M27.2 10.6v11.2l-10.5 6V16.5l10.5-6zM15.7 4.4v11L6 10l9.7-5.5z\" fill=\"#91BAF8\" />\n        </g>\n      </svg>\n      <h1>Acme</h1>\n    </div>\n    <div>\n      <div *ngIf=\"user\">\n        <span class=\"welcome\">\n          Welcome, <b>{{ user.name }}</b\n          >!\n        </span>\n        <storybook-button\n          *ngIf=\"user\"\n          size=\"small\"\n          (onClick)=\"onLogout.emit($event)\"\n          label=\"Log out\"\n        ></storybook-button>\n      </div>\n      <div *ngIf=\"!user\">\n        <storybook-button\n          *ngIf=\"!user\"\n          size=\"small\"\n          class=\"margin-left\"\n          (onClick)=\"onLogin.emit($event)\"\n          label=\"Log in\"\n        ></storybook-button>\n        <storybook-button\n          *ngIf=\"!user\"\n          size=\"small\"\n          [primary]=\"true\"\n          class=\"margin-left\"\n          (onClick)=\"onCreateAccount.emit($event)\"\n          label=\"Sign up\"\n        ></storybook-button>\n      </div>\n    </div>\n  </div>\n</header>`,\n  styleUrls: ['./header.css'],\n})\nexport class HeaderComponent {\n  @Input()\n  user: User | null = null;\n\n  @Output()\n  onLogin = new EventEmitter<Event>();\n\n  @Output()\n  onLogout = new EventEmitter<Event>();\n\n  @Output()\n  onCreateAccount = new EventEmitter<Event>();\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": ".storybook-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  border-bottom: 1px solid rgba(0, 0, 0, 0.1);\n  padding: 15px 20px;\n  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;\n}\n\n.storybook-header svg {\n  display: inline-block;\n  vertical-align: top;\n}\n\n.storybook-header h1 {\n  display: inline-block;\n  vertical-align: top;\n  margin: 6px 0 6px 10px;\n  font-weight: 700;\n  font-size: 20px;\n  line-height: 1;\n}\n\n.storybook-header button + button {\n  margin-left: 10px;\n}\n\n.storybook-header .welcome {\n  margin-right: 10px;\n  color: #333;\n  font-size: 14px;\n}\n",
+                    "styleUrl": "./header.css"
+                }
+            ],
+            "stylesData": "",
+            "extends": []
+        },
+        {
+            "name": "ItemComponent",
+            "id": "component-ItemComponent-9f497f5688ee3bf37da31af2c61514911267e632110f6acf34ef549d7cbbcb9afeb2a097f6dd0ed5664ae5274c5221d1c764e9fb5926a4588b60ba68766f0d4e",
+            "file": "src/app/travler/item/item.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-item",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./item.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-item',\n  imports: [],\n  templateUrl: './item.component.html',\n  styleUrl: './item.component.scss'\n})\nexport class ItemComponent {\n\n}\n",
+            "styleUrl": "./item.component.scss",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "extends": [],
+            "templateData": "<p>item works!</p>\n"
+        },
+        {
+            "name": "LoginComponent",
+            "id": "component-LoginComponent-a9b389075a81277d54c9c56dfc15728a06dc961050247f97103d98e7140273644530dbb6bae5350ccc3aef7fe32d03a5812899854f99504b2cf695625d607ce9",
+            "file": "src/app/components/login/login.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-login",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./login.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\n\n@Component({\n  selector: 'app-login',\n  imports: [],\n  templateUrl: './login.component.html',\n  styleUrl: './login.component.scss'\n})\nexport class LoginComponent {\n\n}\n",
+            "styleUrl": "./login.component.scss",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "extends": [],
+            "templateData": "<p>login works!</p>\n"
+        },
+        {
+            "name": "MenuComponent",
+            "id": "component-MenuComponent-8a9fa409b2a7e00e887c58b1cc6d312e2cf2fd17036916ba5df4a1842c7fc7b19d8cf39e1cd65e50a177646b07bc6defa24f11f25a3292e51f04874e600e8633",
+            "file": "src/app/travler/menu/menu.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-menu",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./menu.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [
+                {
+                    "name": "changeLanguage",
+                    "args": [
+                        {
+                            "name": "lang",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 13,
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "jsdoctags": [
+                        {
+                            "name": "lang",
+                            "type": "string",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [
+                {
+                    "name": "TranslateModule",
+                    "type": "module"
+                }
+            ],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\nimport { TranslateModule, TranslateService } from '@ngx-translate/core';\n\n@Component({\n  selector: 'app-menu',\n  imports: [TranslateModule],\n  templateUrl: './menu.component.html',\n  styleUrl: './menu.component.scss',\n})\nexport class MenuComponent {\n  constructor(private translate: TranslateService) {}\n\n  changeLanguage(lang: string) {\n    this.translate.use(lang);\n  }\n}\n",
+            "styleUrl": "./menu.component.scss",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 10,
+                "jsdoctags": [
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "extends": [],
+            "templateData": "<div>\n  <h1>{{ \"appName\" | translate }}</h1>\n  <h1>{{ \"hello\" | translate : { value: 2 } }}</h1>\n\n  <button (click)=\"changeLanguage('en')\">English</button>\n  <button (click)=\"changeLanguage('he')\">עברית</button>\n</div>\n"
+        },
+        {
+            "name": "NotificationComponent",
+            "id": "component-NotificationComponent-f275dc3665accc9aa5ff6e6cf9d9310098709acc9f8eda0f42f180b83aa6d12462aab243079ad6f1b0c083fb36c9117962ade82130d3566009743bb44c16e453",
+            "file": "src/app/components/notification/notification.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-notification",
+            "styleUrls": [
+                "./notification.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./notification.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "color",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "NotificationColor | undefined",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 102
+                },
+                {
+                    "name": "destroy$",
+                    "defaultValue": "new Subject()",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "Subject<void>",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 105,
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "icon",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "NotificationIcon | undefined",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 101
+                },
+                {
+                    "name": "isRtl",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 99
+                },
+                {
+                    "name": "message",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string | undefined",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 103
+                },
+                {
+                    "name": "NOTIFICATIONS",
+                    "defaultValue": "new Map<\n    NotificationType,\n    NotificationConfigurations\n  >([\n    [\n      'INFO',\n      {\n        title: 'info',\n        color: '#4070f4',\n        icon: 'info_outline',\n      },\n    ],\n    [\n      'ERROR',\n      {\n        title: 'error',\n        color: '#e41749',\n        icon: 'close_outline',\n      },\n    ],\n    [\n      'SUCCESS',\n      {\n        title: 'success',\n        color: '#12c99b',\n        icon: 'done',\n      },\n    ],\n    [\n      'WARNING',\n      {\n        title: 'warning',\n        color: '#f2a600',\n        icon: 'warning_amber_outline',\n      },\n    ],\n  ])",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 60,
+                    "modifierKind": [
+                        123,
+                        148
+                    ]
+                },
+                {
+                    "name": "notificationShowId",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "NodeJS.Timeout | undefined",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 104,
+                    "modifierKind": [
+                        123
+                    ]
+                },
+                {
+                    "name": "show",
+                    "defaultValue": "false",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 97
+                },
+                {
+                    "name": "showNotification",
+                    "defaultValue": "'hide'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "\"hide\" | \"show\"",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 98
+                },
+                {
+                    "name": "title",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "NotificationTitle | undefined",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 100
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "close",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 141,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "ngOnDestroy",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 136,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [
+                {
+                    "name": "CommonModule",
+                    "type": "module"
+                },
+                {
+                    "name": "MaterialModule",
+                    "type": "module"
+                }
+            ],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import {\n  trigger,\n  state,\n  style,\n  transition,\n  animate,\n} from '@angular/animations';\nimport { Component, OnDestroy } from '@angular/core';\nimport { Subject, takeUntil } from 'rxjs';\nimport { LanguageService } from '../../services/lang.service';\nimport {\n  NotificationsService,\n  NotificationType,\n  Notification,\n} from '../../services/notifications.service';\nimport { TranslateService } from '@ngx-translate/core';\nimport { CommonModule } from '@angular/common';\nimport { MaterialModule } from '../../material.module';\n\ntype NotificationTitle = 'info' | 'success' | 'warning' | 'error';\ntype NotificationIcon =\n  | 'info_outline'\n  | 'done'\n  | 'warning_amber_outline'\n  | 'close_outline';\ntype NotificationColor = '#4070f4' | '#12c99b' | '#f2a600' | '#e41749';\n\ninterface NotificationConfigurations {\n  title: NotificationTitle;\n  icon: NotificationIcon;\n  color: NotificationColor;\n}\n\n@Component({\n  selector: 'app-notification',\n  imports: [CommonModule, MaterialModule],\n  templateUrl: './notification.component.html',\n  styleUrls: ['./notification.component.scss'],\n  animations: [\n    trigger('showHideNotification', [\n      state(\n        'hide',\n        style({\n          transform: 'translateX(calc(100vw + 30px))',\n        })\n      ),\n      state(\n        'show',\n        style({\n          transform: 'translateX(0)',\n        })\n      ),\n      transition('show => hide', [animate('0.5s')]),\n      transition('hide => show', [animate('0.2s')]),\n    ]),\n  ],\n})\n// export class NotificationComponent {\nexport class NotificationComponent implements OnDestroy {\n  private readonly NOTIFICATIONS = new Map<\n    NotificationType,\n    NotificationConfigurations\n  >([\n    [\n      'INFO',\n      {\n        title: 'info',\n        color: '#4070f4',\n        icon: 'info_outline',\n      },\n    ],\n    [\n      'ERROR',\n      {\n        title: 'error',\n        color: '#e41749',\n        icon: 'close_outline',\n      },\n    ],\n    [\n      'SUCCESS',\n      {\n        title: 'success',\n        color: '#12c99b',\n        icon: 'done',\n      },\n    ],\n    [\n      'WARNING',\n      {\n        title: 'warning',\n        color: '#f2a600',\n        icon: 'warning_amber_outline',\n      },\n    ],\n  ]);\n  show = false;\n  showNotification: 'hide' | 'show' = 'hide';\n  isRtl = false;\n  title: NotificationTitle | undefined;\n  icon: NotificationIcon | undefined;\n  color: NotificationColor | undefined;\n  message: string | undefined;\n  private notificationShowId: NodeJS.Timeout | undefined;\n  private destroy$: Subject<void> = new Subject();\n  constructor(\n    private languageService: LanguageService,\n    private notificationsService: NotificationsService,\n    private translate: TranslateService\n  ) {\n    this.languageService.rtl$\n      .pipe(takeUntil(this.destroy$))\n      .subscribe((rtl) => (this.isRtl = rtl));\n    this.notificationsService.notification$\n      .pipe(takeUntil(this.destroy$))\n      .subscribe((notification: Notification | null) => {\n        if (!!notification) {\n          const currentNotification = this.NOTIFICATIONS.get(notification.type);\n          this.message = notification.message;\n          this.title = this.translate.instant(\n            `notifications.title.${currentNotification?.title}`\n          );\n          this.icon = currentNotification?.icon;\n          this.color = currentNotification?.color;\n          this.show = true;\n          setTimeout(() => (this.showNotification = 'show'), 100);\n          this.notificationShowId = setTimeout(() => {\n            this.showNotification = 'hide';\n            this.notificationsService.setNotification(null);\n            setTimeout(() => (this.show = false), 1000);\n          }, 500000);\n        }\n      });\n  }\n\n  ngOnDestroy(): void {\n    this.destroy$.next();\n    this.destroy$.complete();\n  }\n\n  close(): void {\n    this.showNotification = 'hide';\n    setTimeout(() => (this.show = false), 1000);\n    clearTimeout(this.notificationShowId);\n    this.notificationsService.setNotification(null);\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": "* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\n.toast {\n  position: fixed;\n  top: 25px;\n  right: 30px;\n  border-radius: 12px;\n  background: #fff;\n  padding: 20px 35px 20px 25px;\n  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.1);\n  overflow: hidden;\n  z-index: 9999;\n  min-width: 250px;\n  max-width: 350px;\n  direction: ltr;\n}\n\n.stick-left {\n  left: 30px;\n}\n\n.stick-right {\n  right: 30px;\n}\n\n@media only screen and (max-width: 760px) {\n  .toast {\n    max-width: 320px;\n  }\n}\n\n.toast .toast-content {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n\n.toast-content .check {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  height: 35px;\n  min-width: 35px;\n  color: #fff;\n  font-size: 20px;\n  border-radius: 50%;\n}\n\n.toast-content .message {\n  display: flex;\n  flex-direction: column;\n  margin: 0 20px;\n  gap: 10px;\n}\n\n.message .text {\n  font-size: 16px;\n  font-weight: 400;\n  color: #666666;\n}\n\n.message .text.text-1 {\n  font-weight: 600;\n  color: #333;\n}\n\n.toast .close {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  padding: 5px;\n  cursor: pointer;\n  opacity: 0.7;\n}\n\n.toast .close:hover {\n  opacity: 1;\n}\n\n.progress {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  height: 3px;\n  width: 100%;\n}\n\n.inner-progress {\n  position: absolute;\n  bottom: 0;\n  right: 0;\n  height: 100%;\n  width: 100%;\n  animation: progress 5s linear forwards;\n}\n\n@keyframes progress {\n  100% {\n    right: 100%;\n  }\n}\n",
+                    "styleUrl": "./notification.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "args": [
+                    {
+                        "name": "languageService",
+                        "type": "LanguageService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "notificationsService",
+                        "type": "NotificationsService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    },
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "line": 105,
+                "jsdoctags": [
+                    {
+                        "name": "languageService",
+                        "type": "LanguageService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "notificationsService",
+                        "type": "NotificationsService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "translate",
+                        "type": "TranslateService",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "extends": [],
+            "implements": [
+                "OnDestroy"
+            ],
+            "templateData": "<div\n  class=\"toast\"\n  [class.rtl]=\"isRtl\"\n  [ngClass]=\"{ 'stick-left': !isRtl, 'stick-right': isRtl }\"\n  [@showHideNotification]=\"showNotification\"\n>\n  <div class=\"toast-content\">\n    <div class=\"check\" [style.background-color]=\"color\">\n      <mat-icon>{{ icon }}</mat-icon>\n    </div>\n    <div class=\"message\" [class.rtl]=\"isRtl\">\n      <span class=\"text text-1\">{{ title }}</span>\n      <span class=\"text text-2\">{{ message }}</span>\n    </div>\n  </div>\n  <div class=\"close\" (click)=\"close()\">\n    <mat-icon\n      aria-hidden=\"false\"\n      aria-label=\"Example home icon\"\n      fontIcon=\"close_outline\"\n    ></mat-icon>\n  </div>\n  <ng-container *ngIf=\"show\">\n    <div class=\"progress\">\n      <div class=\"inner-progress\" [style.background-color]=\"color\"></div>\n    </div>\n  </ng-container>\n</div>\n"
+        },
+        {
+            "name": "PageComponent",
+            "id": "component-PageComponent-21dd6eb370b4983b5c21c84d40e6f54d266a9d9af9889e6e76b35c43058bd53b3e451bad089d5adf4bea46647ba10265a2fa8cb15630398e75636307d4817fc6",
+            "file": "src/stories/page.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "storybook-page",
+            "styleUrls": [
+                "./page.css"
+            ],
+            "styles": [],
+            "template": "<article>  <storybook-header\n    [user]=\"user\"\n    (onLogout)=\"doLogout()\"\n    (onLogin)=\"doLogin()\"\n    (onCreateAccount)=\"doCreateAccount()\"\n  ></storybook-header>\n  <section class=\"storybook-page\">\n    <h2>Pages in Storybook</h2>\n    <p>\n      We recommend building UIs with a\n      <a href=\"https://componentdriven.org\" target=\"_blank\" rel=\"noopener noreferrer\">\n        <strong>component-driven</strong>\n      </a>\n      process starting with atomic components and ending with pages.\n    </p>\n    <p>\n      Render pages with mock data. This makes it easy to build and review page states without\n      needing to navigate to them in your app. Here are some handy patterns for managing page data\n      in Storybook:\n    </p>\n    <ul>\n      <li>\n        Use a higher-level connected component. Storybook helps you compose such data from the\n        \"args\" of child component stories\n      </li>\n      <li>\n        Assemble data in the page component from your services. You can mock these services out\n        using Storybook.\n      </li>\n    </ul>\n    <p>\n      Get a guided tutorial on component-driven development at\n      <a href=\"https://storybook.js.org/tutorials/\" target=\"_blank\" rel=\"noopener noreferrer\">\n        Storybook tutorials\n      </a>\n      . Read more in the\n      <a href=\"https://storybook.js.org/docs\" target=\"_blank\" rel=\"noopener noreferrer\"> docs </a>\n      .\n    </p>\n    <div class=\"tip-wrapper\">\n      <span class=\"tip\">Tip</span> Adjust the width of the canvas with the\n      <svg width=\"10\" height=\"10\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\">\n        <g fill=\"none\" fillRule=\"evenodd\">\n          <path\n            d=\"M1.5 5.2h4.8c.3 0 .5.2.5.4v5.1c-.1.2-.3.3-.4.3H1.4a.5.5 0 01-.5-.4V5.7c0-.3.2-.5.5-.5zm0-2.1h6.9c.3 0 .5.2.5.4v7a.5.5 0 01-1 0V4H1.5a.5.5 0 010-1zm0-2.1h9c.3 0 .5.2.5.4v9.1a.5.5 0 01-1 0V2H1.5a.5.5 0 010-1zm4.3 5.2H2V10h3.8V6.2z\"\n            id=\"a\"\n            fill=\"#999\"\n          />\n        </g>\n      </svg>\n      Viewports addon in the toolbar\n    </div>\n  </section>\n</article>",
+            "templateUrl": [],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "user",
+                    "defaultValue": "null",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "User | null",
+                    "indexKey": "",
+                    "optional": false,
+                    "description": "",
+                    "line": 69
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "doCreateAccount",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 79,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "doLogin",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 75,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                },
+                {
+                    "name": "doLogout",
+                    "args": [],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 71,
+                    "deprecated": false,
+                    "deprecationMessage": ""
+                }
+            ],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": true,
+            "imports": [
+                {
+                    "name": "CommonModule",
+                    "type": "module"
+                },
+                {
+                    "name": "HeaderComponent",
+                    "type": "component"
+                }
+            ],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\nimport { HeaderComponent } from './header.component';\nimport type { User } from './user';\n\n@Component({\n  selector: 'storybook-page',\n  standalone: true,\n  imports: [CommonModule, HeaderComponent],\n  template: `<article>\n  <storybook-header\n    [user]=\"user\"\n    (onLogout)=\"doLogout()\"\n    (onLogin)=\"doLogin()\"\n    (onCreateAccount)=\"doCreateAccount()\"\n  ></storybook-header>\n  <section class=\"storybook-page\">\n    <h2>Pages in Storybook</h2>\n    <p>\n      We recommend building UIs with a\n      <a href=\"https://componentdriven.org\" target=\"_blank\" rel=\"noopener noreferrer\">\n        <strong>component-driven</strong>\n      </a>\n      process starting with atomic components and ending with pages.\n    </p>\n    <p>\n      Render pages with mock data. This makes it easy to build and review page states without\n      needing to navigate to them in your app. Here are some handy patterns for managing page data\n      in Storybook:\n    </p>\n    <ul>\n      <li>\n        Use a higher-level connected component. Storybook helps you compose such data from the\n        \"args\" of child component stories\n      </li>\n      <li>\n        Assemble data in the page component from your services. You can mock these services out\n        using Storybook.\n      </li>\n    </ul>\n    <p>\n      Get a guided tutorial on component-driven development at\n      <a href=\"https://storybook.js.org/tutorials/\" target=\"_blank\" rel=\"noopener noreferrer\">\n        Storybook tutorials\n      </a>\n      . Read more in the\n      <a href=\"https://storybook.js.org/docs\" target=\"_blank\" rel=\"noopener noreferrer\"> docs </a>\n      .\n    </p>\n    <div class=\"tip-wrapper\">\n      <span class=\"tip\">Tip</span> Adjust the width of the canvas with the\n      <svg width=\"10\" height=\"10\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\">\n        <g fill=\"none\" fillRule=\"evenodd\">\n          <path\n            d=\"M1.5 5.2h4.8c.3 0 .5.2.5.4v5.1c-.1.2-.3.3-.4.3H1.4a.5.5 0 01-.5-.4V5.7c0-.3.2-.5.5-.5zm0-2.1h6.9c.3 0 .5.2.5.4v7a.5.5 0 01-1 0V4H1.5a.5.5 0 010-1zm0-2.1h9c.3 0 .5.2.5.4v9.1a.5.5 0 01-1 0V2H1.5a.5.5 0 010-1zm4.3 5.2H2V10h3.8V6.2z\"\n            id=\"a\"\n            fill=\"#999\"\n          />\n        </g>\n      </svg>\n      Viewports addon in the toolbar\n    </div>\n  </section>\n</article>`,\n  styleUrls: ['./page.css'],\n})\nexport class PageComponent {\n  user: User | null = null;\n\n  doLogout() {\n    this.user = null;\n  }\n\n  doLogin() {\n    this.user = { name: 'Jane Doe' };\n  }\n\n  doCreateAccount() {\n    this.user = { name: 'Jane Doe' };\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": ".storybook-page {\n  margin: 0 auto;\n  padding: 48px 20px;\n  max-width: 600px;\n  color: #333;\n  font-size: 14px;\n  line-height: 24px;\n  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;\n}\n\n.storybook-page h2 {\n  display: inline-block;\n  vertical-align: top;\n  margin: 0 0 4px;\n  font-weight: 700;\n  font-size: 32px;\n  line-height: 1;\n}\n\n.storybook-page p {\n  margin: 1em 0;\n}\n\n.storybook-page a {\n  color: #1ea7fd;\n  text-decoration: none;\n}\n\n.storybook-page ul {\n  margin: 1em 0;\n  padding-left: 30px;\n}\n\n.storybook-page li {\n  margin-bottom: 8px;\n}\n\n.storybook-page .tip {\n  display: inline-block;\n  vertical-align: top;\n  margin-right: 10px;\n  border-radius: 1em;\n  background: #e7fdd8;\n  padding: 4px 12px;\n  color: #66bf3c;\n  font-weight: 700;\n  font-size: 11px;\n  line-height: 12px;\n}\n\n.storybook-page .tip-wrapper {\n  margin-top: 40px;\n  margin-bottom: 40px;\n  font-size: 13px;\n  line-height: 20px;\n}\n\n.storybook-page .tip-wrapper svg {\n  display: inline-block;\n  vertical-align: top;\n  margin-top: 3px;\n  margin-right: 4px;\n  width: 12px;\n  height: 12px;\n}\n\n.storybook-page .tip-wrapper svg path {\n  fill: #1ea7fd;\n}\n",
+                    "styleUrl": "./page.css"
+                }
+            ],
+            "stylesData": "",
+            "extends": []
+        },
+        {
+            "name": "TravlerComponent",
+            "id": "component-TravlerComponent-da1ea80e17dd484bdb57a5c3da6efafbea4ffe2905339faae377ec6a6f69d2639c2f06162b65c564dbf687c4e3a60327367b49d391208ef312b276feb86e9558",
+            "file": "src/app/travler/travler.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "app-travler",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./travler.component.html"
+            ],
+            "viewProviders": [],
+            "hostDirectives": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "deprecated": false,
+            "deprecationMessage": "",
+            "hostBindings": [],
+            "hostListeners": [],
+            "standalone": false,
+            "imports": [
+                {
+                    "name": "RouterOutlet"
+                }
+            ],
+            "description": "",
+            "rawdescription": "\n",
+            "type": "component",
+            "sourceCode": "import { Component } from '@angular/core';\nimport { RouterOutlet } from '@angular/router';\n\n@Component({\n  selector: 'app-travler',\n  imports: [RouterOutlet],\n  templateUrl: './travler.component.html',\n  styleUrl: './travler.component.scss',\n})\nexport class TravlerComponent {}\n",
+            "styleUrl": "./travler.component.scss",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "extends": [],
+            "templateData": "<div class=\"bg-image\"></div>\n\n<div class=\"bg-text\">\n  <router-outlet />\n</div>\n\n<div class=\"footer\">Copyrights</div>\n"
+        }
+    ],
+    "modules": [
+        {
+            "name": "AdminModule",
+            "id": "module-AdminModule-803ba9c7176204ff14bfd9ada0cd10fcf7b9975e04faed5418af2d617fabebbe700864749ac8197ebd246848232d7ba68150391e08a5aeef5d909a0f7b515e69",
+            "description": "",
+            "deprecationMessage": "",
+            "deprecated": false,
+            "file": "src/app/admin/admin.module.ts",
+            "methods": [],
+            "sourceCode": "import { NgModule } from '@angular/core';\nimport { RouterModule, Routes } from '@angular/router';\nimport { CommonModule } from '@angular/common';\nimport { DashboardComponent } from './dashboard/dashboard.component';\nimport { HTTP_INTERCEPTORS } from '@angular/common/http';\nimport { JwtInterceptor } from './jwt.interceptor';\n\nconst routes: Routes = [{ path: '', component: DashboardComponent }];\n\n@NgModule({\n  imports: [CommonModule, RouterModule.forChild(routes)],\n  providers: [\n    {\n      provide: HTTP_INTERCEPTORS,\n      useClass: JwtInterceptor,\n      multi: true,\n    },\n  ],\n})\nexport class AdminModule {}\n",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": [
+                        {
+                            "name": "JwtInterceptor"
+                        }
+                    ]
+                },
+                {
+                    "type": "declarations",
+                    "elements": []
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": []
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "MaterialModule",
+            "id": "module-MaterialModule-a8ba589413d42fd6e27d6a2287ec855417fa22bfee21c383e075c791730c982833f115718f22991685bf4f55d411f6da4ecd0825bd746207cd213c9282ecb3aa",
+            "description": "",
+            "deprecationMessage": "",
+            "deprecated": false,
+            "file": "src/app/material.module.ts",
+            "methods": [],
+            "sourceCode": "import { NgModule } from '@angular/core';\nimport { MatDialogModule } from '@angular/material/dialog';\nimport { MatSelectModule } from '@angular/material/select';\nimport { MatInputModule } from '@angular/material/input';\nimport { MatFormFieldModule } from '@angular/material/form-field';\nimport { MatButtonModule } from '@angular/material/button';\nimport { MatCheckboxModule } from '@angular/material/checkbox';\nimport { MatDividerModule } from '@angular/material/divider';\nimport { MatIconModule } from '@angular/material/icon';\nimport { MatPaginatorModule } from '@angular/material/paginator';\nimport { MatSortModule } from '@angular/material/sort';\nimport { MatTableModule } from '@angular/material/table';\nimport { MatToolbarModule } from '@angular/material/toolbar';\nimport { MatTooltipModule } from '@angular/material/tooltip';\nimport { MatSlideToggleModule } from '@angular/material/slide-toggle';\n\n@NgModule({\n  imports: [\n    MatDividerModule,\n    MatToolbarModule,\n    MatIconModule,\n    MatButtonModule,\n    MatTableModule,\n    MatPaginatorModule,\n    MatSortModule,\n    MatFormFieldModule,\n    MatInputModule,\n    MatTooltipModule,\n    MatCheckboxModule,\n    MatSelectModule,\n    MatDialogModule,\n    MatSlideToggleModule\n  ],\n  exports: [\n    MatDividerModule,\n    MatToolbarModule,\n    MatIconModule,\n    MatButtonModule,\n    MatTableModule,\n    MatPaginatorModule,\n    MatSortModule,\n    MatFormFieldModule,\n    MatInputModule,\n    MatTooltipModule,\n    MatCheckboxModule,\n    MatSelectModule,\n    MatDialogModule,\n    MatSlideToggleModule\n  ]\n})\nexport class MaterialModule { }\n",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": []
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": []
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "TravlerModule",
+            "id": "module-TravlerModule-1c9d0961d31012fe342fd299c80ecbc0129821899e9a356f51f630adfe9f389cf2242efdd2859fc8a7d3972fb4e3dfdc312d1054a6d0472ece20510ce132884a",
+            "description": "",
+            "deprecationMessage": "",
+            "deprecated": false,
+            "file": "src/app/travler/travler.module.ts",
+            "methods": [],
+            "sourceCode": "import { NgModule } from '@angular/core';\nimport { RouterModule, Routes } from '@angular/router';\nimport { CommonModule } from '@angular/common';\nimport { MenuComponent } from './menu/menu.component';\nimport { TravlerComponent } from './travler.component';\n\nconst routes: Routes = [\n  {\n    path: '',\n    component: TravlerComponent,\n    children: [{ path: '', component: MenuComponent }],\n  },\n];\n\n@NgModule({\n  imports: [CommonModule, RouterModule.forChild(routes)],\n})\nexport class TravlerModule {}\n",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": []
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": []
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        }
+    ],
+    "miscellaneous": {
+        "variables": [
+            {
+                "name": "appConfig",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/app.config.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "ApplicationConfig",
+                "defaultValue": "{\n  providers: [\n    provideZoneChangeDetection({ eventCoalescing: true }),\n    provideRouter(routes),\n    provideAnimationsAsync(),\n    provideHttpClient(),\n    importProvidersFrom(\n      TranslateModule.forRoot({\n        defaultLanguage: 'he',\n        loader: {\n          provide: TranslateLoader,\n          useFactory: HttpLoaderFactory,\n          deps: [HttpClient],\n        },\n      })\n    ),\n  ],\n}"
+            },
+            {
+                "name": "TOKEN_HEADER_KEY",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/admin/jwt.interceptor.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "string",
+                "defaultValue": "'authorization'"
+            }
+        ],
+        "functions": [
+            {
+                "name": "HttpLoaderFactory",
+                "file": "src/app/app.config.ts",
+                "ctype": "miscellaneous",
+                "subtype": "function",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "description": "",
+                "args": [
+                    {
+                        "name": "http",
+                        "type": "HttpClient",
+                        "deprecated": false,
+                        "deprecationMessage": ""
+                    }
+                ],
+                "jsdoctags": [
+                    {
+                        "name": "http",
+                        "type": "HttpClient",
+                        "deprecated": false,
+                        "deprecationMessage": "",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            }
+        ],
+        "typealiases": [
+            {
+                "name": "LanguageDirection",
+                "ctype": "miscellaneous",
+                "subtype": "typealias",
+                "rawtype": "\"rtl\" | \"ltr\"",
+                "file": "src/app/services/lang.service.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "description": "",
+                "kind": 192
+            },
+            {
+                "name": "LanguageType",
+                "ctype": "miscellaneous",
+                "subtype": "typealias",
+                "rawtype": "\"en\" | \"es\" | \"he\"",
+                "file": "src/app/services/lang.service.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "description": "",
+                "kind": 192
+            },
+            {
+                "name": "NotificationColor",
+                "ctype": "miscellaneous",
+                "subtype": "typealias",
+                "rawtype": "\"#4070f4\" | \"#12c99b\" | \"#f2a600\" | \"#e41749\"",
+                "file": "src/app/components/notification/notification.component.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "description": "",
+                "kind": 192
+            },
+            {
+                "name": "NotificationIcon",
+                "ctype": "miscellaneous",
+                "subtype": "typealias",
+                "rawtype": "\"info_outline\" | \"done\" | \"warning_amber_outline\" | \"close_outline\"",
+                "file": "src/app/components/notification/notification.component.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "description": "",
+                "kind": 192
+            },
+            {
+                "name": "NotificationTitle",
+                "ctype": "miscellaneous",
+                "subtype": "typealias",
+                "rawtype": "\"info\" | \"success\" | \"warning\" | \"error\"",
+                "file": "src/app/components/notification/notification.component.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "description": "",
+                "kind": 192
+            },
+            {
+                "name": "NotificationType",
+                "ctype": "miscellaneous",
+                "subtype": "typealias",
+                "rawtype": "\"INFO\" | \"SUCCESS\" | \"WARNING\" | \"ERROR\"",
+                "file": "src/app/services/notifications.service.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "description": "",
+                "kind": 192
+            }
+        ],
+        "enumerations": [],
+        "groupedVariables": {
+            "src/app/app.config.ts": [
+                {
+                    "name": "appConfig",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/app.config.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "ApplicationConfig",
+                    "defaultValue": "{\n  providers: [\n    provideZoneChangeDetection({ eventCoalescing: true }),\n    provideRouter(routes),\n    provideAnimationsAsync(),\n    provideHttpClient(),\n    importProvidersFrom(\n      TranslateModule.forRoot({\n        defaultLanguage: 'he',\n        loader: {\n          provide: TranslateLoader,\n          useFactory: HttpLoaderFactory,\n          deps: [HttpClient],\n        },\n      })\n    ),\n  ],\n}"
+                }
+            ],
+            "src/app/admin/jwt.interceptor.ts": [
+                {
+                    "name": "TOKEN_HEADER_KEY",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/admin/jwt.interceptor.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "type": "string",
+                    "defaultValue": "'authorization'"
+                }
+            ]
+        },
+        "groupedFunctions": {
+            "src/app/app.config.ts": [
+                {
+                    "name": "HttpLoaderFactory",
+                    "file": "src/app/app.config.ts",
+                    "ctype": "miscellaneous",
+                    "subtype": "function",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "args": [
+                        {
+                            "name": "http",
+                            "type": "HttpClient",
+                            "deprecated": false,
+                            "deprecationMessage": ""
+                        }
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "http",
+                            "type": "HttpClient",
+                            "deprecated": false,
+                            "deprecationMessage": "",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "groupedEnumerations": {},
+        "groupedTypeAliases": {
+            "src/app/services/lang.service.ts": [
+                {
+                    "name": "LanguageDirection",
+                    "ctype": "miscellaneous",
+                    "subtype": "typealias",
+                    "rawtype": "\"rtl\" | \"ltr\"",
+                    "file": "src/app/services/lang.service.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "kind": 192
+                },
+                {
+                    "name": "LanguageType",
+                    "ctype": "miscellaneous",
+                    "subtype": "typealias",
+                    "rawtype": "\"en\" | \"es\" | \"he\"",
+                    "file": "src/app/services/lang.service.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "kind": 192
+                }
+            ],
+            "src/app/components/notification/notification.component.ts": [
+                {
+                    "name": "NotificationColor",
+                    "ctype": "miscellaneous",
+                    "subtype": "typealias",
+                    "rawtype": "\"#4070f4\" | \"#12c99b\" | \"#f2a600\" | \"#e41749\"",
+                    "file": "src/app/components/notification/notification.component.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "kind": 192
+                },
+                {
+                    "name": "NotificationIcon",
+                    "ctype": "miscellaneous",
+                    "subtype": "typealias",
+                    "rawtype": "\"info_outline\" | \"done\" | \"warning_amber_outline\" | \"close_outline\"",
+                    "file": "src/app/components/notification/notification.component.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "kind": 192
+                },
+                {
+                    "name": "NotificationTitle",
+                    "ctype": "miscellaneous",
+                    "subtype": "typealias",
+                    "rawtype": "\"info\" | \"success\" | \"warning\" | \"error\"",
+                    "file": "src/app/components/notification/notification.component.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "kind": 192
+                }
+            ],
+            "src/app/services/notifications.service.ts": [
+                {
+                    "name": "NotificationType",
+                    "ctype": "miscellaneous",
+                    "subtype": "typealias",
+                    "rawtype": "\"INFO\" | \"SUCCESS\" | \"WARNING\" | \"ERROR\"",
+                    "file": "src/app/services/notifications.service.ts",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "description": "",
+                    "kind": 192
+                }
+            ]
+        }
+    },
+    "routes": [],
+    "coverage": {
+        "count": 2,
+        "status": "low",
+        "files": [
+            {
+                "filePath": "src/app/admin/admin.service.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "AdminService",
+                "coveragePercent": 0,
+                "coverageCount": "0/11",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/admin/admin.service.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "MessagesRes",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/admin/admin.service.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "WeddingGuest",
+                "coveragePercent": 0,
+                "coverageCount": "0/12",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/admin/dashboard/dashboard.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "DashboardComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/admin/jwt.interceptor.ts",
+                "type": "interceptor",
+                "linktype": "interceptor",
+                "name": "JwtInterceptor",
+                "coveragePercent": 0,
+                "coverageCount": "0/2",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/admin/jwt.interceptor.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "TOKEN_HEADER_KEY",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/app.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "AppComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/app.config.ts",
+                "type": "function",
+                "linktype": "miscellaneous",
+                "linksubtype": "function",
+                "name": "HttpLoaderFactory",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/app.config.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "appConfig",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/auth.guard.ts",
+                "type": "guard",
+                "linktype": "guard",
+                "name": "AuthGuard",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/login/login.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "LoginComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/notification/notification.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "NotificationComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/14",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/notification/notification.component.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "NotificationConfigurations",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/notification/notification.component.ts",
+                "type": "type alias",
+                "linktype": "miscellaneous",
+                "linksubtype": "typealias",
+                "name": "NotificationColor",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/notification/notification.component.ts",
+                "type": "type alias",
+                "linktype": "miscellaneous",
+                "linksubtype": "typealias",
+                "name": "NotificationIcon",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/components/notification/notification.component.ts",
+                "type": "type alias",
+                "linktype": "miscellaneous",
+                "linksubtype": "typealias",
+                "name": "NotificationTitle",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/services/auth.service.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "AuthService",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/services/auth.service.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "AuthResponse",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/services/auth.service.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "GuestDetails",
+                "coveragePercent": 0,
+                "coverageCount": "0/9",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/services/lang.service.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "LanguageService",
+                "coveragePercent": 0,
+                "coverageCount": "0/5",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/services/lang.service.ts",
+                "type": "type alias",
+                "linktype": "miscellaneous",
+                "linksubtype": "typealias",
+                "name": "LanguageDirection",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/services/lang.service.ts",
+                "type": "type alias",
+                "linktype": "miscellaneous",
+                "linksubtype": "typealias",
+                "name": "LanguageType",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/services/notifications.service.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "NotificationsService",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/services/notifications.service.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "Notification",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/services/notifications.service.ts",
+                "type": "type alias",
+                "linktype": "miscellaneous",
+                "linksubtype": "typealias",
+                "name": "NotificationType",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/travler/cart/cart.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "CartComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/travler/category/category.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "CategoryComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/travler/item/item.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "ItemComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/travler/menu/menu.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "MenuComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/travler/travler.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "TravlerComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/button.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "ButtonComponent",
+                "coveragePercent": 83,
+                "coverageCount": "5/6",
+                "status": "very-good"
+            },
+            {
+                "filePath": "src/stories/header.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "HeaderComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/5",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/page.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "PageComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/5",
+                "status": "low"
+            },
+            {
+                "filePath": "src/stories/user.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "User",
+                "coveragePercent": 0,
+                "coverageCount": "0/2",
+                "status": "low"
+            }
+        ]
+    }
+}
