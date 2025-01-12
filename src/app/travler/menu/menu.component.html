@@ -1,0 +1,7 @@
+<div>
+  <h1>{{ "appName" | translate }}</h1>
+  <h1>{{ "hello" | translate : { value: 2 } }}</h1>
+
+  <button (click)="changeLanguage('en')">English</button>
+  <button (click)="changeLanguage('he')">עברית</button>
+</div>

@@ -2,8 +2,15 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from './menu/menu.component';
+import { TravlerComponent } from './travler.component';
 
-const routes: Routes = [{ path: '', component: MenuComponent }];
+const routes: Routes = [
+  {
+    path: '',
+    component: TravlerComponent,
+    children: [{ path: '', component: MenuComponent }],
+  },
+];
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],

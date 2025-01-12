@@ -1,28 +1,35 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
+import { NotificationComponent } from './components/notification/notification.component';
+import { MaterialModule } from './material.module';
+import { NotificationsService } from './services/notifications.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatSlideToggleModule, TranslateModule, CommonModule],
+  imports: [
+    RouterOutlet,
+    NotificationComponent,
+    TranslateModule,
+    CommonModule,
+    MaterialModule,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
   title = 'food-4-you';
 
-  constructor(private translate: TranslateService) {
-    translate.setDefaultLang('en');
-  }
+  constructor(private notificationsService: NotificationsService) {}
 
   ngOnInit() {
-    this.translate.use('en');
-  }
-
-  changeLanguage(lang: string) {
-    this.translate.use(lang);
+    setTimeout(() => {
+      this.notificationsService.setNotification({
+        type: 'ERROR',
+        message: 'Test test 123',
+      });
+    }, 2000);
   }
 }
