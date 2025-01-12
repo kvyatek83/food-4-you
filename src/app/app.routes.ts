@@ -7,14 +7,12 @@ export const routes: Routes = [
   {
     path: 'travler',
     loadChildren: () =>
-      import('./components/travler/travler.module').then(
-        (m) => m.TravlerModule
-      ),
+      import('./travler/travler.module').then((m) => m.TravlerModule),
   },
   {
     path: 'admin',
     loadChildren: () =>
-      import('./components/admin/admin.module').then((m) => m.AdminModule),
+      import('./admin/admin.module').then((m) => m.AdminModule),
     canActivate: [AuthGuard],
   },
   { path: '', redirectTo: 'travler', pathMatch: 'full' },
