@@ -1,4 +1,42 @@
 {
-  "welcomeMessage": "ברוך הבא!!!",
-  "param": "בודק {{val}} ערך של פרמטר"
+  "appName": "והיו לאחד",
+  "hello": "שלום {{value}}",
+  "login": {
+    "username": "הכנס/י את שם המשתמש שלך",
+    "password": "הכנס/י את הסיסמא שלך",
+    "submit": "התחבר/י"
+  },
+  "notifications": {
+    "title": {
+      "info": "מידע",
+      "success": "מאושר",
+      "warning": "אזהרה",
+      "error": "שגיאה"
+    },
+    "errors": {
+      "userNotFound": "{{user}} לא נמצא",
+      "useraUthorized": "{{user}} לא מאושר כניסה",
+      "missingGuestId": "קישור לא תקין - מזהה אורח חסר",
+      "wrongGuestId": "מזהה אורח <{{user}}> לא תקין",
+      "sentEmptyGuestList": "נשלחה רשימה ריקה",
+      "recivedEmptyGuestList": "התקבלה רשימה ריקה, באפשרותך למלא אותה",
+      "fileFormat": "קובץ לא חוקי. נא לבחור רק קובץ CSV או JSON.",
+      "loginAgain": "בבקשה להתחבר מחדש",
+      "allMessageFailed": "כל ההודעות נכשלו",
+      "botIsNotInUse": "לא נבחר שימוש בבוט של וואטסאפ",
+      "general": "שגיאה לא מוכרת"
+    },
+    "warning": {
+      "superAdmin": "הפעולה הבאה מסוכנת, לפעול בזהירות!"
+    },
+    "info": {
+      "convertComplete": "הקובץ מתאים וכמעט סיים לטעון",
+      "messagesStatus": "{{sent}} הודעות נשלחו, {{}} הודעות נכשלו."
+    },
+    "success": {
+      "saveTheDate": "הבחירה שלך נשמרה, אפשר תמיד לשנות את תשובתך",
+      "file": "הקובץ ירד בהצלחה",
+      "allMessageSent": "כל ההודעות נשלחו"
+    }
+  }
 }

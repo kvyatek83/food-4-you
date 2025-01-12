@@ -1,4 +1,42 @@
 {
-  "welcomeMessage": "Welcome to Food 4 You!",
-  "param": "Test {{val}} parameter value"
+  "appName": "BeOne",
+  "hello": "Hello {{value}}",
+  "login": {
+    "username": "Enter your user name",
+    "password": "Enter your password",
+    "submit": "Login "
+  },
+  "notifications": {
+    "title": {
+      "info": "Info",
+      "success": "Success",
+      "warning": "Warning",
+      "error": "Error"
+    },
+    "errors": {
+      "userNotFound": "No user {{user}} found",
+      "useraUthorized": "User {{user}} is not authorized!",
+      "missingGuestId": "Wedding link is broken",
+      "wrongGuestId": "No user for {{user}} found",
+      "sentEmptyGuestList": "List is sent empty.",
+      "recivedEmptyGuestList": "The list is emtpy, you can fill it",
+      "fileFormat": "Invalid file format. Please select a CSV or JSON file.",
+      "loginAgain": "You need to login again",
+      "allMessageFailed": "All messages failed",
+      "botIsNotInUse": "The whatsapp bot is not in use",
+      "general": "Unknownen error"
+    },
+    "warning": {
+      "superAdmin": "This actions is risky, please be careful!"
+    },
+    "info": {
+      "convertComplete": "File format is good and almost ready",
+      "messagesStatus": "{{sent}} messages sent, {{}} mesages failed."
+    },
+    "success": {
+      "saveTheDate": "You submit saved, you always can change you answer",
+      "file": "The file was successfully download",
+      "allMessageSent": "All messages sent"
+    }
+  }
 }
