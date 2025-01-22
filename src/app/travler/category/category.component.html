@@ -1,1 +1,10 @@
-<p>category works!</p>
+<ng-container *ngIf="lang$ | async; let lang">
+  <h2 class="item-name" appLanguageDirection>
+    {{ category | propertiesTranslation : lang : "Name" }}
+  </h2>
+  <ul class="items">
+    <li class="item" *ngFor="let item of category?.items">
+      <app-item [item]="item"></app-item>
+    </li>
+  </ul>
+</ng-container>
