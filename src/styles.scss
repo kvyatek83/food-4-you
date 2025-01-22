@@ -6,19 +6,23 @@ body {
   height: 100vh;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-* {
+*,
+*::before,
+*::after {
+  margin: 0;
   box-sizing: border-box;
 }
 
 .rtl {
   direction: rtl;
+  text-align: right;
 
   .mat-mdc-select-value {
     text-align: right !important;
@@ -32,4 +36,9 @@ body {
     margin-right: 0;
     margin-left: auto;
   }
+}
+
+.ltr {
+  direction: ltr;
+  text-align: left;
 }

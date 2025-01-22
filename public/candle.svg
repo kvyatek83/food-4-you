@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240">
+  <!-- Animated Flame -->
+  <path d="M100 40 Q85 25 100 10 Q115 25 100 40">
+    <animate
+      attributeName="d"
+      dur="1.5s"
+      repeatCount="indefinite"
+      values="
+        M100 40 Q85 25 100 10 Q115 25 100 40;
+        M100 40 Q80 20 100 5 Q120 20 100 40;
+        M100 40 Q85 25 100 10 Q115 25 100 40"
+    />
+    <animate
+      attributeName="fill"
+      dur="2s"
+      repeatCount="indefinite"
+      values="#ff9933;#ffcc00;#ff9933"
+    />
+  </path>
+  
+  <!-- Candle Body (now with curved path for cylindrical look) -->
+  <path d="M60,40 
+           A40,10 0 0,1 140,40 
+           L140,200 
+           A40,10 0 0,1 60,200 
+           Z" 
+        fill="transparent" 
+        stroke="white" 
+        stroke-width="4"/>
+  
+  <!-- Star of David (adjusted position and size) -->
+  <g transform="translate(100,120) scale(1.2)">
+    <!-- First triangle -->
+    <path d="M0,-20 L17,10 L-17,10 Z" 
+          fill="none" 
+          stroke="white" 
+          stroke-width="4"/>
+    <!-- Second triangle -->
+    <path d="M0,20 L-17,-10 L17,-10 Z" 
+          fill="none" 
+          stroke="white" 
+          stroke-width="4"/>
+  </g>
+</svg>
