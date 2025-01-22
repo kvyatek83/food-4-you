@@ -1,0 +1,17 @@
+<div *ngIf="currentLanguage" class="language-picker" [class.open]="isOpen">
+  <div class="selected-language" (click)="toggleDropdown()">
+    <span class="language-flag">{{ currentLanguage.languageIcon }} </span>
+    <span class="arrow-down"></span>
+  </div>
+
+  <div *ngIf="isOpen" class="dropdown-menu" appLanguageDirection>
+    <div
+      *ngFor="let lang of languages"
+      class="language-option"
+      (click)="selectLanguage(lang)"
+    >
+      <span class="language-flag">{{ lang.languageIcon }} </span>
+      <span class="language-name">{{ lang.languageName }}</span>
+    </div>
+  </div>
+</div>
