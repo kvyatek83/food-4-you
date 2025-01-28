@@ -1,0 +1,46 @@
+{
+  "appName": "BeOne",
+  "hello": "Hola {{value}}",
+  "login": {
+    "username": "Introduce tu nombre de usuario",
+    "password": "Introduce tu contraseña",
+    "submit": "Iniciar sesión"
+  },
+  "menu": {
+    "category": "Category",
+    "item": "Item"
+  },
+  "notifications": {
+    "title": {
+      "info": "Información",
+      "success": "Éxito",
+      "warning": "Advertencia",
+      "error": "Error"
+    },
+    "errors": {
+      "userNotFound": "No se encontró el usuario {{user}}",
+      "useraUthorized": "¡El usuario {{user}} no está autorizado!",
+      "missingGuestId": "El enlace de la boda está roto",
+      "wrongGuestId": "No se encontró el usuario {{user}}",
+      "sentEmptyGuestList": "La lista se envió vacía.",
+      "recivedEmptyGuestList": "La lista está vacía, puedes llenarla",
+      "fileFormat": "Formato de archivo no válido. Por favor, selecciona un archivo CSV o JSON.",
+      "loginAgain": "Necesitas iniciar sesión nuevamente",
+      "allMessageFailed": "Todos los mensajes fallaron",
+      "botIsNotInUse": "El bot de WhatsApp no está en uso",
+      "general": "Error desconocido"
+    },
+    "warning": {
+      "superAdmin": "¡Esta acción es arriesgada, por favor ten cuidado!"
+    },
+    "info": {
+      "convertComplete": "El formato del archivo es bueno y casi listo",
+      "messagesStatus": "{{sent}} mensajes enviados, {{}} mensajes fallidos."
+    },
+    "success": {
+      "saveTheDate": "Tu respuesta fue guardada, siempre puedes cambiar tu respuesta",
+      "file": "El archivo se descargó con éxito",
+      "allMessageSent": "Todos los mensajes enviados"
+    }
+  }
+}

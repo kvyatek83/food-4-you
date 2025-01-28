@@ -6,6 +6,10 @@
     "password": "הכנס/י את הסיסמא שלך",
     "submit": "התחבר/י"
   },
+  "menu": {
+    "category": "קטגוריה",
+    "item": "פריט"
+  },
   "notifications": {
     "title": {
       "info": "מידע",

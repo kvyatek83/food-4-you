@@ -6,6 +6,10 @@
     "password": "Enter your password",
     "submit": "Login "
   },
+  "menu": {
+    "category": "Category",
+    "item": "Item"
+  },
   "notifications": {
     "title": {
       "info": "Info",
