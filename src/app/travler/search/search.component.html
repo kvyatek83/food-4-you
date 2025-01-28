@@ -1,0 +1,62 @@
+<div
+  class="search-container"
+  appLanguageDirection
+  (languageChanged)="languageChanged($event)"
+>
+  <div class="search-wrapper" [class.open]="showSuggestions">
+    <div
+      class="search-button center-position"
+      [style.left]="stickyLeft ? '0' : ''"
+      [style.right]="!stickyLeft ? '0' : ''"
+      [class.active]="showSuggestions"
+      (click)="toggleSearch()"
+    >
+      <div class="search-icon"></div>
+    </div>
+
+    <input
+      #seatchInput
+      type="text"
+      [formControl]="searchControl"
+      placeholder=""
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+    />
+  </div>
+
+  <div
+    class="suggestions-container"
+    *ngIf="showSuggestions && searchControl.value"
+  >
+    <div class="suggestions" *ngIf="lang$ | async; let lang">
+      <div class="categories" *ngIf="filteredCategories.length > 0">
+        <div
+          *ngFor="let category of filteredCategories"
+          class="suggestion-item"
+          (click)="scrollToResult(category.uuid)"
+        >
+          <span>{{ category | propertiesTranslation : lang : "Name" }}</span>
+          <span>{{ "menu.category" | translate }}</span>
+        </div>
+      </div>
+
+      <div class="items" *ngIf="filteredItems.length > 0">
+        <div
+          *ngFor="let item of filteredItems"
+          class="suggestion-item"
+          (click)="scrollToResult(item.uuid)"
+        >
+          <span>{{ item | propertiesTranslation : lang : "Name" }}</span>
+          <span>{{ "menu.item" | translate }}</span>
+        </div>
+      </div>
+
+      <div
+        *ngIf="filteredCategories.length === 0 && filteredItems.length === 0"
+      >
+        <!-- Translate and style -->
+        <div class="suggestion-item">No Item</div>
+      </div>
+    </div>
+  </div>
+</div>
