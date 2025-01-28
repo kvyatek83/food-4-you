@@ -5,7 +5,7 @@ import {
   HostListener,
   Output,
 } from '@angular/core';
-import { LanguageService } from '../services/lang.service';
+import { LanguageDirection, LanguageService } from '../services/lang.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Directive({
@@ -14,7 +14,7 @@ import { Subject, takeUntil } from 'rxjs';
 export class LanguageDirectionDirective {
   @HostBinding('class.rtl') rtl: boolean | undefined;
   @HostBinding('class.ltr') ltr: boolean | undefined;
-  @Output() fileDropped = new EventEmitter<any>();
+  @Output() languageChanged = new EventEmitter<LanguageDirection>();
 
   private destroy$: Subject<void> = new Subject();
 
@@ -30,6 +30,10 @@ export class LanguageDirectionDirective {
         } else {
           this.ltr = true;
           this.rtl = false;
+        }
+
+        if (this.languageChanged) {
+          this.languageChanged.emit(rtl ? 'rtl' : 'ltr');
         }
       });
   }

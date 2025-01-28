@@ -1,4 +1,10 @@
-<div *ngIf="currentLanguage" class="language-picker" [class.open]="isOpen">
+<div
+  *ngIf="currentLanguage"
+  clickOutside
+  class="language-picker"
+  [class.open]="isOpen"
+  (clickOutside)="closeDropdown()"
+>
   <div class="selected-language" (click)="toggleDropdown()">
     <span class="language-flag">{{ currentLanguage.languageIcon }} </span>
     <span class="arrow-down"></span>

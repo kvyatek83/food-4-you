@@ -6,7 +6,7 @@ export type LanguageType = 'en' | 'es' | 'he';
 export type LanguageCode = 'EN' | 'ES' | 'HE';
 export type LanguageName = 'English' | 'Español' | 'עברית';
 export type LanguageIcon = '🇺🇸' | '🇪🇸' | '🇮🇱';
-type LanguageDirection = 'rtl' | 'ltr';
+export type LanguageDirection = 'rtl' | 'ltr';
 
 export interface SupportedLanguages {
   languageType: LanguageType;

@@ -6,10 +6,11 @@ import {
 } from '../../services/lang.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
+import { ClickOutsideDirective } from '../../directives/outside.directive';
 
 @Component({
   selector: 'app-language-picker',
-  imports: [CommonModule, LanguageDirectionDirective],
+  imports: [CommonModule, LanguageDirectionDirective, ClickOutsideDirective],
   templateUrl: './language-picker.component.html',
   styleUrl: './language-picker.component.scss',
 })
@@ -30,6 +31,10 @@ export class LanguagePickerComponent implements OnInit {
 
   toggleDropdown(): void {
     this.isOpen = !this.isOpen;
+  }
+
+  closeDropdown(): void {
+    this.isOpen = false;
   }
 
   selectLanguage(lang: SupportedLanguages): void {
