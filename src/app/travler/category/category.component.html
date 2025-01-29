@@ -3,7 +3,7 @@
     {{ category | propertiesTranslation : lang : "Name" }}
   </h2>
   <ul class="items">
-    <li class="item" *ngFor="let item of category?.items">
+    <li class="item" *ngFor="let item of category?.items" [id]="item.uuid">
       <app-item [item]="item"></app-item>
     </li>
   </ul>

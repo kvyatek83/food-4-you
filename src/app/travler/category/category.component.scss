@@ -6,36 +6,20 @@
   padding: 0;
   list-style: none;
 
-  /* prevent accidentally going back or triggering other swipe events */
-  // overscroll-behavior: contain;
-
-  /* hide scroll bar */
   scrollbar-width: none;
   -ms-overflow-style: none;
 
-  /* momentum scroll on iOS */
   -webkit-overflow-scrolling: touch;
-
-  /* disbable vertical scroll for touch */
-  // touch-action: pan-x;
 }
 
-/* hide scroll bar */
 .items::-webkit-scrollbar {
   display: none;
 }
 
 .item {
-  // height: 100%;
-  // width: 100%;
   flex-shrink: 0;
 }
 
-.item:not(:last-child) {
-  // margin-right: 10px;
-}
-
-/* hacky fix for padding at the end of the list */
 .item:last-child {
   position: relative;
 }
@@ -47,4 +31,8 @@
   width: 20px;
   display: block;
   content: "";
+}
+
+.item-name {
+  margin-bottom: 15px;
 }

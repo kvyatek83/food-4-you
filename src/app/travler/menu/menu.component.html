@@ -1,7 +1,36 @@
-<div>
-  <h1>{{ "appName" | translate }}</h1>
-  <h1>{{ "hello" | translate : { value: 2 } }}</h1>
+<ng-container *ngIf="lang$ | async; let lang">
+  <div
+    class="menu-wrapper"
+    #menuWrapper
+    (scroll)="onScroll($event)"
+    [ngClass]="{
+      'top-gradient': isTopMenuNotInView,
+      'bottom-gradient': isBottomMenuNotInView
+    }"
+  >
+    <div #topMenu></div>
+    <div class="content" appLanguageDirection>
+      <ul class="categories">
+        <li
+          class="category"
+          *ngFor="let category of categories"
+          (click)="scrollToCategory(category.uuid)"
+        >
+          <img
+            [src]="category.imageUrl"
+            alt="{{ category.enName }}"
+            class="category-image"
+          />
+          <div class="category-name">
+            {{ category | propertiesTranslation : lang : "Name" }}
+          </div>
+        </li>
+      </ul>
 
-  <button (click)="changeLanguage('en')">English</button>
-  <button (click)="changeLanguage('he')">עברית</button>
-</div>
+      <div *ngFor="let category of categories" [id]="category.uuid">
+        <app-category [category]="category"></app-category>
+      </div>
+    </div>
+    <div #bottomMenu></div>
+  </div>
+</ng-container>
