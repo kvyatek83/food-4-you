@@ -1,0 +1,33 @@
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cart-icon-container {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 57%;
+  left: 51%;
+  transform: translate(-50%, -50%);
+  background-color: transparent;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}

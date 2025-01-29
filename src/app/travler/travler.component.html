@@ -1,7 +1,25 @@
 <div class="bg-image"></div>
 
-<div class="bg-text">
-  <router-outlet />
-</div>
+<div class="app-wrapper">
+  <div class="header" appLanguageDirection>
+    <div class="header-actions">
+      <app-header-actions></app-header-actions>
+    </div>
+    <div class="header-language">
+      <app-language-picker></app-language-picker>
+    </div>
+  </div>
+  <div class="travler-app">
+    <router-outlet />
+  </div>
 
-<div class="footer">Copyrights</div>
+  <div class="footer">
+    <img class="candle" [src]="'/candle.svg'" />
+    <div class="scroll-container">
+      <span class="scroll-text">
+        המערכת נבנתה לעילוי נשמת דניאל בן שרה קביאטק ע״ה
+      </span>
+    </div>
+    <img class="candle" [src]="'/candle.svg'" />
+  </div>
+</div>

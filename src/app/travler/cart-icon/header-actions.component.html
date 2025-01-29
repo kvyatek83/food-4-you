@@ -1,0 +1,29 @@
+<ng-container *ngIf="currentRoute$ | async as currentRoute">
+  <ng-container *ngIf="currentRoute.includes('cart') !== true; else cartHeader">
+    <div class="header-actions">
+      <div class="cart-icon-container" (click)="navigateTo('cart')">
+        <mat-icon
+          class="cart-icon"
+          aria-hidden="false"
+          aria-label="Go to cart"
+          fontSet="material-icons-outlined"
+        >
+          shopping_bag
+        </mat-icon>
+        <span class="cart-badge" *ngIf="itemCount > 0">{{ itemCount }}</span>
+      </div>
+      <app-search></app-search>
+    </div>
+  </ng-container>
+  <ng-template #cartHeader>
+    <mat-icon
+      (click)="navigateTo('')"
+      class="cart-icon"
+      aria-hidden="false"
+      aria-label="Go to menu"
+      fontSet="material-icons-outlined"
+    >
+      menu_book
+    </mat-icon>
+  </ng-template>
+</ng-container>

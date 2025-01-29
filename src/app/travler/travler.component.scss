@@ -1,44 +1,78 @@
 .bg-image {
-  /* The image used */
   background-image: url("/bg.jpg");
-
-  /* Add the blur effect */
   filter: blur(8px);
   -webkit-filter: blur(8px);
-
-  /* Full height */
   height: 100vh;
-
-  /* Center and scale the image nicely */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
-/* Position text in the middle of the page/image */
-.bg-text {
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/opacity/see-through */
+.app-wrapper {
+  position: absolute;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  text-align: center;
   color: white;
   font-weight: bold;
-  border: 3px solid #f1f1f1;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  width: 80%;
-  padding: 20px;
-  text-align: center;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  z-index: 20;
+  padding: 10px 20px;
+  background: rgba(111, 82, 55, 0.8);
+}
+
+.travler-app {
+  overflow: auto;
 }
 
 .footer {
-  position: fixed;
-  z-index: 2;
-  bottom: 0;
-  height: 50px;
-  width: 100%;
   display: flex;
-  background-color: rgba(0, 0, 0, 0.4);
-  color: white;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 20px;
+  background: rgba(111, 82, 55, 0.8);
+}
+
+.candle {
+  height: 50px;
+  flex-shrink: 0;
+}
+
+.scroll-container {
+  flex: 1;
+  overflow: hidden;
+  margin: 0 20px;
+  position: relative;
+}
+
+.scroll-text {
+  display: inline-block;
+  text-align: right;
+  direction: rtl;
+  white-space: nowrap;
+  position: relative;
+  animation: scroll-rtl 15s linear infinite;
+}
+
+@keyframes scroll-rtl {
+  0% {
+    transform: translateX(200%);
+  }
+  100% {
+    transform: translateX(-200%);
+  }
 }
