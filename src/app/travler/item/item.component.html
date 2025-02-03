@@ -1,32 +1,40 @@
-<div *ngIf="lang$ | async; let lang">
-  <div class="item">
-    <div class="item-first-half">
-      <div class="item-name" appLanguageDirection>
-        {{ item | propertiesTranslation : lang : "Name" }}
-      </div>
-      <img
-        [src]="item?.imageUrl"
-        alt="{{ item | propertiesTranslation : lang : 'Name' }}"
-      />
+<div *ngIf="lang$ | async; let lang" class="item">
+  <div
+    *ngIf="itemCounter$ | async; let itemCounter"
+    class="item-counter"
+    (click)="showSelectedItems()"
+  >
+    <div class="puls"></div>
+    <div class="number">
+      {{ itemCounter }}
     </div>
-    <div class="item-last-half">
-      <div class="item-details">
-        {{ item | propertiesTranslation : lang : "Details" }}
-      </div>
-      <div class="item-actions">
-        <div class="item-price">{{ item?.price }}</div>
-        <button
-          class="add-to-cart"
-          appLanguageDirection
-          (click)="addItemToCart(item)"
-        >
-          <mat-icon
-            aria-hidden="false"
-            aria-label="Add to cart"
-            fontIcon="add"
-          ></mat-icon>
-        </button>
-      </div>
+  </div>
+  <div class="item-first-half">
+    <div class="item-name" appLanguageDirection>
+      {{ item | propertiesTranslation : lang : "Name" }}
+    </div>
+    <img
+      [src]="item?.imageUrl"
+      alt="{{ item | propertiesTranslation : lang : 'Name' }}"
+    />
+  </div>
+  <div class="item-last-half">
+    <div class="item-details">
+      {{ item | propertiesTranslation : lang : "Details" }}
+    </div>
+    <div class="item-actions">
+      <div class="item-price">{{ item?.price }}</div>
+      <button
+        class="add-to-cart"
+        appLanguageDirection
+        (click)="addItemToCart(item)"
+      >
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Add to cart"
+          fontIcon="add"
+        ></mat-icon>
+      </button>
     </div>
   </div>
 </div>

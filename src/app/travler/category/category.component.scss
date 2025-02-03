@@ -3,7 +3,7 @@
   overflow-x: scroll;
   overflow-y: hidden;
   gap: 15px;
-  padding: 0;
+  padding: 25px 0 0 0;
   list-style: none;
 
   scrollbar-width: none;
@@ -34,5 +34,5 @@
 }
 
 .item-name {
-  margin-bottom: 15px;
+  // margin-bottom: 15px;
 }

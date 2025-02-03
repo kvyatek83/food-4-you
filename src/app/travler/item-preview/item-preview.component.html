@@ -1,0 +1,19 @@
+<ng-container *ngIf="lang$ | async; let lang">
+  <mat-expansion-panel
+    [expanded]="expanded"
+    (opened)="opened.emit()"
+    hideToggle
+    appLanguageDirection
+  >
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{
+        cartItem?.item | propertiesTranslation : lang : "Name"
+      }}</mat-panel-title>
+      <mat-panel-description>
+        Type your name and age
+        <img [src]="cartItem?.item?.imageUrl" class="item-image" />
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>This is the primary content of the panel.</p>
+  </mat-expansion-panel>
+</ng-container>

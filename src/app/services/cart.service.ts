@@ -1,9 +1,22 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, map, of } from 'rxjs';
 import { Item } from '../travler/travler.model';
 
+export interface CartItem {
+  itemUuid: string;
+  item: Item;
+  items: Map<string, string[]>; // cartItemId -> selectedAddOns
+}
+
+// Serializable version of CartItem for localStorage
+interface SerializableCartItem {
+  itemUuid: string;
+  item: Item;
+  items: Array<[string, string[]]>; // Array of tuples [cartItemId, selectedAddOns]
+}
+
 interface CartState {
-  items: Item[];
+  items: SerializableCartItem[];
   timestamp: number;
 }
 
@@ -14,7 +27,7 @@ export class CartService {
   private readonly CART_KEY = 'shopping_cart';
   private readonly EXPIRY_TIME = 15 * 60 * 1000; // 15 minutes in milliseconds
 
-  private cartItems = new BehaviorSubject<Item[]>([]);
+  private cartItems = new BehaviorSubject<CartItem[]>([]);
   public cartItems$ = this.cartItems.asObservable();
 
   constructor() {
@@ -22,22 +35,43 @@ export class CartService {
     this.setupExpiryCheck();
   }
 
+  private serializeCartItems(items: CartItem[]): SerializableCartItem[] {
+    return items.map((item) => ({
+      itemUuid: item.itemUuid,
+      item: item.item,
+      items: Array.from(item.items.entries()),
+    }));
+  }
+
+  private deserializeCartItems(items: SerializableCartItem[]): CartItem[] {
+    return items.map((item) => ({
+      itemUuid: item.itemUuid,
+      item: item.item,
+      items: new Map(item.items),
+    }));
+  }
+
   private initializeCart(): void {
     const savedCart = localStorage.getItem(this.CART_KEY);
     if (savedCart) {
-      const cartState: CartState = JSON.parse(savedCart);
-      const now = Date.now();
+      try {
+        const cartState: CartState = JSON.parse(savedCart);
+        const now = Date.now();
 
-      if (now - cartState.timestamp <= this.EXPIRY_TIME) {
-        this.cartItems.next(cartState.items);
-      } else {
+        if (now - cartState.timestamp <= this.EXPIRY_TIME) {
+          const items = this.deserializeCartItems(cartState.items);
+          this.cartItems.next(items);
+        } else {
+          this.clearCart();
+        }
+      } catch (error) {
+        console.error('Error parsing cart from localStorage:', error);
         this.clearCart();
       }
     }
   }
 
   private setupExpiryCheck(): void {
-    // Check every minute if cart should be expired
     setInterval(() => {
       const savedCart = localStorage.getItem(this.CART_KEY);
       if (savedCart) {
@@ -48,29 +82,80 @@ export class CartService {
           this.clearCart();
         }
       }
-    }, 60000); // Check every minute
+    }, 60000);
   }
 
-  private saveToLocalStorage(items: Item[]): void {
+  private saveToLocalStorage(items: CartItem[]): void {
     const cartState: CartState = {
-      items,
+      items: this.serializeCartItems(items),
       timestamp: Date.now(),
     };
     localStorage.setItem(this.CART_KEY, JSON.stringify(cartState));
   }
 
-  addItem(item: Item): void {
-    const currentItems = this.cartItems.value;
-    const newItems = [...currentItems, item];
-    this.cartItems.next(newItems);
-    this.saveToLocalStorage(newItems);
+  private generateCartItemId(): string {
+    return `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  removeItem(itemId: string): void {
+  addItem(item: Item, selectedAddOns: string[] = []): void {
     const currentItems = this.cartItems.value;
-    const newItems = currentItems.filter((item) => item.uuid !== itemId);
-    this.cartItems.next(newItems);
-    this.saveToLocalStorage(newItems);
+    const cartItemId = this.generateCartItemId();
+
+    // Check if the item already exists in cart
+    const existingItemIndex = currentItems.findIndex(
+      (i) => i.itemUuid === item.uuid
+    );
+
+    if (existingItemIndex > -1) {
+      // Add new variant to existing item
+      const updatedItems = [...currentItems];
+      updatedItems[existingItemIndex].items.set(cartItemId, selectedAddOns);
+      this.cartItems.next(updatedItems);
+      this.saveToLocalStorage(updatedItems);
+    } else {
+      // Create new cart item
+      const newCartItem: CartItem = {
+        itemUuid: item.uuid,
+        item: item,
+        items: new Map([[cartItemId, selectedAddOns]]),
+      };
+      this.cartItems.next([...currentItems, newCartItem]);
+      this.saveToLocalStorage([...currentItems, newCartItem]);
+    }
+  }
+
+  removeVariant(itemUuid: string, cartItemId: string): void {
+    const currentItems = this.cartItems.value;
+    const itemIndex = currentItems.findIndex((i) => i.itemUuid === itemUuid);
+
+    if (itemIndex > -1) {
+      const updatedItems = [...currentItems];
+      updatedItems[itemIndex].items.delete(cartItemId);
+
+      // If no variants left, remove the entire item
+      if (updatedItems[itemIndex].items.size === 0) {
+        updatedItems.splice(itemIndex, 1);
+      }
+
+      this.cartItems.next(updatedItems);
+      this.saveToLocalStorage(updatedItems);
+    }
+  }
+
+  updateVariantAddOns(
+    itemUuid: string,
+    cartItemId: string,
+    newAddOns: string[]
+  ): void {
+    const currentItems = this.cartItems.value;
+    const itemIndex = currentItems.findIndex((i) => i.itemUuid === itemUuid);
+
+    if (itemIndex > -1 && currentItems[itemIndex].items.has(cartItemId)) {
+      const updatedItems = [...currentItems];
+      updatedItems[itemIndex].items.set(cartItemId, newAddOns);
+      this.cartItems.next(updatedItems);
+      this.saveToLocalStorage(updatedItems);
+    }
   }
 
   clearCart(): void {
@@ -78,11 +163,36 @@ export class CartService {
     localStorage.removeItem(this.CART_KEY);
   }
 
-  getItemCount(): Observable<number> {
-    return new Observable<number>((observer) => {
-      this.cartItems$.subscribe((items) => {
-        observer.next(items.length);
-      });
-    });
+  getCartItem(itemUuid: string): CartItem | undefined {
+    return this.cartItems.value.find(
+      (cartItem) => cartItem.itemUuid === itemUuid
+    );
+  }
+
+  getItemCount(itemUuid: string): Observable<number> {
+    if (!itemUuid) {
+      return of(0);
+    }
+
+    return this.cartItems$.pipe(
+      map((items) => {
+        const item = items.find((i) => i.itemUuid === itemUuid);
+        return item ? item.items.size : 0;
+      })
+    );
+  }
+
+  getTotalItemsCount(): Observable<number> {
+    return this.cartItems$.pipe(
+      map((items) => items.reduce((total, item) => total + item.items.size, 0))
+    );
+  }
+
+  getVariantsForItem(
+    itemUuid: string
+  ): Observable<Map<string, string[]> | undefined> {
+    return this.cartItems$.pipe(
+      map((items) => items.find((i) => i.itemUuid === itemUuid)?.items)
+    );
   }
 }

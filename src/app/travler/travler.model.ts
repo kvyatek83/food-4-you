@@ -8,6 +8,7 @@ export interface Item {
   esDetails: string;
   imageUrl: string;
   price: number;
+  addOns?: string[];
 }
 
 export interface Category {

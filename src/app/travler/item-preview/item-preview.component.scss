@@ -1,0 +1,21 @@
+.item-image {
+  height: 50px;
+  width: 50px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.mat-expansion-panel-header {
+  padding: 0 !important;
+  margin: 10px;
+}
+
+.mat-content .mat-content-hide-toggle {
+  margin-right: 0 !important;
+}
+
+.mat-expansion-panel-header-title,
+.mat-expansion-panel-header-description {
+  margin: 0;
+  justify-content: space-between;
+}

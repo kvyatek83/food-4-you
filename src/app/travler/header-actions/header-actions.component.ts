@@ -30,7 +30,7 @@ export class HeaderActionsComponent implements OnInit {
       startWith(this._router.url) // Ensure initial URL is captured
     );
 
-    this.cartService.getItemCount().subscribe((count) => {
+    this.cartService.getTotalItemsCount().subscribe((count) => {
       this.itemCount = count;
     });
   }

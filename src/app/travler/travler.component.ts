@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { MaterialModule } from '../material.module';
 import { LanguagePickerComponent } from '../components/language-picker/language-picker.component';
 import { LanguageDirectionDirective } from '../directives/language-direction.directive';
-import { HeaderActionsComponent } from './cart-icon/header-actions.component';
+import { HeaderActionsComponent } from './header-actions/header-actions.component';
 
 @Component({
   selector: 'app-travler',
