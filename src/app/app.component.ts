@@ -23,13 +23,4 @@ export class AppComponent {
   title = 'food-4-you';
 
   constructor(private notificationsService: NotificationsService) {}
-
-  ngOnInit() {
-    setTimeout(() => {
-      this.notificationsService.setNotification({
-        type: 'ERROR',
-        message: 'Test test 123',
-      });
-    }, 2000);
-  }
 }

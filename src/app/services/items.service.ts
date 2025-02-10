@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Category } from '../travler/travler.model';
+import { BehaviorSubject, catchError, Observable, of } from 'rxjs';
+import { Category } from '../travler/travler.models';
+import { HttpClient } from '@angular/common/http';
+import { NotificationsService } from './notifications.service';
+import { TranslateService } from '@ngx-translate/core';
 
 const CATEGORIES: Category[] = [
   {
@@ -370,7 +373,7 @@ const CATEGORIES: Category[] = [
   providedIn: 'root',
 })
 export class ItemsService {
-  private _allItems$ = new BehaviorSubject<Category[]>(CATEGORIES);
+  private _allItems$ = new BehaviorSubject<Category[]>([]);
 
   get allItems$(): Observable<Category[]> {
     return this._allItems$.asObservable();
@@ -382,5 +385,47 @@ export class ItemsService {
 
   setAllItems(allItems: Category[]): void {
     this._allItems$.next(allItems);
+  }
+
+  constructor(
+    private http: HttpClient,
+    private notificationsService: NotificationsService,
+    private translate: TranslateService
+  ) {
+    this.http
+      .get<Category[]>('/api/categories')
+      .pipe(
+        catchError((error) => {
+          if (error.status === 404) {
+            this.notificationsService.setNotification({
+              type: 'ERROR',
+              message: this.translate.instant(
+                `notifications.errors.${error.error.message}`,
+                { user: error.error.params }
+              ),
+            });
+          } else if (error.status === 401) {
+            this.notificationsService.setNotification({
+              type: 'ERROR',
+              message: this.translate.instant(
+                `notifications.errors.${error.error.message}`,
+                { user: error.error.params }
+              ),
+            });
+          } else {
+            this.notificationsService.setNotification({
+              type: 'ERROR',
+              message: this.translate.instant('notifications.errors.general'),
+            });
+          }
+
+          console.error(error);
+          return of([]);
+        })
+      )
+      .subscribe((categories) => {
+        console.log(categories);
+        this.setAllItems(categories);
+      });
   }
 }

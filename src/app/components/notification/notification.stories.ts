@@ -1,11 +1,7 @@
 import { moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CommonModule } from '@angular/common';
-import { MaterialModule } from '../../material.module';
 import { NotificationComponent } from './notification.component';
 import { LanguageService } from '../../services/lang.service';
 import { NotificationsService } from '../../services/notifications.service';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
 // Mock services
@@ -20,28 +16,14 @@ const mockNotificationsService = {
   },
 };
 
-const mockTranslateService = {
-  instant: (key: string) => {
-    const translations: { [key: string]: string } = {
-      'notifications.title.info': 'Information',
-      'notifications.title.success': 'Success',
-      'notifications.title.warning': 'Warning',
-      'notifications.title.error': 'Error',
-    };
-    return translations[key] || key;
-  },
-};
-
 const meta: Meta<NotificationComponent> = {
   title: 'Components/Notification',
   component: NotificationComponent,
   decorators: [
     moduleMetadata({
-      // imports: [TranslateModule.forRoot()],
       providers: [
         { provide: LanguageService, useValue: mockLanguageService },
         { provide: NotificationsService, useValue: mockNotificationsService },
-        // { provide: TranslateService, useValue: mockTranslateService },
       ],
     }),
   ],

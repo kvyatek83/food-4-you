@@ -1,0 +1,183 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:400,700");
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+.photo {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  /* The transition delay should be the same as the transition delay in .center */
+  transition: all 0.3s cubic-bezier(0.445, 0.05, 0, 1) 0s;
+  z-index: -1;
+}
+
+.container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  &:hover,
+  &:active {
+    .top,
+    .bottom {
+      &:before,
+      &:after {
+        margin-left: 200px;
+        transform-origin: -200px 50%;
+        transition-delay: 0s;
+      }
+    }
+
+    .center {
+      opacity: 1;
+      transition-delay: 0.3s;
+    }
+
+    .photo {
+      opacity: 1;
+      /* Make sure the delay is greater than the one in .container:hover .center */
+      transition-delay: 0.3s;
+    }
+  }
+}
+
+.top,
+.bottom {
+  &:before,
+  &:after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 200vmax;
+    height: 200vmax;
+    top: 50%;
+    left: 50%;
+    margin-top: -100vmax;
+    transform-origin: 0 50%;
+    transition: all 0.5s cubic-bezier(0.445, 0.05, 0, 1);
+    z-index: 10;
+    opacity: 0.65;
+    transition-delay: 0.2s;
+  }
+}
+
+.top {
+  &:before {
+    transform: rotate(45deg);
+    background: #e46569;
+  }
+  &:after {
+    transform: rotate(135deg);
+    background: #ecaf81;
+  }
+}
+
+.bottom {
+  &:before {
+    transform: rotate(-45deg);
+    background: #60b8d4;
+  }
+  &:after {
+    transform: rotate(-135deg);
+    background: #3745b5;
+  }
+}
+
+.center {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  top: 50%;
+  left: 50%;
+  margin-left: -200px;
+  margin-top: -200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.445, 0.05, 0, 1);
+  transition-delay: 0s;
+  color: #333;
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+  }
+
+  input {
+    width: 100%;
+    padding: 15px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    opacity: 0.3;
+    &:hover,
+    &:active,
+    &:focus {
+      opacity: 1;
+    }
+  }
+
+  .login-button {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10rem;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 0.15rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    &:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0cf;
+      border-radius: 10rem;
+      z-index: -2;
+    }
+    &:before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 100%;
+      background-color: darken(#0cf, 15%);
+      transition: all 0.3s;
+      border-radius: 10rem;
+      z-index: -1;
+    }
+    &:hover {
+      color: #fff;
+      &:before {
+        width: 100%;
+      }
+    }
+    opacity: 0.3;
+
+    &:hover,
+    &:active {
+      opacity: 1;
+    }
+  }
+}

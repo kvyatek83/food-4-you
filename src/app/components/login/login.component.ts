@@ -1,11 +1,62 @@
 import { Component } from '@angular/core';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { take } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
-  imports: [],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    LanguageDirectionDirective,
+    TranslateModule,
+  ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
+  signInForm: FormGroup;
+  loading = false;
+  backgroundImage: string | undefined;
 
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private formBuilder: FormBuilder
+  ) {
+    this.signInForm = this.formBuilder.group({
+      username: ['', [Validators.required]],
+      password: ['', [Validators.required]],
+    });
+  }
+
+  onSubmit(): void {
+    if (this.signInForm.valid) {
+      this.loading = true;
+      this.authService
+        .login(
+          this.signInForm.get('username')?.value,
+          this.signInForm.get('password')?.value
+        )
+        .pipe(take(1))
+        .subscribe((allowed) => {
+          this.loading = false;
+
+          if (allowed) {
+            this.router.navigate(['/admin']);
+          }
+        });
+    } else {
+      console.error('Form is invalid');
+    }
+  }
 }
