@@ -6,6 +6,10 @@
   height: 100%;
   width: 100%;
 
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+
   &::before,
   &::after {
     content: "";

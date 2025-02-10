@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { CategoryComponent } from '../category/category.component';
-import { Category } from '../travler.model';
+import { Category } from '../travler.models';
 import { CommonModule } from '@angular/common';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
@@ -36,7 +36,9 @@ export class MenuComponent implements AfterViewInit {
     private itemsService: ItemsService,
     private languageService: LanguageService
   ) {
-    this.categories = this.itemsService.allItems;
+    this.itemsService.allItems$.pipe().subscribe((categories) => {
+      this.categories = categories;
+    });
   }
 
   ngOnInit(): void {
