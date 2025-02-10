@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map, of } from 'rxjs';
-import { Item } from '../travler/travler.model';
+import { Item } from '../travler/travler.models';
 
 export interface CartItem {
   itemUuid: string;

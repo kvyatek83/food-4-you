@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../material.module';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, Observable, startWith } from 'rxjs';
-import { Category, Item } from '../travler.model';
+import { Category, Item } from '../travler.models';
 import { SearchComponent } from '../search/search.component';
 
 @Component({
