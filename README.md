@@ -1,59 +1,65 @@
 # Food4You
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.6.
+This project is a menu for Chabad house, with order flow, charging and kichen prints.
 
-## Development server
+# Development
 
-To start a local development server, run:
+Please create a `.env` flie in the root folder.
+In the `.env`, put the next lines:
 
-```bash
-ng serve
+```
+JWT_SECRET=<secret-value>
+EXPIRES_IN=24h
+PORT=3311
+ADMIN_NAME=<your-admin-name>
+ADMIN_PASSWORD=<your-admin-password>
+ADMIN_ROLE=<your-admin-role>
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Server
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+The server uses `NodeJS` and the `DB` is `sqlite3`, there for, to run the BE for local development, please run the command:
 
 ```bash
-ng generate component component-name
+npm run start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+**If you having errors about the creating tables, try the next command:**
 
 ```bash
-ng generate --help
+node app.js
 ```
 
-## Building
-
-To build the project run:
+In a new terminal:
 
 ```bash
-ng build
+node createAdmin.js && node createTables.js
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Now, you should have a BE running with your admin user and some mocked items.
 
-## Running unit tests
+### serve static website
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+You can run:
 
 ```bash
-ng test
+npm run build
 ```
 
-## Running end-to-end tests
+Then, you can run the server and it will serve your latest changes in the frontend.
 
-For end-to-end (e2e) testing, run:
+Once the server is running, open your browser and navigate to `http://localhost:3311/` or `http://localhost:<port-in-your-env>/`.
+
+You can test the API using Curl or Postman with the suffix `/api/<tested-api>`
+
+## Client
+
+To start a local frontend development server, run:
 
 ```bash
-ng e2e
+npm run start:front
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+**Running the frontend with the server will give you the mocked data from the database and will save you time, you can also mock the data in the code if you need.**
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Once running, open your browser and navigate to `http://localhost:12345/`. The application will automatically reload whenever you modify any of the source files.

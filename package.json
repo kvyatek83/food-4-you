@@ -1,9 +1,10 @@
 {
   "name": "food-4-you",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node createAdmin.js && node createTables.js && node app.js",
+    "start:front": "ng serve --port 12345 --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
