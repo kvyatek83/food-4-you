@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Category } from '../travler.model';
+import { Category } from '../travler.models';
 import { CommonModule } from '@angular/common';
 import { ItemComponent } from '../item/item.component';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';

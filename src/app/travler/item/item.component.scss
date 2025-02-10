@@ -12,9 +12,17 @@
 }
 
 .item-counter {
-  position: relative;
+  position: absolute;
   top: -15px;
-  right: -10px;
+  cursor: pointer;
+
+  &.rtl {
+    left: 20px;
+  }
+
+  &.ltr {
+    right: -10px;
+  }
 
   .puls {
     position: absolute;

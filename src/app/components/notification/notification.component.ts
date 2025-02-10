@@ -13,7 +13,7 @@ import {
   NotificationType,
   Notification,
 } from '../../services/notifications.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../material.module';
 
@@ -33,7 +33,7 @@ interface NotificationConfigurations {
 
 @Component({
   selector: 'app-notification',
-  imports: [CommonModule, MaterialModule],
+  imports: [CommonModule, MaterialModule, TranslateModule],
   templateUrl: './notification.component.html',
   styleUrls: ['./notification.component.scss'],
   animations: [

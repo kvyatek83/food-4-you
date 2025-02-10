@@ -2,6 +2,7 @@
   <div
     *ngIf="itemCounter$ | async; let itemCounter"
     class="item-counter"
+    appLanguageDirection
     (click)="showSelectedItems()"
   >
     <div class="puls"></div>
