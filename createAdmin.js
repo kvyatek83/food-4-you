@@ -1,14 +1,23 @@
+require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const db = require("./server/database-utils");
 
 (async () => {
-  await db.syncModels();
+  if (process.env.RESET_DB === "true") {
+    await db.syncModels();
+    const username = process.env.ADMIN_NAME;
 
-  const username = process.env.ADMIN_NAME;
-  const password = process.env.ADMIN_PASSWORD;
-  const role = process.env.ADMIN_ROLE;
-  const hashedPassword = bcrypt.hashSync(password, 8);
+    const user = db.findUser(username);
 
-  await db.addUser(username, hashedPassword, role);
-  console.log("User added successfully!");
+    if (user === null) {
+      const password = process.env.ADMIN_PASSWORD;
+      const role = process.env.ADMIN_ROLE;
+      const hashedPassword = bcrypt.hashSync(password, 8);
+
+      await db.addUser(username, hashedPassword, role);
+    }
+    console.log("User added successfully!");
+  } else {
+    console.log("Skip user DB task!");
+  }
 })();

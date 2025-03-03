@@ -1,15 +1,107 @@
+const ADD_ONS = [
+  {
+    uuid: "3fe2d673-240f-4e5c-8d99-3a41445bda11",
+    enName: "Olives",
+    heName: "זיתים",
+    esName: "Aceitunas",
+  },
+  {
+    uuid: "58b8b826-e5b9-4614-994b-2ead7f81677d",
+    enName: "Cheese",
+    heName: "גבינה",
+    esName: "Queso",
+  },
+  {
+    uuid: "e70a681e-515a-4e0c-a035-b6a18282f909",
+    enName: "Avocado",
+    heName: "אבוקדו",
+    esName: "Aguacate",
+  },
+  {
+    uuid: "e2a45e05-ecc1-42cd-8f68-623097b86843",
+    enName: "Chili Peppers",
+    heName: "פלפל חריף",
+    esName: "Pimientos picantes",
+  },
+  {
+    uuid: "cc834b4e-0a1e-4645-81b3-899749488aa9",
+    enName: "Tomatoes",
+    heName: "עגבניות",
+    esName: "Tomates",
+  },
+  {
+    uuid: "8e19e3a4-fc1d-45ae-8d92-3a71bafc1869",
+    enName: "Cucumbers",
+    heName: "מלפפונים",
+    esName: "Pepinos",
+  },
+  {
+    uuid: "1ab4e4da-97fa-4b13-b7d2-7de917145576",
+    enName: "Mozzarella",
+    heName: "מוצרלה",
+    esName: "Mozzarella",
+  },
+  {
+    uuid: "96d9627e-1f82-4312-9d61-4826c5572215",
+    enName: "Red Onion",
+    heName: "בצל אדום",
+    esName: "Cebolla roja",
+  },
+  {
+    uuid: "fd8ee9e4-6ba5-4eee-a5e7-b15e5c1f899e",
+    enName: "Lettuce",
+    heName: "חסה",
+    esName: "Lechuga",
+  },
+  {
+    uuid: "101c6c35-ccdf-447f-9f02-e754f0b962c7",
+    enName: "Chopped Carrots",
+    heName: "גזר קצוץ",
+    esName: "Zanahorias picadas",
+  },
+  {
+    uuid: "cf7e3511-2b8c-4e39-8116-91cd80b36c6e",
+    enName: "Onion",
+    heName: "בצל",
+    esName: "Cebolla",
+  },
+  {
+    uuid: "7122469c-413b-41fe-91f8-83e06ecb26d6",
+    enName: "Celery",
+    heName: "סלרי",
+    esName: "Apio",
+  },
+  {
+    uuid: "d46ebf5e-3796-40b3-b2ae-16457b594681",
+    enName: "Mushrooms",
+    heName: "פטריות",
+    esName: "Champiñones",
+  },
+  {
+    uuid: "e158d08f-b91b-451c-a86b-ab9dcb3743ad",
+    enName: "Broccoli",
+    heName: "ברוקולי",
+    esName: "Brócoli",
+  },
+  {
+    uuid: "a19c8e5e-2bdb-4313-b7e7-8e670b642c03",
+    enName: "Feta Cheese",
+    heName: "גבינת פטה",
+    esName: "Queso Feta",
+  },
+];
+
 const CATEGORIES = [
   {
-    uuid: "df18c3ee-01b4-4d9e-8e30-a7121f5b8ebc", // Breakfast category UUID
+    uuid: "df18c3ee-01b4-4d9e-8e30-a7121f5b8ebc",
     type: "Breakfast",
     enName: "Breakfast",
     heName: "ארוחת בוקר",
     esName: "Desayuno",
-
     imageUrl: "/items/breakfast.jpg",
     items: [
       {
-        uuid: "abf10e00-db83-4e24-a94a-37ec3d3a6b2c", // Shakshuka UUID
+        uuid: "abf10e00-db83-4e24-a94a-37ec3d3a6b2c",
         enName: "Shakshuka",
         heName: "שקשוקה",
         esName: "Shakshuka",
@@ -19,9 +111,18 @@ const CATEGORIES = [
         esDetails: "Incluye pan casero, hummus, tahini y ensalada israelí.",
         imageUrl: "/items/shakshuka.jpg",
         price: 6.99,
+        availableAddOnUuids: [
+          "3fe2d673-240f-4e5c-8d99-3a41445bda11", // Olives
+          "58b8b826-e5b9-4614-994b-2ead7f81677d", // Cheese
+          "101c6c35-ccdf-447f-9f02-e754f0b962c7", // Chopped Carrots
+          "cf7e3511-2b8c-4e39-8116-91cd80b36c6e", // Onions
+        ],
+        addOnPrice: 0.5,
+        freeAvailableAddOns: 1,
+        kitchenOrders: "Incluir pan casero, hummus, tahini y ensalada israelí.",
       },
       {
-        uuid: "547cb56d-7cfc-41f5-a1ba-dc3cbb186841", // The Avocado Show UUID
+        uuid: "547cb56d-7cfc-41f5-a1ba-dc3cbb186841",
         enName: "The Avocado Show",
         heName: "מופע האבוקדו",
         esName: "El Espectáculo del Aguacate",
@@ -30,9 +131,18 @@ const CATEGORIES = [
         esDetails: "Bagel con aguacate, huevo duro y ensalada israelí.",
         imageUrl: "/items/avocado-show.jpg",
         price: 7.99,
+        availableAddOnUuids: [
+          "58b8b826-e5b9-4614-994b-2ead7f81677d", // Cheese
+          "e70a681e-515a-4e0c-a035-b6a18282f909", // Avocado
+          "101c6c35-ccdf-447f-9f02-e754f0b962c7", // Chopped Carrots
+        ],
+        addOnPrice: 0.5,
+        freeAvailableAddOns: 1,
+        kitchenOrders:
+          "Bagel con aguacate y huevo duro, acompañado de ensalada israelí.",
       },
       {
-        uuid: "f49699ab-6431-4d1c-8c86-1845dd304fb3", // Omelet Baguette UUID
+        uuid: "f49699ab-6431-4d1c-8c86-1845dd304fb3",
         enName: "Omelet Baguette",
         heName: "באגט אומלט",
         esName: "Baguette de Tortilla",
@@ -43,9 +153,16 @@ const CATEGORIES = [
           "Nuestro baguette de tortilla incluye una deliciosa tortilla, verduras frescas y ensalada israelí.",
         imageUrl: "/items/omelet-baguette.jpg",
         price: 6.49,
+        availableAddOnUuids: [
+          "101c6c35-ccdf-447f-9f02-e754f0b962c7", // Chopped Carrots
+          "cf7e3511-2b8c-4e39-8116-91cd80b36c6e", // Onions
+        ],
+        addOnPrice: 0.5,
+        freeAvailableAddOns: 2,
+        kitchenOrders: "Incluir omelet, vegetales frescos y ensalada israelí.",
       },
       {
-        uuid: "30c34017-f04f-4c3f-81cd-2a72ee1f0bb5", // Oatmeal UUID
+        uuid: "30c34017-f04f-4c3f-81cd-2a72ee1f0bb5",
         enName: "Oatmeal",
         heName: "קוואקר",
         esName: "Avena",
@@ -54,9 +171,18 @@ const CATEGORIES = [
         esDetails: "Avena con trozos de plátano, arándanos y miel de trébol.",
         imageUrl: "/items/oatmeal.jpg",
         price: 5.99,
+        availableAddOnUuids: [
+          "3fe2d673-240f-4e5c-8d99-3a41445bda11", // Olives
+          "e70a681e-515a-4e0c-a035-b6a18282f909", // Avocado
+          "101c6c35-ccdf-447f-9f02-e754f0b962c7", // Chopped Carrots
+          "cf7e3511-2b8c-4e39-8116-91cd80b36c6e", // Onions
+        ],
+        addOnPrice: 0.5,
+        freeAvailableAddOns: 1,
+        kitchenOrders: "Incluir avena con trozos de plátano y arándanos.",
       },
       {
-        uuid: "602e365f-e568-4316-9684-1cf6d94d8834", // Israeli Salad UUID
+        uuid: "602e365f-e568-4316-9684-1cf6d94d8834",
         enName: "Israeli Salad",
         heName: "סלט ישראלי",
         esName: "Ensalada Israelí",
@@ -67,11 +193,20 @@ const CATEGORIES = [
           "Pepino picado finamente, tomates, cebolla roja y jugo de limón fresco.",
         imageUrl: "/items/israeli-salad.jpg",
         price: 5.49,
+        availableAddOnUuids: [
+          "cc834b4e-0a1e-4645-81b3-899749488aa9", // Tomatoes
+          "8e19e3a4-fc1d-45ae-8d92-3a71bafc1869", // Cucumbers
+          "96d9627e-1f82-4312-9d61-4826c5572215", // Red Onion
+        ],
+        addOnPrice: 0.5,
+        freeAvailableAddOns: 1,
+        kitchenOrders:
+          "Incluir pepino, tomates y cebolla roja con jugo de limón fresco.",
       },
     ],
   },
   {
-    uuid: "e7f3a2b1-ec43-4f2b-ad3e-5d2009cba14d", // Changed to a real UUID
+    uuid: "e7f3a2b1-ec43-4f2b-ad3e-5d2009cba14d",
     type: "Burgers",
     enName: "Burgers",
     heName: "המבורגר",
@@ -79,48 +214,80 @@ const CATEGORIES = [
     imageUrl: "/items/burgers.jpg",
     items: [
       {
-        uuid: "d89eae5e-9e4b-4f02-b6ea-c6e81185b986", // Changed to a real UUID
+        uuid: "d89eae5e-9e4b-4f02-b6ea-c6e81185b986",
         enName: "Classic Burger",
         heName: "המבורגר קלאסי",
         esName: "Hamburguesa Clásica",
-        enDetails: "Juicy beef patty with fresh toppings",
-        heDetails: "קציצת בשר עסיסית עם תוספות טריות",
-        esDetails: "Hamburguesa jugosa con coberturas frescas",
+        enDetails: "Juicy beef patty with fresh toppings.",
+        heDetails: "קציצת בשר עסיסית עם תוספות טריות.",
+        esDetails: "Hamburguesa jugosa con coberturas frescas.",
         imageUrl: "/items/burger.jpg",
         price: 2.99,
+        availableAddOnUuids: [
+          "1ab4e4da-97fa-4b13-b7d2-7de917145576", // Mozzarella
+          "fb2cc59e-509d-44ba-a178-45bc0ea0062a", // Feta Cheese
+        ],
+        addOnPrice: 0.5,
+        freeAvailableAddOns: 0,
+        kitchenOrders:
+          "Incluir una hamburguesa jugosa de carne con mozzarella y queso feta.",
       },
       {
-        uuid: "c98c1a3a-5c8e-4130-bbca-fbb0191b8068", // Changed to a real UUID
+        uuid: "c98c1a3a-5c8e-4130-bbca-fbb0191b8068",
         enName: "Asado Burger",
         heName: "המבורגר אסדו",
         esName: "Hamburguesa Asado",
-        enDetails: "Delicious Asado-style burger",
-        heDetails: "המבורגר בסגנון אסדו",
-        esDetails: "Hamburguesa estilo Asado",
+        enDetails: "Delicious Asado-style burger.",
+        heDetails: "המבורגר בסגנון אסדו.",
+        esDetails: "Hamburguesa estilo Asado.",
         imageUrl: "/items/asado-burger.jpeg",
         price: 2.49,
+        availableAddOnUuids: [
+          "fd8ee9e4-6ba5-4eee-a5e7-b15e5c1f899e", // Lettuce
+          "101c6c35-ccdf-447f-9f02-e754f0b962c7", // Chopped Carrots
+        ],
+        addOnPrice: 0.5,
+        freeAvailableAddOns: 0,
+        kitchenOrders:
+          "Incluir hamburguesa estilo asado con lechuga fresca y zanahorias.",
       },
       {
-        uuid: "46c2ae3b-e7ed-4581-8d3e-db5c1ca4c29c", // Changed to a real UUID
+        uuid: "46c2ae3b-e7ed-4581-8d3e-db5c1ca4c29c",
         enName: "Double Burger",
         heName: "המבורגר כפול",
         esName: "Hamburguesa Doble",
-        enDetails: "Double beef patty with extra cheese",
-        heDetails: "קציצת בשר כפולה עם גבינה נוספת",
-        esDetails: "Doble hamburguesa con queso extra",
+        enDetails: "Double beef patty with extra cheese.",
+        heDetails: "קציצת בשר כפולה עם גבינה נוספת.",
+        esDetails: "Doble hamburguesa con queso extra.",
         imageUrl: "/items/burger.jpg",
         price: 4.49,
+        availableAddOnUuids: [
+          "1ab4e4da-97fa-4b13-b7d2-7de917145576", // Mozzarella
+          "3fe2d673-240f-4e5c-8d99-3a41445bda11", // Olives
+        ],
+        addOnPrice: 0.5,
+        freeAvailableAddOns: 0,
+        kitchenOrders:
+          "Incluir doble hamburguesa con mozzarella, aceitunas y albahaca.",
       },
       {
-        uuid: "cac28e8f-b1ee-4e13-9abe-1bc593c7e24e", // Changed to a real UUID
+        uuid: "cac28e8f-b1ee-4e13-9abe-1bc593c7e24e",
         enName: "Spicy Burger",
         heName: "המבורגר חריף",
         esName: "Hamburguesa Picante",
-        enDetails: "Spicy beef patty with jalapeños",
-        heDetails: "קציצת בשר חריפה עם חלפיניו",
-        esDetails: "Hamburguesa de carne picante con jalapeños",
+        enDetails: "Spicy beef patty with jalapeños.",
+        heDetails: "קציצת בשר חריפה עם חלפיניו.",
+        esDetails: "Hamburguesa de carne picante con jalapeños.",
         imageUrl: "/items/spicy-burger.jpg",
         price: 2.99,
+        availableAddOnUuids: [
+          "e2a45e05-ecc1-42cd-8f68-623097b86843", // Chili Peppers
+          "e158d08f-b91b-451c-a86b-ab9dcb3743ad", // Feta
+        ],
+        addOnPrice: 0.5,
+        freeAvailableAddOns: 0,
+        kitchenOrders:
+          "Incluir hamburguesa picante con jalapeños y queso feta.",
       },
     ],
   },
@@ -365,4 +532,5 @@ const CATEGORIES = [
 
 module.exports = {
   CATEGORIES,
+  ADD_ONS,
 };

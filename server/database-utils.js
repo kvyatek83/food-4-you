@@ -1,6 +1,10 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const path = require("path");
 
+async function clearDatabase() {
+  await sequelize.drop();
+}
+
 // Initialize Sequelize with SQLite database
 const sequelize = new Sequelize({
   dialect: "sqlite",
@@ -19,6 +23,26 @@ const User = sequelize.define("User", {
     allowNull: false,
   },
   role: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
+
+// Define AddOn model
+const AddOn = sequelize.define("AddOn", {
+  uuid: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+  },
+  enName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  heName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  esName: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -85,6 +109,24 @@ const Item = sequelize.define("Item", {
     type: DataTypes.FLOAT,
     allowNull: false,
   },
+  addOnPrice: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0.0,
+  },
+  freeAvailableAddOns: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
+  kitchenOrders: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  availableAddOnUuids: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
 });
 
 // Setting up associations
@@ -103,6 +145,11 @@ async function readUsersFromDatabase() {
   return users.map((user) => user.get({ plain: true }));
 }
 
+async function findUser(username) {
+  await sequelize.sync();
+  return await User.findOne({ where: { username } });
+}
+
 // Function to add a user
 async function addUser(username, password, role) {
   await sequelize.sync();
@@ -114,15 +161,40 @@ async function addUser(username, password, role) {
   return user;
 }
 
-// Function to create a new category
+// Functions for add-on
+async function addAddOn(addOn) {
+  await AddOn.create(addOn);
+}
+
+async function updateAddOn(addOn) {
+  await AddOn.upsert(addOn);
+}
+
+// Functions for category
 async function addCategory(category) {
   await Category.create(category);
 }
 
-// Function to create a new item
+async function updateCategory(category) {
+  await Category.upsert(category);
+}
+
+// Functions for item
 async function addItem(item, categoryId) {
   item.categoryId = categoryId;
   await Item.create(item);
+}
+
+async function updateItem(item) {
+  await Item.upsert(item);
+}
+
+async function getAddOns() {
+  // Fetch all add-ons from the database
+  const addOns = await AddOn.findAll();
+
+  // Convert the result to plain JSON
+  return addOns.map((addOn) => addOn.get({ plain: true }));
 }
 
 // Function to get all categories with their items
@@ -135,7 +207,21 @@ async function getCategoriesWithItems() {
       },
     ],
   });
-  return categories.map((cat) => cat.get({ plain: true }));
+
+  return categories.map((cat) => {
+    const items = cat.get({ plain: true }).items.map((item) => {
+      // Parse availableAddOnUuids as an array
+      item.availableAddOnUuids = item.availableAddOnUuids
+        ? JSON.parse(item.availableAddOnUuids)
+        : [];
+      return item;
+    });
+
+    return {
+      ...cat.get({ plain: true }),
+      items,
+    };
+  });
 }
 
 module.exports = {
@@ -144,8 +230,12 @@ module.exports = {
   Category,
   Item,
   readUsersFromDatabase,
+  findUser,
   addUser,
+  addAddOn,
   addCategory,
   addItem,
+  getAddOns,
   getCategoriesWithItems,
+  clearDatabase,
 };

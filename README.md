@@ -14,6 +14,7 @@ PORT=3311
 ADMIN_NAME=<your-admin-name>
 ADMIN_PASSWORD=<your-admin-password>
 ADMIN_ROLE=<your-admin-role>
+RESET_DB=<true/false>
 ```
 
 ## Server
