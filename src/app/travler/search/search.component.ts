@@ -112,20 +112,22 @@ export class SearchComponent implements OnInit {
   }
 
   scrollToResult(uuid: string) {
-    const element = document.getElementById(uuid);
-    if (element) {
-      element.scrollIntoView({ block: 'start', behavior: 'smooth' });
-
-      element.classList.add('heartbeat');
-      setTimeout(() => {
-        element.classList.remove('heartbeat');
-      }, 2500);
-    }
-    this.clearResults();
-    this.searchControl.setValue('');
     setTimeout(() => {
-      this.showSuggestions = false;
-    }, 200);
+      const element = document.getElementById(uuid);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+
+        element.classList.add('heartbeat');
+        setTimeout(() => {
+          element.classList.remove('heartbeat');
+        }, 2500);
+      }
+      this.clearResults();
+      this.searchControl.setValue('');
+      setTimeout(() => {
+        this.showSuggestions = false;
+      }, 200);
+    }, 100);
   }
 
   languageChanged(languageDirection: LanguageDirection): void {
