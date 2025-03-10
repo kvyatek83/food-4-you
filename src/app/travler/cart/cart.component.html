@@ -2,5 +2,8 @@
 
 <div class="cart-wrapper">
   <img *ngIf="itemCount === 0" class="empty-cart" [src]="'/empty-cart.svg'" />
+  <div *ngIf="itemCount !== 0" class="cart-items">
+    <app-items-preview [cartItems]="cartItems"></app-items-preview>
+  </div>
 </div>
 <div class="gradient bottom-gradient"></div>
