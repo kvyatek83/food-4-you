@@ -10,6 +10,17 @@
     "category": "קטגוריה",
     "item": "פריט"
   },
+  "addOns": {
+    "title": "בבקשה לסמן תוספות רצויות",
+    "subTitle": "באפשרותך לבחור {{amountOfAddOns}} בחינם",
+    "add": "שמירה",
+    "close": "סגור"
+  },
+  "itemPreview": {
+    "title": "סיכום עבור {{itemName}}",
+    "noAdditions": "ללא תוספות.",
+    "close": "סגור"
+  },
   "notifications": {
     "title": {
       "info": "מידע",

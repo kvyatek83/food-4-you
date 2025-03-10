@@ -1,7 +1,8 @@
 <mat-accordion class="items">
   <ng-container *ngFor="let cartItem of cartItems; let i = index">
-    <div class="item">
+    <div class="item-row">
       <app-item-preview
+        class="item"
         [cartItem]="cartItem"
         [expanded]="expandedItem() === i"
         (opened)="setExpandedItem(i)"

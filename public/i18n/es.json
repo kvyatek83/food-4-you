@@ -10,6 +10,17 @@
     "category": "Category",
     "item": "Item"
   },
+  "addOns": {
+    "title": "Por favor, verifica lo que deseas",
+    "subTitle": "Puedes elegir {{amountOfAddOns}} gratis",
+    "add": "Guardar y cerrar",
+    "close": "Cerrar"
+  },
+  "itemPreview": {
+    "title": "Preview {{itemName}} was selected",
+    "noAdditions": "No Additions.",
+    "close": "close"
+  },
   "notifications": {
     "title": {
       "info": "Información",

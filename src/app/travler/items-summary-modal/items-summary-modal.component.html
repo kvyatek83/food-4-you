@@ -1,8 +1,17 @@
-<h2 mat-dialog-title>Item</h2>
-<mat-dialog-content class="modal-content">
-  <app-items-preview [cartItems]="cartItems"></app-items-preview>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Save</button>
-</mat-dialog-actions>
+<div
+  *ngIf="lang$ | async; let lang"
+  class="available-add-ons"
+  appLanguageDirection
+>
+  <h2 class="title" mat-dialog-title>
+    {{ "itemPreview.title" | translate : { itemName: itemName } }}
+  </h2>
+  <mat-dialog-content class="modal-content">
+    <app-items-preview [cartItems]="[cartItems]"></app-items-preview>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+    <button mat-button mat-dialog-close>
+      {{ "itemPreview.close" | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

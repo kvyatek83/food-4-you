@@ -4,19 +4,43 @@ import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CartItem } from '../../services/cart.service';
 import { ItemsPreviewComponent } from '../items-preview/items-preview.component';
+import { Observable } from 'rxjs';
+import { LanguageService, LanguageType } from '../../services/lang.service';
+import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
+import { TranslateModule } from '@ngx-translate/core';
+import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
 
 @Component({
   selector: 'app-items-summary-modal',
   templateUrl: 'items-summary-modal.component.html',
-  imports: [CommonModule, MaterialModule, ItemsPreviewComponent],
+  imports: [
+    CommonModule,
+    MaterialModule,
+    ItemsPreviewComponent,
+    LanguageDirectionDirective,
+    TranslateModule,
+  ],
   styleUrl: 'items-summary-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ItemsSummaryModalComponent {
-  public cartItems: CartItem[] = [];
+  public cartItems: CartItem;
+  public itemName: string | undefined;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: CartItem[]) {
-    console.log(data);
+  public lang$: Observable<LanguageType> = new Observable<LanguageType>();
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: CartItem,
+    private languageService: LanguageService,
+    private propertiesTranslationPipe: PropertiesTranslationPipe
+  ) {
+    // TODOL: add sub for cart item remove and close modal
+    this.lang$ = this.languageService.currentLanguage$;
     this.cartItems = data;
+    this.itemName = this.propertiesTranslationPipe.transform(
+      this.cartItems.item,
+      this.languageService.currentLanguage,
+      'Name'
+    );
   }
 }

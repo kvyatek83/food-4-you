@@ -8,14 +8,60 @@
 .mat-expansion-panel-header {
   padding: 0 !important;
   margin: 10px;
+  user-select: none;
 }
 
 .mat-content .mat-content-hide-toggle {
   margin-right: 0 !important;
 }
 
+.mat-expansion-panel-header-title {
+  width: 30%;
+}
+
 .mat-expansion-panel-header-title,
 .mat-expansion-panel-header-description {
+  font-size: 20px;
   margin: 0;
   justify-content: space-between;
+  flex-basis: auto;
+}
+
+.mat-expansion-panel-body {
+  padding: 0 18px 16px !important;
+}
+
+.cart-item-permutations {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  overflow: hidden;
+  margin: 15px 0;
+  font-size: 18px;
+  user-select: none;
+}
+
+.cart-item-permutation-name {
+  display: flex;
+  flex-grow: 1;
+  flex-basis: auto;
+  align-items: center;
+  justify-content: space-between;
+  width: 30%;
+}
+
+.cart-item-permutation-price-and-actions {
+  display: flex;
+  flex-grow: 2;
+  flex-basis: auto;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.delete-item {
+  color: #c75959;
+  height: 30px;
+  width: 30px;
+  font-size: 30px;
 }

@@ -1,5 +1,5 @@
 {
-  "appName": "BeOne",
+  "appName": "Food 4 you",
   "hello": "Hello {{value}}",
   "login": {
     "username": "Enter your user name",
@@ -9,6 +9,17 @@
   "menu": {
     "category": "Category",
     "item": "Item"
+  },
+  "addOns": {
+    "title": "Please check what you wish",
+    "subTitle": "You can choose {{amountOfAddOns}} for free",
+    "add": "Save and close",
+    "close": "close"
+  },
+  "itemPreview": {
+    "title": "Preview {{itemName}} summary",
+    "noAdditions": "No Additions.",
+    "close": "close"
   },
   "notifications": {
     "title": {

@@ -15,6 +15,7 @@ import { LanguageDirectionDirective } from '../../directives/language-direction.
 import { CartService } from '../../services/cart.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ItemsSummaryModalComponent } from '../items-summary-modal/items-summary-modal.component';
+import { ItemAddOnsSelectionsComponent } from '../item-add-ons-selections/item-add-ons-selections.component';
 
 @Component({
   selector: 'app-item',
@@ -47,8 +48,24 @@ export class ItemComponent implements OnInit {
   }
 
   addItemToCart(item?: Item): void {
-    // TODO: for complex item need popup for selection
-    if (item) {
+    if (item?.availableAddOnUuids && item.availableAddOnUuids.length) {
+      const dialogRef = this.dialog.open(ItemAddOnsSelectionsComponent, {
+        // width: '80%',
+        data: {
+          availableAddOnUuids: item?.availableAddOnUuids,
+          addOnPrice: item?.addOnPrice,
+          freeAvailableAddOns: item?.freeAvailableAddOns,
+        },
+      });
+
+      dialogRef.afterClosed().subscribe((selectedAddOnUuids?: string[]) => {
+        if (selectedAddOnUuids) {
+          // Handle the selected add-ons UUIDs
+          console.log('Selected Add-Ons:', selectedAddOnUuids);
+          this.cartService.addItem(item, selectedAddOnUuids);
+        }
+      });
+    } else if (item) {
       this.cartService.addItem(item);
     }
   }
@@ -62,7 +79,8 @@ export class ItemComponent implements OnInit {
     const cartItem = this.cartService.getCartItem(itemUuid);
     if (cartItem) {
       const dialogRef = this.dialog.open(ItemsSummaryModalComponent, {
-        data: [cartItem],
+        width: '80%',
+        data: cartItem,
       });
 
       dialogRef.afterClosed().subscribe((result) => {

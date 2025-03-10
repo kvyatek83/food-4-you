@@ -1,0 +1,50 @@
+<div
+  *ngIf="lang$ | async; let lang"
+  class="available-add-ons"
+  appLanguageDirection
+>
+  <div class="title">
+    <h1>{{ "addOns.title" | translate }}</h1>
+    <h3 class="sub-title">
+      {{
+        "addOns.subTitle" | translate : { amountOfAddOns: freeAvailableAddOns }
+      }}
+    </h3>
+  </div>
+  <div mat-dialog-content>
+    <mat-list>
+      <mat-list-item *ngFor="let addOn of availableAddOns">
+        <mat-checkbox
+          [disableRipple]="true"
+          [(ngModel)]="addOn.selected"
+          (change)="onCheckboxChange(addOn)"
+        >
+          <div class="add-on-row">
+            <span class="add-on-name">{{
+              addOn | propertiesTranslation : lang : "Name"
+            }}</span>
+            <span
+              *ngIf="
+                freeAvailableAddOns &&
+                pricePerAddOn &&
+                !addOn.selected &&
+                selectedAddOnUuids.length >= freeAvailableAddOns
+              "
+              class="add-on-name"
+            >
+              - {{ pricePerAddOn }}GTQ</span
+            >
+          </div>
+        </mat-checkbox>
+      </mat-list-item>
+    </mat-list>
+  </div>
+  <div mat-dialog-actions align="center">
+    <button mat-button class="actions-button" (click)="onSave()">
+      {{ "addOns.add" | translate }}
+    </button>
+    <button mat-button class="actions-button" mat-dialog-close>
+      {{ "addOns.close" | translate }}
+    </button>
+  </div>
+</div>

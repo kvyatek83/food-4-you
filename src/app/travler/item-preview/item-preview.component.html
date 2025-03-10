@@ -6,14 +6,51 @@
     appLanguageDirection
   >
     <mat-expansion-panel-header>
-      <mat-panel-title>{{
-        cartItem?.item | propertiesTranslation : lang : "Name"
-      }}</mat-panel-title>
+      <mat-panel-title
+        >{{ cartItem?.item | propertiesTranslation : lang : "Name" }} -
+        {{ cartItem?.items?.size }}</mat-panel-title
+      >
       <mat-panel-description>
-        Type your name and age
+        <span>{{ cartItem | previewItemCost }}</span>
         <img [src]="cartItem?.item?.imageUrl" class="item-image" />
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <p>This is the primary content of the panel.</p>
+    <div
+      class="cart-item-permutations"
+      *ngFor="let permutation of cartItem?.items | keyvalue; let i = index"
+    >
+      <div class="cart-item-permutation-name">
+        <!-- TODO: display permutation amount -->
+        <!-- <span>{{ i + 1 }}. </span> -->
+        <span *ngIf="permutation.value.length !== 0">{{
+          permutation.value | addOnUuidsToAddOns : lang
+        }}</span>
+        <span *ngIf="permutation.value.length === 0">{{
+          "itemPreview.noAdditions" | translate
+        }}</span>
+      </div>
+
+      <div class="cart-item-permutation-price-and-actions">
+        <span>{{ cartItem | previewItemCost : [permutation.key] }}</span>
+        <div>
+          <mat-icon
+            class="delete-item"
+            aria-hidden="false"
+            aria-label="Remove item"
+            fontIcon="delete_forever__outline"
+            (click)="removeItemPermutation(permutation.key, cartItem?.itemUuid)"
+          ></mat-icon
+          ><mat-icon
+            class="delete-item"
+            aria-hidden="false"
+            aria-label="Remove item"
+            fontIcon="delete_forever__outline"
+            (click)="removeItemPermutation(permutation.key, cartItem?.itemUuid)"
+          ></mat-icon>
+        </div>
+      </div>
+
+      <div></div>
+    </div>
   </mat-expansion-panel>
 </ng-container>

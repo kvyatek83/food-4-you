@@ -21,7 +21,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 export class ItemsPreviewComponent {
   @Input() cartItems: CartItem[] | undefined;
 
-  expandedItem = signal(0);
+  expandedItem = signal<number | null>(null);
 
   setExpandedItem(index: number) {
     this.expandedItem.set(index);

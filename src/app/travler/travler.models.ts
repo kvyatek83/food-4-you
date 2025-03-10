@@ -1,3 +1,10 @@
+export interface AddOn {
+  uuid: string;
+  enName: string;
+  heName: string;
+  esName: string;
+}
+
 export interface Item {
   uuid: string;
   enName: string;
@@ -8,7 +15,9 @@ export interface Item {
   esDetails: string;
   imageUrl: string;
   price: number;
-  addOns?: string[];
+  availableAddOnUuids?: string[];
+  addOnPrice?: number;
+  freeAvailableAddOns?: number;
 }
 
 export interface Category {

@@ -195,4 +195,30 @@ export class CartService {
       map((items) => items.find((i) => i.itemUuid === itemUuid)?.items)
     );
   }
+
+  calcCartItemCost(cartItem: CartItem, permutationUuids?: string[]): string {
+    const basePrice = cartItem.item.price;
+    const freeAddons = cartItem.item.freeAvailableAddOns || 0;
+    const pricePerAddOn = cartItem.item.addOnPrice || 0;
+    let totalPrice = 0;
+    cartItem.items.forEach((value, permutationUuid) => {
+      if (permutationUuids) {
+        if (permutationUuids.includes(permutationUuid)) {
+          totalPrice += basePrice;
+          if (value.length) {
+            const addOnsNeedsPay = value.length - freeAddons;
+            totalPrice += addOnsNeedsPay * pricePerAddOn;
+          }
+        }
+      } else {
+        totalPrice += basePrice;
+        if (value.length) {
+          const addOnsNeedsPay = value.length - freeAddons;
+          totalPrice += addOnsNeedsPay * pricePerAddOn;
+        }
+      }
+    });
+
+    return `${totalPrice} GTQ`;
+  }
 }
