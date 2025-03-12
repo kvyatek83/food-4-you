@@ -26,7 +26,9 @@ export class AuthGuard implements CanActivate {
         const tokenPayload = JSON.parse(window.atob(token.split('.')[1]));
 
         if (tokenPayload.role === 'admin') {
-          return true;
+          if (Date.now() < tokenPayload.exp * 1000) {
+            return true;
+          }
         }
       }
     }
