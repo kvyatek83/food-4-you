@@ -2,9 +2,12 @@
   "appName": "Food 4 you",
   "hello": "Hello {{value}}",
   "login": {
+    "title": "Welcome to",
+    "companyName": "Chabad house",
     "username": "Enter your user name",
+    "usernamePlaceholder": "Your User Name",
     "password": "Enter your password",
-    "submit": "Login "
+    "submit": "Login"
   },
   "menu": {
     "category": "Category",

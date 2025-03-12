@@ -2,7 +2,10 @@
   "appName": "BeOne",
   "hello": "Hola {{value}}",
   "login": {
+    "title": "Welcome to",
+    "companyName": "Chabad house",
     "username": "Introduce tu nombre de usuario",
+    "usernamePlaceholder": "Your User Name",
     "password": "Introduce tu contraseña",
     "submit": "Iniciar sesión"
   },

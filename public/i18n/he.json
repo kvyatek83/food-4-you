@@ -2,9 +2,12 @@
   "appName": "והיו לאחד",
   "hello": "שלום {{value}}",
   "login": {
-    "username": "הכנס/י את שם המשתמש שלך",
-    "password": "הכנס/י את הסיסמא שלך",
-    "submit": "התחבר/י"
+    "title": "ברוך הבא אל",
+    "companyName": "בית חב״ד",
+    "username": "שם המשתמש",
+    "usernamePlaceholder": "שם המשתמש שלך",
+    "password": "סיסמא",
+    "submit": "התחברות"
   },
   "menu": {
     "category": "קטגוריה",

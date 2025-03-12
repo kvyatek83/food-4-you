@@ -26,7 +26,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class LoginComponent {
   signInForm: FormGroup;
   loading = false;
-  backgroundImage: string | undefined;
+  showPassword = false;
 
   constructor(
     private authService: AuthService,
@@ -58,5 +58,9 @@ export class LoginComponent {
     } else {
       console.error('Form is invalid');
     }
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 }
