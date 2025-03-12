@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { MatListModule } from '@angular/material/list';
     MatSlideToggleModule,
     MatExpansionModule,
     MatListModule,
+    MatSidenavModule,
   ],
   exports: [
     MatDividerModule,
@@ -52,6 +54,7 @@ import { MatListModule } from '@angular/material/list';
     MatSlideToggleModule,
     MatExpansionModule,
     MatListModule,
+    MatSidenavModule,
   ],
 })
 export class MaterialModule {}

@@ -1,1 +1,16 @@
-<p>dashboard works!</p>
+<div class="dashboard-wrapper">
+  <mat-toolbar>
+    <mat-toolbar-row>
+      <menu-icon (menuStateChanged)="sidenav.toggle()"></menu-icon>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="content" [hasBackdrop]="false">
+    <mat-sidenav #sidenav mode="side" position="start">
+      <p>
+        <label>Test input for drawer<input /></label>
+      </p>
+    </mat-sidenav>
+    <mat-sidenav-content> AAAAA </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

@@ -1,0 +1,22 @@
+.dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.content {
+  flex-grow: 1;
+}
+
+.mat-toolbar-row {
+  color: var(--mat-sys-primary, #005cbb);
+  background: var(--mat-sys-primary-container, #d7e3ff);
+}
+
+.mat-drawer-side {
+  border-right: 1px solid black !important;
+}
+.mat-drawer {
+  border-radius: 0 !important;
+}
