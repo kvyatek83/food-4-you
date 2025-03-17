@@ -9,6 +9,28 @@
     "password": "Enter your password",
     "submit": "Login"
   },
+  "dashboard": {
+    "menu": {
+      "buttons": {
+        "titles": {
+          "generalOverview": "General",
+          "categoriesOverview": "Categories",
+          "itemsOverview": "Items",
+          "addOnsOverview": "Add-Ons",
+          "ordersOverview": "Orders",
+          "scheduleOverview": "Schedule"
+        }
+      }
+    }
+  },
+  "loadFiles": {
+    "load": "Load dish image",
+    "dnd": "Drag and drop image here",
+    "or": "Or",
+    "browse": "Browse for image",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
   "menu": {
     "category": "Category",
     "item": "Item"
