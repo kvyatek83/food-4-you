@@ -6,7 +6,7 @@ import {
   Observable,
   of,
 } from 'rxjs';
-import { AddOn, Category } from '../travler/travler.models';
+import { AddOn, Category, Item } from '../travler/travler.models';
 import { HttpClient } from '@angular/common/http';
 import { NotificationsService } from './notifications.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -95,5 +95,82 @@ export class ItemsService {
 
   getAddOnByUuid(addOnUuid: string): AddOn | undefined {
     return this._addOns$.value.get(addOnUuid);
+  }
+
+  // createNewCategory(newCategory: Category, image: FormData): Observable<any> {
+  //   return this.http.post(
+  //     `/api/category`,
+  //     {
+  //       category: newCategory,
+  //       image,
+  //     },
+  //     {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //         Accept: 'application/json',
+  //       },
+  //     }
+  //   );
+  // }
+
+  createCategory(
+    category: Partial<Category>,
+    imageFile: File
+  ): Observable<any> {
+    const formData = new FormData();
+
+    // Convert category object to JSON string
+    formData.append('category', JSON.stringify(category));
+
+    // Append the image file
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    console.log(formData);
+
+    return this.http.post(`api/category`, formData);
+  }
+
+  createNewItem(
+    newItem: Item,
+    categoryId: string,
+    image: FormData
+  ): Observable<any> {
+    return this.http.post(
+      `/api/item`,
+      {
+        item: newItem,
+        categoryId,
+        image,
+      },
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+        },
+      }
+    );
+  }
+
+  updateItem(
+    newItem: Item,
+    categoryId: string,
+    image: FormData
+  ): Observable<any> {
+    return this.http.post(
+      `/api/item`,
+      {
+        item: newItem,
+        categoryId,
+        image,
+      },
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+        },
+      }
+    );
   }
 }
