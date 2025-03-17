@@ -1,0 +1,8 @@
+<div class="image-preview-wrapper">
+  <ng-container *ngIf="imageLoaded && !!attachment; else loading">
+    <img [src]="imageUrl" [alt]="attachment.name" />
+  </ng-container>
+  <ng-template #loading>
+    <div class="spinner"></div>
+  </ng-template>
+</div>

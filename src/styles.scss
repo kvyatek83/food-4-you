@@ -43,6 +43,10 @@ body {
   display: none;
 }
 
+.mat-expansion-panel-body {
+  padding: 0 10px 10px !important;
+}
+
 .rtl {
   direction: rtl;
   text-align: right;

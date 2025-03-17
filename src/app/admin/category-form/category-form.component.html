@@ -1,0 +1,76 @@
+<div class="category-form-container">
+  <h2 mat-dialog-title>
+    {{ data.category ? "Edit Category" : "Add New Category" }}
+  </h2>
+
+  <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+    <div mat-dialog-content>
+      <div class="form-content">
+        <div class="form-feilds">
+          <!-- English Name -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>English Name</mat-label>
+            <input matInput formControlName="enName" required />
+            <mat-error
+              *ngIf="
+                categoryForm.get('enName')?.invalid &&
+                categoryForm.get('enName')?.touched
+              "
+            >
+              English name is required
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Hebrew Name -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Hebrew Name</mat-label>
+            <input matInput formControlName="heName" required />
+            <mat-error
+              *ngIf="
+                categoryForm.get('heName')?.invalid &&
+                categoryForm.get('heName')?.touched
+              "
+            >
+              Hebrew name is required
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Spanish Name -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Spanish Name</mat-label>
+            <input matInput formControlName="esName" required />
+            <mat-error
+              *ngIf="
+                categoryForm.get('esName')?.invalid &&
+                categoryForm.get('esName')?.touched
+              "
+            >
+              Spanish name is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-load-file">
+          <load-file
+            (fileSelected)="imageChanged($event)"
+            (fileRemoved)="imageRemoved()"
+          ></load-file>
+        </div>
+      </div>
+    </div>
+
+    <div mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="
+          categoryForm.invalid ||
+          (!this.categoryForm.controls['imageUrl'].value && !this.categoryImage)
+        "
+      >
+        {{ data.category ? "Update" : "Create" }}
+      </button>
+    </div>
+  </form>
+</div>

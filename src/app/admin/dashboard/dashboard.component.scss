@@ -5,6 +5,25 @@
   width: 100%;
 }
 
+// .sidenav {
+//   transition: transform 0.3s ease; /* Smooth transition for the transform */
+//   width: 225px; /* Full width when open */
+//   transform: translateX(0); /* Fully visible when open */
+// }
+
+// .mat-sidenav-container {
+//   overflow: hidden; /* Hide overflow when collapsed */
+// }
+
+// .mat-sidenav-container .sidenav.mat-sidenav-collapsed {
+//   transform: translateX(-60px); /* Adjust this value to show part of the icon */
+//   width: 60px; /* Width for the closed state */
+// }
+
+.spacer {
+  flex: 1 1 auto;
+}
+
 .content {
   flex-grow: 1;
 }
@@ -17,6 +36,113 @@
 .mat-drawer-side {
   border-right: 1px solid black !important;
 }
+
+// .mat-drawer {
+//   border-radius: 0 !important;
+//   width: 225px;
+// }
+
+// .menu-buttons {
+//   height: 100%;
+//   background: var(--mat-sys-primary-container, #d7e3ff);
+// }
+
+// .menu-button {
+//   display: flex;
+//   align-items: center;
+//   // justify-content: center;
+//   gap: 20px;
+//   padding: 0 18px;
+//   height: 70px;
+//   width: 100%;
+//   font-size: 18px;
+//   font-weight: 600;
+//   font-family: "Arial", sans-serif;
+//   cursor: pointer;
+
+//   &:not(:last-child) {
+//     border-bottom: 1px solid;
+//   }
+// }
+
+// Add these to your CSS
 .mat-drawer {
   border-radius: 0 !important;
+  transition: width 0.3s ease;
+}
+
+.mat-drawer.collapsed {
+  width: 70px;
+  overflow: hidden;
+}
+
+.mat-drawer.expanded {
+  width: 200px;
+}
+
+.menu-buttons {
+  height: 100%;
+  background: var(--mat-sys-primary-container, #d7e3ff);
+}
+
+.menu-button {
+  display: flex;
+  align-items: center;
+  // justify-content: center;
+  gap: 25px;
+  padding: 0 20px;
+  height: 70px;
+  width: 100%;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: "Arial", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    .menu-icon {
+      transition: all 0.5s ease;
+      transform: scale(1.3);
+    }
+
+    .menu-text {
+      transition: all 0.5s ease;
+      font-size: 20px;
+    }
+  }
+  // &:not(:first-child) {
+  //   border-top: 1px solid;
+  // }
+
+  // &:not(:last-child) {
+  //   border-bottom: 1px solid;
+  // }
+}
+
+.menu-icon {
+  min-width: 24px;
+}
+
+.menu-text {
+  white-space: nowrap;
+  overflow: hidden;
+  transition: opacity 0.2s ease;
+
+  &.hidden {
+    opacity: 0;
+    width: 0;
+  }
+}
+
+.content-body {
+  transition: all 0.3s ease;
+  // TODO: NgStyle
+  margin-left: 70px;
+  position: relative;
+  padding: 20px;
+  height: 100%;
+}
+
+.content-body-margin {
+  margin-left: 200px;
 }

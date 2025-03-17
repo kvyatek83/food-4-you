@@ -1,16 +1,37 @@
 <div class="dashboard-wrapper">
   <mat-toolbar>
     <mat-toolbar-row>
-      <menu-icon (menuStateChanged)="sidenav.toggle()"></menu-icon>
+      <menu-icon (menuStateChanged)="toggleSidenav($event)"></menu-icon>
+      <!-- <div class="spacer"></div>
+      <app-language-picker></app-language-picker> -->
     </mat-toolbar-row>
   </mat-toolbar>
 
   <mat-sidenav-container class="content" [hasBackdrop]="false">
-    <mat-sidenav #sidenav mode="side" position="start">
-      <p>
-        <label>Test input for drawer<input /></label>
-      </p>
+    <mat-sidenav
+      #sidenav
+      mode="over"
+      [ngClass]="{ expanded: isSidenavExpanded, collapsed: !isSidenavExpanded }"
+      opened="true"
+    >
+      <div class="menu-buttons">
+        <div class="menu-button" *ngFor="let button of dashboardMenuButtons">
+          <mat-icon
+            class="menu-icon"
+            aria-hidden="false"
+            aria-label="Remove all items"
+            [fontIcon]="button.icon"
+          ></mat-icon>
+          <div class="menu-text">
+            {{ button.titleKey | translate }}
+          </div>
+        </div>
+      </div>
     </mat-sidenav>
-    <mat-sidenav-content> AAAAA </mat-sidenav-content>
+    <mat-sidenav-content>
+      <div class="content-body" [class.content-body-margin]="isSidenavExpanded">
+        <router-outlet />
+      </div>
+    </mat-sidenav-content>
   </mat-sidenav-container>
 </div>
