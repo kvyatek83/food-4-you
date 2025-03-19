@@ -15,6 +15,11 @@ ADMIN_NAME=<your-admin-name>
 ADMIN_PASSWORD=<your-admin-password>
 ADMIN_ROLE=<your-admin-role>
 RESET_DB=<true/false>
+DB_PATH=app.db
+AWS_REGION=<region>
+AWS_ACCESS_KEY_ID=<your-aws-access-id>
+AWS_SECRET_ACCESS_KEY=<your-aws-secret-key>
+AWS_S3_BUCKET=<name-of-your-s3-bucket>
 ```
 
 ## Server
