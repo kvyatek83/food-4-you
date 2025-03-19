@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const path = require("path");
+require("dotenv").config();
 
 async function clearDatabase() {
   await sequelize.drop();
@@ -8,7 +9,7 @@ async function clearDatabase() {
 // Initialize Sequelize with SQLite database
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: path.join(__dirname, "database.sqlite"),
+  storage: path.join(__dirname, process.env.DB_PATH || "app.db"),
 });
 
 // Define User model
@@ -179,6 +180,19 @@ async function updateCategory(category) {
   await Category.upsert(category);
 }
 
+async function deleteCategory(categoryId) {
+  await Category.destroy({
+    where: {
+      uuid: categoryId,
+    },
+  });
+}
+
+async function findCategory(categoryId) {
+  await sequelize.sync();
+  return await Category.findOne({ where: { uuid: categoryId } });
+}
+
 // Functions for item
 async function addItem(item, categoryId) {
   item.categoryId = categoryId;
@@ -238,4 +252,6 @@ module.exports = {
   getAddOns,
   getCategoriesWithItems,
   clearDatabase,
+  deleteCategory,
+  findCategory,
 };

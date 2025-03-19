@@ -5,6 +5,7 @@ const path = require("path");
 const db = require("./server/database-utils");
 
 const generalRoutes = require("./server/general-routes");
+const adminRoutes = require("./server/admin-routes");
 const menuRoutes = require("./server/menu-routes");
 
 const app = express();
@@ -12,6 +13,7 @@ app.use(express.static(__dirname + "/dist/food-4-you/browser"));
 app.use(bodyParser.json());
 
 app.use("/api", generalRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api", menuRoutes);
 
 app.get("/*", (req, res) =>

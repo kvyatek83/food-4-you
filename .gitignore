@@ -44,3 +44,4 @@ Thumbs.db
 *storybook.log
 .env
 database.sqlite
+app.db

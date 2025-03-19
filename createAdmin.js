@@ -7,7 +7,7 @@ const db = require("./server/database-utils");
     await db.syncModels();
     const username = process.env.ADMIN_NAME;
 
-    const user = db.findUser(username);
+    const user = await db.findUser(username);
 
     if (user === null) {
       const password = process.env.ADMIN_PASSWORD;

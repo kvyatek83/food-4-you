@@ -5,6 +5,7 @@ import { MenuComponent } from './menu/menu.component';
 import { TravlerComponent } from './travler.component';
 import { CartComponent } from './cart/cart.component';
 
+// TODO: add canActivate: [AuthGuard] for traveler
 const routes: Routes = [
   {
     path: '',
