@@ -5,6 +5,7 @@ import {
   combineLatest,
   Observable,
   of,
+  tap,
 } from 'rxjs';
 import { AddOn, Category, Item } from '../travler/travler.models';
 import { HttpClient } from '@angular/common/http';
@@ -97,80 +98,25 @@ export class ItemsService {
     return this._addOns$.value.get(addOnUuid);
   }
 
-  // createNewCategory(newCategory: Category, image: FormData): Observable<any> {
-  //   return this.http.post(
-  //     `/api/category`,
-  //     {
-  //       category: newCategory,
-  //       image,
-  //     },
-  //     {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data',
-  //         Accept: 'application/json',
-  //       },
-  //     }
-  //   );
-  // }
-
   createCategory(
     category: Partial<Category>,
     imageFile: File
-  ): Observable<any> {
+  ): Observable<Category[]> {
     const formData = new FormData();
-
-    // Convert category object to JSON string
     formData.append('category', JSON.stringify(category));
 
-    // Append the image file
     if (imageFile) {
       formData.append('image', imageFile);
     }
 
-    console.log(formData);
-
-    return this.http.post(`api/category`, formData);
+    return this.http
+      .post<Category[]>(`api/admin/category`, formData)
+      .pipe(tap((categories: Category[]) => this.setAllItems(categories)));
   }
 
-  createNewItem(
-    newItem: Item,
-    categoryId: string,
-    image: FormData
-  ): Observable<any> {
-    return this.http.post(
-      `/api/item`,
-      {
-        item: newItem,
-        categoryId,
-        image,
-      },
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Accept: 'application/json',
-        },
-      }
-    );
-  }
-
-  updateItem(
-    newItem: Item,
-    categoryId: string,
-    image: FormData
-  ): Observable<any> {
-    return this.http.post(
-      `/api/item`,
-      {
-        item: newItem,
-        categoryId,
-        image,
-      },
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Accept: 'application/json',
-        },
-      }
-    );
+  deleteCategory(category: Category): Observable<Category[]> {
+    return this.http
+      .delete<Category[]>(`api/admin/category/${category.uuid}`)
+      .pipe(tap((categories: Category[]) => this.setAllItems(categories)));
   }
 }

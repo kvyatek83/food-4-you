@@ -15,7 +15,14 @@
       opened="true"
     >
       <div class="menu-buttons">
-        <div class="menu-button" *ngFor="let button of dashboardMenuButtons">
+        <div
+          class="menu-button"
+          [class.active-menu-button]="
+            selectedMenuButton?.route === button.route
+          "
+          *ngFor="let button of dashboardMenuButtons"
+          (click)="menuButtonClicked(button)"
+        >
           <mat-icon
             class="menu-icon"
             aria-hidden="false"

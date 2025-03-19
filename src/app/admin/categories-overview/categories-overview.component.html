@@ -36,13 +36,16 @@
     <mat-card-content>
       <p>Items: {{ category.items.length }}</p>
     </mat-card-content>
-    <mat-card-actions>
-      <button mat-icon-button (click)="editCategory(category)">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-icon-button color="warn" (click)="deleteCategory(category)">
-        <mat-icon>delete</mat-icon>
-      </button>
+    <mat-divider></mat-divider>
+
+    <mat-card-actions class="mat-card-actions">
+      <div class="action-icon-wrapper edit-action">
+        <mat-icon (click)="editCategory(category)">edit</mat-icon>
+      </div>
+      <mat-divider vertical></mat-divider>
+      <div class="action-icon-wrapper delete-action">
+        <mat-icon (click)="deleteCategory(category)">delete</mat-icon>
+      </div>
     </mat-card-actions>
   </mat-card>
 </div>

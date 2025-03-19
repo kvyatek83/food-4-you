@@ -2,11 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { JwtInterceptor } from './jwt.interceptor';
 import { AuthGuard } from '../auth.guard';
-import { ItemFormComponent } from './item-form/item-form.component';
 import { CategoriesOverviewComponent } from './categories-overview/categories-overview.component';
+import { AddOnsOverviewComponent } from './add-ons-overview/add-ons-overview.component';
+import { ItemsOverviewComponent } from './items-overview/items-overview.component';
+import { OrdersOverviewComponent } from './orders-overview/orders-overview.component';
+import { ScheduleOverviewComponent } from './schedule-overview/schedule-overview.component';
+import { GeneralOverviewComponent } from './general-overview/general-overview.component';
 
 const routes: Routes = [
   {
@@ -16,15 +18,31 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: CategoriesOverviewComponent,
+        component: GeneralOverviewComponent,
+      },
+      {
+        path: 'general-overview',
+        component: GeneralOverviewComponent,
       },
       {
         path: 'categories-overview',
         component: CategoriesOverviewComponent,
       },
       {
-        path: 'item-form',
-        component: ItemFormComponent,
+        path: 'items-overview',
+        component: ItemsOverviewComponent,
+      },
+      {
+        path: 'add-ons-overview',
+        component: AddOnsOverviewComponent,
+      },
+      {
+        path: 'orders-overview',
+        component: OrdersOverviewComponent,
+      },
+      {
+        path: 'schedule-overview',
+        component: ScheduleOverviewComponent,
       },
     ],
   },
@@ -32,12 +50,5 @@ const routes: Routes = [
 
 @NgModule({
   imports: [CommonModule, RouterModule.forChild(routes)],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: JwtInterceptor,
-      multi: true,
-    },
-  ],
 })
 export class AdminModule {}

@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { MaterialModule } from '../../material.module';
 import { MenuIconComponent } from '../../components/menu-icon/menu-icon.component';
 import { LanguagePickerComponent } from '../../components/language-picker/language-picker.component';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { filter, map, startWith } from 'rxjs';
 
 interface DashboardMenuButton {
   titleKey: string;
@@ -12,7 +13,7 @@ interface DashboardMenuButton {
   route: string;
 }
 
-const A = 'dashboard.menu.buttons.titles';
+const TRANSLATE_KEY_PREFIX = 'dashboard.menu.buttons.titles';
 @Component({
   selector: 'app-dashboard',
   imports: [
@@ -27,51 +28,66 @@ const A = 'dashboard.menu.buttons.titles';
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
+  selectedMenuButton: DashboardMenuButton | undefined;
+  constructor(private router: Router) {
+    this.router.events
+      .pipe(
+        filter(
+          (event): event is NavigationEnd => event instanceof NavigationEnd
+        ),
+        map((event: NavigationEnd) => event.urlAfterRedirects), // Using urlAfterRedirects for more accurate URL
+        startWith(this.router.url) // Ensure initial URL is captured
+      )
+      .subscribe((currentUrl) => {
+        this.selectedMenuButton = this.dashboardMenuButtons.find((button) =>
+          currentUrl.includes(button.route)
+        );
+      });
+  }
+
   dashboardMenuButtons: DashboardMenuButton[] = [
     {
-      titleKey: `${A}.generalOverview`,
+      titleKey: `${TRANSLATE_KEY_PREFIX}.generalOverview`,
       icon: 'space_dashboard',
-      route: 'general',
+      route: 'general-overview',
     },
     {
-      titleKey: `${A}.categoriesOverview`,
+      titleKey: `${TRANSLATE_KEY_PREFIX}.categoriesOverview`,
       icon: 'apps',
-      route: 'categories',
+      route: 'categories-overview',
     },
     {
-      titleKey: `${A}.itemsOverview`,
+      titleKey: `${TRANSLATE_KEY_PREFIX}.itemsOverview`,
       icon: 'fastfood',
-      route: 'items',
+      route: 'items-overview',
     },
     {
-      titleKey: `${A}.addOnsOverview`,
+      titleKey: `${TRANSLATE_KEY_PREFIX}.addOnsOverview`,
       icon: 'extension',
-      route: 'add-ons',
+      route: 'add-ons-overview',
     },
     {
-      titleKey: `${A}.ordersOverview`,
+      titleKey: `${TRANSLATE_KEY_PREFIX}.ordersOverview`,
       icon: 'list_alt',
-      route: 'orders',
+      route: 'orders-overview',
     },
     {
-      titleKey: `${A}.scheduleOverview`,
+      titleKey: `${TRANSLATE_KEY_PREFIX}.scheduleOverview`,
       icon: 'calendar_month',
-      route: 'schedule',
+      route: 'schedule-overview',
     },
   ];
 
   isSidenavExpanded = false;
 
-  toggleSidenav(collapsed: boolean) {
+  toggleSidenav(_: boolean): void {
     this.isSidenavExpanded = !this.isSidenavExpanded;
   }
 
-  // toggleSidenav(sidenav: any) {
-  //   if (sidenav.opened) {
-  //     this.isSidenavExpanded = !this.isSidenavExpanded;
-  //   } else {
-  //     sidenav.open();
-  //     this.isSidenavExpanded = true;
-  //   }
-  // }
+  menuButtonClicked(menuButton: DashboardMenuButton): void {
+    if (menuButton.route !== this.selectedMenuButton?.route) {
+      this.selectedMenuButton = menuButton;
+      this.router.navigate([`/admin/${menuButton.route}`]);
+    }
+  }
 }

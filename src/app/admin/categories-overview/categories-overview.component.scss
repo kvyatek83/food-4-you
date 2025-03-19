@@ -17,7 +17,6 @@
 .card {
   display: flex;
   flex-direction: column;
-  padding: 16px;
   text-align: center;
 }
 
@@ -30,6 +29,50 @@
 
 .mat-card-actions {
   display: flex;
+  flex-direction: row;
+  align-items: center;
   justify-content: space-between;
-  margin-top: auto; /* Push actions to the bottom of the card */
+}
+
+.mat-mdc-card-actions {
+  padding: 0 !important;
+  min-height: auto !important;
+}
+
+.action-icon-wrapper {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  cursor: pointer;
+
+  &:first-child {
+    border-radius: 0 0 0 12px;
+  }
+
+  &:last-child {
+    border-radius: 0 0 12px 0;
+  }
+}
+
+.mat-divider.mat-divider-vertical {
+  height: 100%;
+}
+
+.edit-action {
+  color: var(--mat-sys-primary, #005cbb);
+  &:hover {
+    color: white;
+    background-color: var(--mat-sys-primary, #005cbb);
+  }
+}
+
+.delete-action {
+  color: #c75959;
+
+  &:hover {
+    color: white;
+    background-color: #c75959;
+  }
 }

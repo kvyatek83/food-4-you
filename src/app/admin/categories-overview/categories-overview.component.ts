@@ -100,7 +100,8 @@ export class CategoriesOverviewComponent {
   }
 
   deleteCategory(category: Category) {
-    // Implement delete functionality
-    console.log('Delete category:', category);
+    this.itemsService.deleteCategory(category).subscribe((a) => {
+      console.log(a);
+    });
   }
 }

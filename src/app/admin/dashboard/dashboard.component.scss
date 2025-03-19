@@ -106,7 +106,7 @@
     }
 
     .menu-text {
-      transition: all 0.5s ease;
+      transition: all 0.3s ease;
       font-size: 20px;
     }
   }
@@ -117,6 +117,10 @@
   // &:not(:last-child) {
   //   border-bottom: 1px solid;
   // }
+}
+
+.active-menu-button {
+  color: var(--mat-sys-primary, #005cbb);
 }
 
 .menu-icon {
