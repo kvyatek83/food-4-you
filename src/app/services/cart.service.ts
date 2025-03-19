@@ -5,14 +5,13 @@ import { Item } from '../travler/travler.models';
 export interface CartItem {
   itemUuid: string;
   item: Item;
-  items: Map<string, string[]>; // cartItemId -> selectedAddOns
+  items: Map<string, string[]>;
 }
 
-// Serializable version of CartItem for localStorage
 interface SerializableCartItem {
   itemUuid: string;
   item: Item;
-  items: Array<[string, string[]]>; // Array of tuples [cartItemId, selectedAddOns]
+  items: Array<[string, string[]]>;
 }
 
 interface CartState {
@@ -25,7 +24,7 @@ interface CartState {
 })
 export class CartService {
   private readonly CART_KEY = 'shopping_cart';
-  private readonly EXPIRY_TIME = 15 * 60 * 1000; // 15 minutes in milliseconds
+  private readonly EXPIRY_TIME = 15 * 60 * 1000;
 
   private cartItems = new BehaviorSubject<CartItem[]>([]);
   public cartItems$ = this.cartItems.asObservable();
@@ -101,19 +100,16 @@ export class CartService {
     const currentItems = this.cartItems.value;
     const cartItemId = this.generateCartItemId();
 
-    // Check if the item already exists in cart
     const existingItemIndex = currentItems.findIndex(
       (i) => i.itemUuid === item.uuid
     );
 
     if (existingItemIndex > -1) {
-      // Add new variant to existing item
       const updatedItems = [...currentItems];
       updatedItems[existingItemIndex].items.set(cartItemId, selectedAddOns);
       this.cartItems.next(updatedItems);
       this.saveToLocalStorage(updatedItems);
     } else {
-      // Create new cart item
       const newCartItem: CartItem = {
         itemUuid: item.uuid,
         item: item,
@@ -132,7 +128,6 @@ export class CartService {
       const updatedItems = [...currentItems];
       updatedItems[itemIndex].items.delete(cartItemId);
 
-      // If no variants left, remove the entire item
       if (updatedItems[itemIndex].items.size === 0) {
         updatedItems.splice(itemIndex, 1);
       }
@@ -219,6 +214,6 @@ export class CartService {
       }
     });
 
-    return `${totalPrice} GTQ`;
+    return `${totalPrice.toFixed(2)} GTQ`;
   }
 }

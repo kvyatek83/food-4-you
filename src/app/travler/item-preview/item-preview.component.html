@@ -15,42 +15,45 @@
         <img [src]="cartItem?.item?.imageUrl" class="item-image" />
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <div
-      class="cart-item-permutations"
-      *ngFor="let permutation of cartItem?.items | keyvalue; let i = index"
-    >
+    <div *ngFor="let group of groupedCartItem" class="cart-item-permutations">
       <div class="cart-item-permutation-name">
-        <!-- TODO: display permutation amount -->
-        <!-- <span>{{ i + 1 }}. </span> -->
-        <span *ngIf="permutation.value.length !== 0">{{
-          permutation.value | addOnUuidsToAddOns : lang
-        }}</span>
-        <span *ngIf="permutation.value.length === 0">{{
-          "itemPreview.noAdditions" | translate
-        }}</span>
+        <span class="item-count" *ngIf="group.count > 1">
+          {{ group.count }} ×
+        </span>
+        <span *ngIf="group.addOns.length !== 0">
+          {{ group.addOns | addOnUuidsToAddOns : lang }}
+        </span>
+        <span *ngIf="group.addOns.length === 0">
+          {{ "itemPreview.noAdditions" | translate }}
+        </span>
       </div>
 
       <div class="cart-item-permutation-price-and-actions">
-        <span>{{ cartItem | previewItemCost : [permutation.key] }}</span>
+        <span>{{ cartItem | previewItemCost : group.permutationUuids }}</span>
         <div>
+          <mat-icon
+            *ngIf="group.count > 1"
+            class="action-icon"
+            aria-hidden="false"
+            aria-label="Remove one item"
+            fontIcon="remove"
+          ></mat-icon>
           <mat-icon
             class="delete-item"
             aria-hidden="false"
-            aria-label="Remove item"
+            aria-label="Remove all items"
             fontIcon="delete_forever__outline"
-            (click)="removeItemPermutation(permutation.key, cartItem?.itemUuid)"
-          ></mat-icon
-          ><mat-icon
-            class="delete-item"
+            (click)="removeItemGroup(group)"
+          ></mat-icon>
+
+          <mat-icon
+            class="action-icon enable-icon"
             aria-hidden="false"
-            aria-label="Remove item"
-            fontIcon="delete_forever__outline"
-            (click)="removeItemPermutation(permutation.key, cartItem?.itemUuid)"
+            aria-label="Add one more item"
+            fontIcon="add"
           ></mat-icon>
         </div>
       </div>
-
-      <div></div>
     </div>
   </mat-expansion-panel>
 </ng-container>

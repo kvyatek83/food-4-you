@@ -10,6 +10,18 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AddOnUuidsToAddOnsPipe } from '../../pipes/add-on-uuids-to-add-ons.pipe';
 import { PreviewItemCostPipe } from '../../pipes/preview-item-cost.pipe';
 
+interface GroupedCartItem {
+  addOns: string[];
+  permutationUuids: string[];
+  items: CartItemPermutation[];
+  count: number;
+}
+
+interface CartItemPermutation {
+  id: string;
+  addOns: string[];
+}
+
 @Component({
   selector: 'app-item-preview',
   imports: [
@@ -26,12 +38,20 @@ import { PreviewItemCostPipe } from '../../pipes/preview-item-cost.pipe';
 })
 export class ItemPreviewComponent {
   // TODO: change to group by add-ons uuids
-  @Input() cartItem: CartItem | undefined;
+  private _cartItem: CartItem | undefined;
+  @Input() set cartItem(value: CartItem) {
+    this._cartItem = value;
+    this.groupedCartItem = this.groupSimilarItems();
+  }
+  get cartItem(): CartItem | undefined {
+    return this._cartItem;
+  }
   @Input() expanded = false;
 
   @Output() opened = new EventEmitter<number>();
 
   public lang$: Observable<LanguageType> = new Observable<LanguageType>();
+  public groupedCartItem: GroupedCartItem[] = [];
 
   constructor(
     private languageService: LanguageService,
@@ -42,9 +62,41 @@ export class ItemPreviewComponent {
     this.lang$ = this.languageService.currentLanguage$;
   }
 
-  removeItemPermutation(cartItemId: string, itemUuid = ''): void {
-    console.log(itemUuid);
-    console.log(cartItemId);
-    this.cartService.removeVariant(itemUuid, cartItemId);
+  groupSimilarItems(): GroupedCartItem[] {
+    if (!this.cartItem?.items) return [];
+
+    const groupMap = new Map<string, GroupedCartItem>();
+
+    this.cartItem.items.forEach((addOns: string[], id: string) => {
+      console.log(id, addOns);
+
+      const sortedKey = [...addOns].sort().join(',');
+      console.log(sortedKey);
+
+      if (!groupMap.has(sortedKey)) {
+        groupMap.set(sortedKey, {
+          addOns: [...addOns].sort(),
+          permutationUuids: [id],
+          items: [],
+          count: 0,
+        });
+      }
+
+      const group = groupMap.get(sortedKey)!;
+      group.items.push({ id, addOns });
+      group.count++;
+      group.permutationUuids.push(id);
+    });
+
+    return Array.from(groupMap.values());
+  }
+
+  removeItemGroup(group: GroupedCartItem): void {
+    if (!this.cartItem?.itemUuid) return;
+
+    group.items.forEach((item) => {
+      this.cartService.removeVariant(this.cartItem!.itemUuid, item.id);
+    });
+    this.groupedCartItem = this.groupSimilarItems();
   }
 }
