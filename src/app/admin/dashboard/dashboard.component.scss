@@ -140,13 +140,7 @@
 
 .content-body {
   transition: all 0.3s ease;
-  // TODO: NgStyle
-  margin-left: 70px;
   position: relative;
   padding: 20px;
   height: 100%;
-}
-
-.content-body-margin {
-  margin-left: 200px;
 }

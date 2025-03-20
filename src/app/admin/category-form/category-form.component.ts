@@ -13,7 +13,6 @@ import { MaterialModule } from '../../material.module';
 import { LanguageService, LanguageType } from '../../services/lang.service';
 import { Category } from '../../travler/travler.models';
 import { LoadFileComponent } from '../../components/load-file/load-file.component';
-import { ImagePreviewComponent } from '../../components/image-preview/image-preview.component';
 
 @Component({
   selector: 'app-category-form',

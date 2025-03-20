@@ -31,6 +31,31 @@
     "submit": "Submit",
     "cancel": "Cancel"
   },
+  "deleteConfirmationModal": {
+    "title": "Are you sure you want to delete {{name}}?",
+    "categoryWithItems": "This category has {{itemAmount}} items, move them first or they will be remove too!",
+    "categoryWithoutItems": "This category will permanently remove.",
+    "item": "This item will permanently remove.",
+    "addOnExistOnItems": "This add-on exist in {{itemAmount}} items, this action will delete it from all items as well.",
+    "addOnNotExistOnItems": "This add-on will permanently remove.",
+    "cancel": "Cancel",
+    "submit": "Delete"
+  },
+  "categoryOverview": {
+    "gridView": "Grid View",
+    "tableView": "Table View",
+    "notContainItems": "No items yet",
+    "containOneItem": "{{includingItems}} item",
+    "containItems": "{{includingItems}} items",
+    "serchLabel": "Search",
+    "serchPlaceholder": "Type ccategory...",
+    "tableHeader": {
+      "image": "Image",
+      "name": "Name",
+      "actions": "Actions",
+      "itemsIncluded": "Items"
+    }
+  },
   "menu": {
     "category": "Category",
     "item": "Item"

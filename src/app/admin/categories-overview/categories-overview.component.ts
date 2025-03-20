@@ -1,5 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { combineLatest, filter, startWith, switchMap } from 'rxjs';
+import {
+  combineLatest,
+  delay,
+  filter,
+  Observable,
+  of,
+  startWith,
+  switchMap,
+} from 'rxjs';
 import { ItemsService } from '../../services/items.service';
 import { Category } from '../../travler/travler.models';
 import { MaterialModule } from '../../material.module';
@@ -8,6 +16,14 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CategoryFormComponent } from '../category-form/category-form.component';
+import { DeleteConfirmationModalComponent } from '../delete-confirmation-modal/delete-confirmation-modal.component';
+import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
+import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
+import {
+  LanguageDirection,
+  LanguageService,
+  LanguageType,
+} from '../../services/lang.service';
 
 @Component({
   selector: 'app-categories-overview',
@@ -17,20 +33,29 @@ import { CategoryFormComponent } from '../category-form/category-form.component'
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
+    PropertiesTranslationPipe,
+    LanguageDirectionDirective,
   ],
   templateUrl: './categories-overview.component.html',
   styleUrl: './categories-overview.component.scss',
 })
 export class CategoriesOverviewComponent {
   readonly dialog = inject(MatDialog);
+  public lang$: Observable<LanguageType> = new Observable<LanguageType>();
+
   viewMode: 'grid' | 'table' = 'grid'; // Default view mode
   searchTerm = new FormControl('');
-  displayedColumns: string[] = ['image', 'name', 'type'];
+  displayedColumns: string[] = ['name', 'items', 'image', 'actions'];
 
   categories: Category[] = [];
   filteredCategories: Category[] = [];
+  dir: LanguageDirection = 'ltr';
 
-  constructor(private itemsService: ItemsService) {
+  constructor(
+    private itemsService: ItemsService,
+    private languageService: LanguageService
+  ) {
+    this.lang$ = this.languageService.currentLanguage$;
     this.itemsService.allItems$.subscribe((categories) => {
       this.categories = categories;
       this.filteredCategories = categories;
@@ -100,8 +125,30 @@ export class CategoriesOverviewComponent {
   }
 
   deleteCategory(category: Category) {
-    this.itemsService.deleteCategory(category).subscribe((a) => {
-      console.log(a);
+    const dialogRef = this.dialog.open(DeleteConfirmationModalComponent, {
+      data: {
+        type: 'category',
+        // cb: this.itemsService.deleteCategory(category)
+        cb: of([1, 2, 3]).pipe(delay(200000)),
+        objectToDelete: category,
+        usedAmund: category.items.length,
+      },
     });
+
+    dialogRef
+      .afterClosed()
+      // .pipe(
+      //   switchMap((a) => this.itemsService.deleteCategory(category))
+      // )
+      .subscribe((a) => {
+        console.log(a);
+      });
+    // this.itemsService.deleteCategory(category).subscribe((a) => {
+    //   console.log(a);
+    // });
+  }
+
+  languageChanged(languageDirection: LanguageDirection): void {
+    this.dir = languageDirection;
   }
 }

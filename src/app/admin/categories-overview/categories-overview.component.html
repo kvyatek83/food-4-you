@@ -1,85 +1,142 @@
-<mat-toolbar class="controls">
-  <button mat-fab aria-label="Add new category" (click)="addNewCategory()">
-    <mat-icon>add</mat-icon>
-  </button>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Search</mat-label>
-    <input
-      matInput
-      [formControl]="searchTerm"
-      placeholder="Search categories..."
-    />
-  </mat-form-field>
-  <div class="spacer"></div>
-  <mat-button-toggle-group [(value)]="viewMode">
-    <mat-button-toggle value="grid">
-      <mat-icon>grid_view</mat-icon>
-      Grid View
-    </mat-button-toggle>
-    <mat-button-toggle value="table">
-      <mat-icon>table_chart</mat-icon>
-      Table View
-    </mat-button-toggle>
-  </mat-button-toggle-group>
-</mat-toolbar>
-
-<div *ngIf="viewMode === 'grid'" class="grid-view">
-  <mat-card *ngFor="let category of filteredCategories" class="card">
-    <img
-      [src]="category.imageUrl"
-      alt="{{ category.enName }}"
-      class="card-image"
-    />
-    <mat-card-title>{{ category.enName }}</mat-card-title>
-    <mat-card-subtitle>{{ category.type }}</mat-card-subtitle>
-    <mat-card-content>
-      <p>Items: {{ category.items.length }}</p>
-    </mat-card-content>
-    <mat-divider></mat-divider>
-
-    <mat-card-actions class="mat-card-actions">
-      <div class="action-icon-wrapper edit-action">
-        <mat-icon (click)="editCategory(category)">edit</mat-icon>
+<div
+  *ngIf="lang$ | async; let lang"
+  appLanguageDirection
+  (languageChanged)="languageChanged($event)"
+>
+  <mat-toolbar class="controls">
+    <div class="tool-bar-actions">
+      <button mat-fab aria-label="Add new category" (click)="addNewCategory()">
+        <mat-icon>add</mat-icon>
+      </button>
+      <div [dir]="dir">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ "categoryOverview.serchLabel" | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="searchTerm"
+            [placeholder]="'categoryOverview.serchPlaceholder' | translate"
+          />
+        </mat-form-field>
       </div>
-      <mat-divider vertical></mat-divider>
-      <div class="action-icon-wrapper delete-action">
-        <mat-icon (click)="deleteCategory(category)">delete</mat-icon>
+    </div>
+    <div class="spacer"></div>
+    <mat-button-toggle-group class="view-mode-buttons" [(value)]="viewMode">
+      <mat-button-toggle value="grid">
+        <mat-icon>grid_view</mat-icon
+        >{{ "categoryOverview.gridView" | translate }}
+      </mat-button-toggle>
+      <mat-button-toggle value="table">
+        <mat-icon>table_chart</mat-icon>
+        {{ "categoryOverview.tableView" | translate }}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </mat-toolbar>
+
+  <div *ngIf="viewMode === 'grid'" class="grid-view" appLanguageDirection>
+    <mat-card *ngFor="let category of filteredCategories" class="card">
+      <img
+        [src]="category.imageUrl"
+        alt="{{ category.enName }}"
+        class="card-image"
+      />
+      <div class="card-content">
+        <mat-card-title>{{
+          category | propertiesTranslation : lang : "Name"
+        }}</mat-card-title>
+        <mat-card-content>
+          <p>
+            {category.items.length, plural, =0 {
+            {{ "categoryOverview.notContainItems" | translate }} } =1 {
+            {{
+              "categoryOverview.containOneItem"
+                | translate : { includingItems: 1 }
+            }}
+            } other {
+            {{
+              "categoryOverview.containItems"
+                | translate : { includingItems: category.items.length }
+            }}
+            }}
+          </p>
+        </mat-card-content>
       </div>
-    </mat-card-actions>
-  </mat-card>
+      <mat-divider></mat-divider>
+
+      <mat-card-actions class="mat-card-actions">
+        <div
+          class="action-icon-wrapper edit-action"
+          (click)="editCategory(category)"
+        >
+          <mat-icon>edit</mat-icon>
+        </div>
+        <mat-divider vertical></mat-divider>
+        <div
+          class="action-icon-wrapper delete-action"
+          (click)="deleteCategory(category)"
+        >
+          <mat-icon>delete</mat-icon>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <table
+    mat-table
+    [dataSource]="filteredCategories"
+    *ngIf="viewMode === 'table'"
+    appLanguageDirection
+  >
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "categoryOverview.tableHeader.name" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let category">
+        {{ category | propertiesTranslation : lang : "Name" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="items">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "categoryOverview.tableHeader.itemsIncluded" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let category">
+        {category.items.length, plural, =0 {
+        {{ "categoryOverview.notContainItems" | translate }} } =1 {
+        {{
+          "categoryOverview.containOneItem" | translate : { includingItems: 1 }
+        }}
+        } other {
+        {{
+          "categoryOverview.containItems"
+            | translate : { includingItems: category.items.length }
+        }}
+        }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="image">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "categoryOverview.tableHeader.image" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let category">
+        <img [src]="category.imageUrl" alt="{{ category.enName }}" width="50" />
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "categoryOverview.tableHeader.actions" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let category">
+        <button mat-icon-button (click)="editCategory(category)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteCategory(category)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
 </div>
-
-<table mat-table [dataSource]="filteredCategories" *ngIf="viewMode === 'table'">
-  <ng-container matColumnDef="image">
-    <th mat-header-cell *matHeaderCellDef>Image</th>
-    <td mat-cell *matCellDef="let category">
-      <img [src]="category.imageUrl" alt="{{ category.enName }}" width="50" />
-    </td>
-  </ng-container>
-
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>Name</th>
-    <td mat-cell *matCellDef="let category">{{ category.enName }}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="type">
-    <th mat-header-cell *matHeaderCellDef>Type</th>
-    <td mat-cell *matCellDef="let category">{{ category.type }}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef>Actions</th>
-    <td mat-cell *matCellDef="let category">
-      <button mat-icon-button (click)="editCategory(category)">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-icon-button color="warn" (click)="deleteCategory(category)">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-</table>

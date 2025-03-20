@@ -13,24 +13,48 @@
     "menu": {
       "buttons": {
         "titles": {
-          "generalOverview": "General",
-          "categoriesOverview": "Categories",
-          "itemsOverview": "Items",
-          "addOnsOverview": "Add-Ons",
-          "ordersOverview": "Orders",
-          "scheduleOverview": "Schedule"
+          "generalOverview": "כללי",
+          "categoriesOverview": "קטגוריות",
+          "itemsOverview": "מנות",
+          "addOnsOverview": "תוספות",
+          "ordersOverview": "הזמנות",
+          "scheduleOverview": "לו״ז"
         }
       }
     }
   },
   "loadFiles": {
-    "load": "Load dish image",
-    "upload": "Upload your list",
-    "dnd": "Drag and drop image here",
-    "or": "Or",
-    "browse": "Browse for image",
-    "submit": "Submit",
-    "cancel": "Cancel"
+    "load": "טעינת תמונת מנה",
+    "dnd": "יש למשוך את הקובץ לפה",
+    "or": "או",
+    "browse": "חיפוש במחשב שלך",
+    "submit": "אישור",
+    "cancel": "ביטול"
+  },
+  "deleteConfirmationModal": {
+    "title": "האם להמשיך במחיקת {{name}}?",
+    "categoryWithItems": "בקטגוריה זאת יש {{itemAmount}} מנות, נא להעביר אותם או שהם ימחקו גם!",
+    "categoryWithoutItems": "קטגוריה זאת תמחק לצמיתות.",
+    "item": "מנה זאת תמחק לצמיתות.",
+    "addOnExistOnItems": "תוספת זאת קיימת ב-{{itemAmount}} מנות, פעולה זאת תמחוק אותה מכל המנות.",
+    "addOnNotExistOnItems": "תוספת זאת תמחק לצמיתות.",
+    "cancel": "ביטול",
+    "submit": "מחיקה"
+  },
+  "categoryOverview": {
+    "gridView": "תצוגת קלפים",
+    "tableView": "תצוגת טבלה",
+    "notContainItems": "אין מנות עדין",
+    "containOneItem": "מנה אחת",
+    "containItems": "{{includingItems}} מנות",
+    "serchLabel": "חיפוש",
+    "serchPlaceholder": "נא להקליד קטגוריה",
+    "tableHeader": {
+      "image": "תמונה",
+      "name": "שם",
+      "actions": "פעולות",
+      "itemsIncluded": "מנות"
+    }
   },
   "menu": {
     "category": "קטגוריה",

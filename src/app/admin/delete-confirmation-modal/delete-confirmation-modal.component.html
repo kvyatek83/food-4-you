@@ -1,0 +1,67 @@
+<div
+  class="delete-confirmation-modal-container"
+  *ngIf="lang$ | async; let lang"
+  appLanguageDirection
+>
+  <h2 mat-dialog-title>
+    {{
+      "deleteConfirmationModal.title"
+        | translate
+          : { name: objectToDelete | propertiesTranslation : lang : "Name" }
+    }}
+  </h2>
+
+  <div mat-dialog-content>
+    <ng-container *ngIf="!cbPennding; else deleteLoader">
+      <ng-container [ngSwitch]="type">
+        <ng-container *ngSwitchCase="'category'">
+          <ng-container *ngIf="usedAmund; else noItemsInCategory">
+            {{
+              "deleteConfirmationModal.categoryWithItems"
+                | translate : { itemAmount: usedAmund }
+            }}
+          </ng-container>
+          <ng-template #noItemsInCategory>
+            {{ "deleteConfirmationModal.categoryWithoutItems" | translate }}
+          </ng-template>
+        </ng-container>
+        <ng-container *ngSwitchCase="'item'">
+          {{ "deleteConfirmationModal.item" | translate }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'add-on'">
+          <ng-container *ngIf="usedAmund; else noItemsInCategory">
+            {{
+              "deleteConfirmationModal.addOnExistOnItems"
+                | translate : { itemName: usedAmund }
+            }}
+          </ng-container>
+          <ng-template #noItemsInCategory>
+            {{ "deleteConfirmationModal.addOnNotExistOnItems" | translate }}
+          </ng-template>
+        </ng-container>
+        <ng-container *ngSwitchDefault> AAAAA </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #deleteLoader>
+      <div class="loader-wrapper">
+        <span class="loader"></span>
+      </div>
+    </ng-template>
+  </div>
+
+  <div mat-dialog-actions align="center">
+    <button mat-stroked-button mat-dialog-close [disabled]="cbPennding">
+      {{ "deleteConfirmationModal.cancel" | translate }}
+    </button>
+    <button
+      mat-stroked-button
+      color="primary"
+      type="button"
+      (click)="onSubmit()"
+      [disabled]="cbPennding"
+    >
+      {{ "deleteConfirmationModal.submit" | translate }}
+    </button>
+  </div>
+</div>

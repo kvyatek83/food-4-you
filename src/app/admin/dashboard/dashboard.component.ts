@@ -5,7 +5,14 @@ import { LanguagePickerComponent } from '../../components/language-picker/langua
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { filter, map, startWith } from 'rxjs';
+import { filter, map, Observable, startWith } from 'rxjs';
+import {
+  LanguageDirection,
+  LanguageService,
+  LanguageType,
+} from '../../services/lang.service';
+import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
+import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
 
 interface DashboardMenuButton {
   titleKey: string;
@@ -20,16 +27,24 @@ const TRANSLATE_KEY_PREFIX = 'dashboard.menu.buttons.titles';
     CommonModule,
     MaterialModule,
     MenuIconComponent,
-    // LanguagePickerComponent,
+    LanguagePickerComponent,
     RouterOutlet,
     TranslateModule,
+    LanguageDirectionDirective,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
-  selectedMenuButton: DashboardMenuButton | undefined;
-  constructor(private router: Router) {
+  public lang$: Observable<LanguageType> = new Observable<LanguageType>();
+  public selectedMenuButton: DashboardMenuButton | undefined;
+  public stickyLeft = false;
+
+  constructor(
+    private router: Router,
+    private languageService: LanguageService
+  ) {
+    this.lang$ = this.languageService.currentLanguage$;
     this.router.events
       .pipe(
         filter(
@@ -89,5 +104,9 @@ export class DashboardComponent {
       this.selectedMenuButton = menuButton;
       this.router.navigate([`/admin/${menuButton.route}`]);
     }
+  }
+
+  languageChanged(languageDirection: LanguageDirection): void {
+    this.stickyLeft = languageDirection === 'ltr';
   }
 }

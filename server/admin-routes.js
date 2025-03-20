@@ -72,6 +72,8 @@ router.delete(
         await space.deleteImage(imageUrl);
       }
 
+      // TODO: delete all items in category before
+
       await db.deleteCategory(categoryId);
       const categories = await db.getCategoriesWithItems();
       res.status(201).json(categories);

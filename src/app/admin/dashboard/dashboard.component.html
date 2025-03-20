@@ -1,9 +1,13 @@
-<div class="dashboard-wrapper">
+<div
+  class="dashboard-wrapper"
+  appLanguageDirection
+  (languageChanged)="languageChanged($event)"
+>
   <mat-toolbar>
     <mat-toolbar-row>
       <menu-icon (menuStateChanged)="toggleSidenav($event)"></menu-icon>
-      <!-- <div class="spacer"></div>
-      <app-language-picker></app-language-picker> -->
+      <div class="spacer"></div>
+      <app-language-picker></app-language-picker>
     </mat-toolbar-row>
   </mat-toolbar>
 
@@ -36,7 +40,15 @@
       </div>
     </mat-sidenav>
     <mat-sidenav-content>
-      <div class="content-body" [class.content-body-margin]="isSidenavExpanded">
+      <div
+        class="content-body"
+        [style.margin-left]="
+          stickyLeft ? (isSidenavExpanded ? '200px' : '70px') : ''
+        "
+        [style.margin-right]="
+          !stickyLeft ? (isSidenavExpanded ? '200px' : '70px') : ''
+        "
+      >
         <router-outlet />
       </div>
     </mat-sidenav-content>
