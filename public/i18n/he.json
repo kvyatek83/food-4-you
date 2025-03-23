@@ -33,6 +33,7 @@
   },
   "deleteConfirmationModal": {
     "title": "האם להמשיך במחיקת {{name}}?",
+    "titleOnCallback": "מחיקה מתבצעת",
     "categoryWithItems": "בקטגוריה זאת יש {{itemAmount}} מנות, נא להעביר אותם או שהם ימחקו גם!",
     "categoryWithoutItems": "קטגוריה זאת תמחק לצמיתות.",
     "item": "מנה זאת תמחק לצמיתות.",
@@ -55,6 +56,21 @@
       "actions": "פעולות",
       "itemsIncluded": "מנות"
     }
+  },
+  "categoryForm": {
+    "new": "יצירת קטגוריה חדשה",
+    "edit": "עריכת קטגוריה קיימת",
+    "enName": "שם באנגלית",
+    "enError": "שם באנגלית נדרש",
+    "esName": "שם בספרדית",
+    "esError": "שם בספרדית נדרש",
+    "heName": "שם בעברית",
+    "heError": "שם בעברית נדרש",
+    "existingImage": "תמונה קיימת",
+    "newImage": "תמונה חדשה",
+    "save": "שמירה",
+    "create": "יצירה",
+    "cancel": "ביטול"
   },
   "menu": {
     "category": "קטגוריה",

@@ -21,6 +21,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   imports: [
@@ -43,6 +45,8 @@ import { MatCardModule } from '@angular/material/card';
     MatSidenavModule,
     MatButtonToggleModule,
     MatCardModule,
+    MatTabsModule,
+    MatBadgeModule,
   ],
   exports: [
     MatDividerModule,
@@ -64,6 +68,8 @@ import { MatCardModule } from '@angular/material/card';
     MatSidenavModule,
     MatButtonToggleModule,
     MatCardModule,
+    MatTabsModule,
+    MatBadgeModule,
   ],
   providers: [
     {

@@ -3,15 +3,22 @@
   *ngIf="lang$ | async; let lang"
   appLanguageDirection
 >
-  <h2 mat-dialog-title>
-    {{
-      "deleteConfirmationModal.title"
-        | translate
-          : { name: objectToDelete | propertiesTranslation : lang : "Name" }
-    }}
-  </h2>
+  <ng-container *ngIf="!cbPennding; else deleteTitle">
+    <h2 mat-dialog-title>
+      {{
+        "deleteConfirmationModal.title"
+          | translate
+            : { name: objectToDelete | propertiesTranslation : lang : "Name" }
+      }}
+    </h2>
+  </ng-container>
+  <ng-template #deleteTitle>
+    <h2 mat-dialog-title>
+      {{ "deleteConfirmationModal.titleOnCallback" | translate }}
+    </h2>
+  </ng-template>
 
-  <div mat-dialog-content>
+  <div mat-dialog-content class="content">
     <ng-container *ngIf="!cbPennding; else deleteLoader">
       <ng-container [ngSwitch]="type">
         <ng-container *ngSwitchCase="'category'">
@@ -55,8 +62,8 @@
       {{ "deleteConfirmationModal.cancel" | translate }}
     </button>
     <button
-      mat-stroked-button
-      color="primary"
+      mat-flat-button
+      class="delete-permanently"
       type="button"
       (click)="onSubmit()"
       [disabled]="cbPennding"

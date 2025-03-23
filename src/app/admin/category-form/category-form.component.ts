@@ -10,9 +10,15 @@ import {
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { MaterialModule } from '../../material.module';
-import { LanguageService, LanguageType } from '../../services/lang.service';
+import {
+  LanguageDirection,
+  LanguageService,
+  LanguageType,
+} from '../../services/lang.service';
 import { Category } from '../../travler/travler.models';
 import { LoadFileComponent } from '../../components/load-file/load-file.component';
+import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-category-form',
@@ -22,6 +28,8 @@ import { LoadFileComponent } from '../../components/load-file/load-file.componen
     FormsModule,
     ReactiveFormsModule,
     LoadFileComponent,
+    LanguageDirectionDirective,
+    TranslateModule,
   ],
   templateUrl: './category-form.component.html',
   styleUrl: './category-form.component.scss',
@@ -30,6 +38,7 @@ export class CategoryFormComponent {
   public lang$: Observable<LanguageType> = new Observable<LanguageType>();
   public categoryForm!: FormGroup;
   public categoryImage: File | undefined;
+  public dir: LanguageDirection = 'ltr';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { category?: Category },
@@ -38,9 +47,6 @@ export class CategoryFormComponent {
     private fb: FormBuilder
   ) {
     this.lang$ = this.languageService.currentLanguage$;
-  }
-
-  ngOnInit(): void {
     this.initForm();
   }
 
@@ -56,8 +62,6 @@ export class CategoryFormComponent {
   }
 
   onSubmit(): void {
-    console.log(this.categoryForm.value);
-
     if (
       this.categoryForm.valid &&
       (this.categoryForm.controls['imageUrl'].value || this.categoryImage)
@@ -71,14 +75,16 @@ export class CategoryFormComponent {
   }
 
   imageChanged(file: File): void {
-    console.log(file);
     const formData = new FormData();
     formData.set('file', file, file.name);
-    console.log(formData);
     this.categoryImage = file;
   }
 
   imageRemoved(): void {
     this.categoryImage = undefined;
+  }
+
+  languageChanged(languageDirection: LanguageDirection): void {
+    this.dir = languageDirection;
   }
 }

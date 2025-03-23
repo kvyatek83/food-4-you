@@ -18,36 +18,28 @@ import { ImagePreviewComponent } from '../image-preview/image-preview.component'
   ],
   templateUrl: './load-file.component.html',
   styleUrls: ['./load-file.component.scss'],
+
   animations: [
-    trigger('messageState', [
-      transition('void => *', [
-        style({
-          opacity: 0,
-          transform: 'translateY(20px)',
-        }),
+    trigger('slideState', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateX(100%)' }),
         animate(
-          '0.3s ease-out',
-          style({
-            opacity: 1,
-            transform: 'translateY(0)',
-          })
+          '0.5s ease-out',
+          style({ opacity: 1, transform: 'translateX(0)' })
         ),
       ]),
-      transition('* => void', [
+      transition(':leave', [
         animate(
           '0.2s ease-in',
-          style({
-            opacity: 0,
-            transform: 'translateY(20px)',
-          })
+          style({ opacity: 0, transform: 'translateX(-100%)' })
         ),
       ]),
     ]),
   ],
 })
 export class LoadFileComponent implements OnDestroy {
+  showPreview = false;
   currentFile: any = null;
-  isRtl = false;
   doneUploadFiles = true;
 
   @Output() fileSelected = new EventEmitter<File>();
@@ -77,14 +69,11 @@ export class LoadFileComponent implements OnDestroy {
   }
 
   deleteFile() {
-    this.currentFile = null;
-    this.doneUploadFiles = true;
-    this.fileRemoved.emit();
-  }
-
-  resetUpload() {
-    this.currentFile = null;
-    this.doneUploadFiles = true;
+    this.showPreview = false;
+    setTimeout(() => {
+      this.currentFile = null;
+      this.doneUploadFiles = true;
+    }, 200);
     this.fileRemoved.emit();
   }
 
@@ -114,6 +103,10 @@ export class LoadFileComponent implements OnDestroy {
     if (acceptedTypes.includes(file.type)) {
       // Replace any existing file
       this.currentFile = file;
+      setTimeout(() => {
+        this.showPreview = true;
+        console.log('aaa');
+      }, 200);
       this.currentFile.progress = 0;
       this.simulateUpload();
     } else {

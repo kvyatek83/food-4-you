@@ -21,4 +21,35 @@
       width: 100%;
     }
   }
+
+  .form-feilds {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+  }
+
+  .image-section {
+    width: 100%;
+  }
+
+  .form-load-file {
+    width: 100%;
+  }
+
+  .existing-image {
+    width: 400px;
+    height: 234.5px;
+    border-radius: 12px;
+  }
+
+  .mat-mdc-dialog-actions {
+    gap: 20px;
+  }
+
+  .tab-body-content {
+    margin-top: 10px;
+  }
 }

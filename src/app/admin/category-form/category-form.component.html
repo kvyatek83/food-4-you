@@ -1,67 +1,123 @@
-<div class="category-form-container">
-  <h2 mat-dialog-title>
-    {{ data.category ? "Edit Category" : "Add New Category" }}
-  </h2>
+<div
+  class="category-form-container"
+  appLanguageDirection
+  (languageChanged)="languageChanged($event)"
+>
+  <ng-container *ngIf="data.category; else newForm">
+    <h2 mat-dialog-title>
+      {{ "categoryForm.edit" | translate }}
+    </h2>
+  </ng-container>
+  <ng-template #newForm>
+    <h2 mat-dialog-title>
+      {{ "categoryForm.edit" | translate }}
+    </h2>
+  </ng-template>
 
   <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
     <div mat-dialog-content>
-      <div class="form-content">
-        <div class="form-feilds">
-          <!-- English Name -->
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>English Name</mat-label>
-            <input matInput formControlName="enName" required />
-            <mat-error
-              *ngIf="
-                categoryForm.get('enName')?.invalid &&
-                categoryForm.get('enName')?.touched
-              "
-            >
-              English name is required
-            </mat-error>
-          </mat-form-field>
+      <!-- <div class="form-content"> -->
+      <div class="form-feilds">
+        <mat-form-field appearance="outline" class="full-width" [dir]="dir">
+          <mat-label>{{ "categoryForm.enName" | translate }}</mat-label>
+          <input matInput formControlName="enName" required />
+          <mat-error
+            appLanguageDirection
+            *ngIf="
+              categoryForm.get('enName')?.invalid &&
+              categoryForm.get('enName')?.touched
+            "
+          >
+            {{ "categoryForm.enError" | translate }}
+          </mat-error>
+        </mat-form-field>
 
-          <!-- Hebrew Name -->
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Hebrew Name</mat-label>
-            <input matInput formControlName="heName" required />
-            <mat-error
-              *ngIf="
-                categoryForm.get('heName')?.invalid &&
-                categoryForm.get('heName')?.touched
-              "
-            >
-              Hebrew name is required
-            </mat-error>
-          </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width" [dir]="dir">
+          <mat-label>{{ "categoryForm.heName" | translate }}</mat-label>
+          <input matInput formControlName="heName" required />
+          <mat-error
+            appLanguageDirection
+            *ngIf="
+              categoryForm.get('heName')?.invalid &&
+              categoryForm.get('heName')?.touched
+            "
+          >
+            {{ "categoryForm.heError" | translate }}
+          </mat-error>
+        </mat-form-field>
 
-          <!-- Spanish Name -->
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Spanish Name</mat-label>
-            <input matInput formControlName="esName" required />
-            <mat-error
-              *ngIf="
-                categoryForm.get('esName')?.invalid &&
-                categoryForm.get('esName')?.touched
-              "
-            >
-              Spanish name is required
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div class="form-load-file">
-          <load-file
-            (fileSelected)="imageChanged($event)"
-            (fileRemoved)="imageRemoved()"
-          ></load-file>
-        </div>
+        <mat-form-field appearance="outline" class="full-width" [dir]="dir">
+          <mat-label>{{ "categoryForm.esName" | translate }}</mat-label>
+          <input matInput formControlName="esName" required />
+          <mat-error
+            appLanguageDirection
+            *ngIf="
+              categoryForm.get('esName')?.invalid &&
+              categoryForm.get('esName')?.touched
+            "
+          >
+            {{ "categoryForm.esError" | translate }}
+          </mat-error>
+        </mat-form-field>
+        <!-- </div> -->
+        <ng-container
+          *ngIf="categoryForm.get('imageUrl')?.value; else noExistingImage"
+        >
+          <div class="image-section">
+            <mat-tab-group>
+              <mat-tab [label]="'categoryForm.existingImage' | translate">
+                <div class="tab-body-content">
+                  <img
+                    [src]="categoryForm.get('imageUrl')?.value"
+                    class="existing-image"
+                    [alt]="categoryForm.get('enName')?.value"
+                  />
+                </div>
+              </mat-tab>
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <div
+                    *ngIf="categoryImage; else withoutBadge"
+                    appLanguageDirection
+                    matBadge="!"
+                    matBadgeOverlap="false"
+                  >
+                    {{ "categoryForm.newImage" | translate }}
+                  </div>
+                  <ng-template #withoutBadge>
+                    <div>
+                      {{ "categoryForm.newImage" | translate }}
+                    </div>
+                  </ng-template>
+                </ng-template>
+                <div class="tab-body-content">
+                  <div class="form-load-file">
+                    <load-file
+                      (fileSelected)="imageChanged($event)"
+                      (fileRemoved)="imageRemoved()"
+                    ></load-file>
+                  </div></div
+              ></mat-tab>
+            </mat-tab-group>
+          </div>
+        </ng-container>
+        <ng-template #noExistingImage>
+          <div class="form-load-file">
+            <load-file
+              (fileSelected)="imageChanged($event)"
+              (fileRemoved)="imageRemoved()"
+            ></load-file>
+          </div>
+        </ng-template>
       </div>
     </div>
 
     <div mat-dialog-actions align="center">
-      <button mat-button type="button" mat-dialog-close>Cancel</button>
+      <button mat-button type="button" mat-dialog-close>
+        {{ "categoryForm.cancel" | translate }}
+      </button>
       <button
-        mat-raised-button
+        mat-flat-button
         color="primary"
         type="submit"
         [disabled]="
@@ -69,7 +125,12 @@
           (!this.categoryForm.controls['imageUrl'].value && !this.categoryImage)
         "
       >
-        {{ data.category ? "Update" : "Create" }}
+        <ng-container *ngIf="data.category; else createAction">
+          {{ "categoryForm.save" | translate }}
+        </ng-container>
+        <ng-template #createAction>
+          {{ "categoryForm.create" | translate }}
+        </ng-template>
       </button>
     </div>
   </form>

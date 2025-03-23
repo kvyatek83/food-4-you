@@ -33,6 +33,7 @@
   },
   "deleteConfirmationModal": {
     "title": "Are you sure you want to delete {{name}}?",
+    "titleOnCallback": "Deletion in progress",
     "categoryWithItems": "This category has {{itemAmount}} items, move them first or they will be remove too!",
     "categoryWithoutItems": "This category will permanently remove.",
     "item": "This item will permanently remove.",
@@ -55,6 +56,21 @@
       "actions": "Actions",
       "itemsIncluded": "Items"
     }
+  },
+  "categoryForm": {
+    "new": "Add New Category",
+    "edit": "Edit Category",
+    "save": "Save",
+    "enName": "English Name",
+    "enError": "English name is required",
+    "esName": "Spanish Name",
+    "esError": "Spanish name is required",
+    "heName": "Hebrew Name",
+    "heError": "Hebrew name is required",
+    "existingImage": "Existing Image",
+    "newImage": "New Image",
+    "create": "Create",
+    "cancel": "Cancel"
   },
   "menu": {
     "category": "Category",

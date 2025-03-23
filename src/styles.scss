@@ -13,6 +13,12 @@
       container-max-width: none,
     )
   );
+  @include mat.badge-overrides(
+    (
+      background-color: var(--mat-sys-primary, #005cbb),
+      text-color: var(--mat-sys-primary-container, #d7e3ff),
+    )
+  );
 }
 
 html,
@@ -62,6 +68,11 @@ body {
   .mdc-list-item__primary-text {
     margin-right: 0;
     margin-left: auto;
+  }
+
+  .mat-badge-after .mat-badge-content {
+    right: 100%;
+    left: 0;
   }
 }
 
