@@ -45,3 +45,8 @@ Thumbs.db
 .env
 database.sqlite
 app.db
+
+**/.terraform
+terraform.tfstate*
+.terraform.lock.hcl
+src.tar.gz
