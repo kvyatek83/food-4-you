@@ -5,6 +5,8 @@ const space = require("./space-utils");
 const { v4: uuidv4 } = require("uuid");
 const { verifyToken, checkRole } = require("./auth-service");
 
+// ------------- CATEGORY ENDPOINTS -------------
+
 router.post(
   "/category",
   verifyToken,
@@ -41,11 +43,45 @@ router.put(
   "/category",
   verifyToken,
   checkRole("admin"),
-  // space.upload.single("image"),
+  space.upload.single("image"),
   async (req, res) => {
     try {
-      // TODO: finish method
-      res.status(201).send("Category created");
+      let category = req.body.category;
+
+      if (typeof category === "string") {
+        category = JSON.parse(category);
+      }
+
+      // Find the existing category
+      const existingCategory = await db.findCategory(category.uuid);
+
+      if (!existingCategory) {
+        return res.status(404).send("Category not found");
+      }
+
+      // Check if there's a new image
+      if (req.file) {
+        // If there's an existing image, delete it from S3
+        if (existingCategory.imageUrl) {
+          const oldImageKey =
+            existingCategory.imageUrl.split("amazonaws.com/")[1];
+          await space.deleteImage(oldImageKey);
+        }
+
+        // Set the new image URL
+        category.imageUrl = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${req.file.key}`;
+      }
+
+      // else {
+      //   // Keep the existing image URL if no new image is uploaded
+      //   category.imageUrl = existingCategory.imageUrl;
+      // }
+
+      // Update the category
+      await db.updateCategory(category);
+
+      const categories = await db.getCategoriesWithItems();
+      res.status(200).json(categories);
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal Server Error");
@@ -60,21 +96,76 @@ router.delete(
   async (req, res) => {
     try {
       const categoryId = req.params.id;
-      let category = await db.findCategory(categoryId);
+      const category = await db.findCategory(categoryId);
 
-      if (category.imageUrl) {
-        // TODO: amazonaws.com in env var?!
-        const imageUrl = category.imageUrl.split("amazonaws.com/")[1];
-
-        console.log(category.imageUrl);
-        console.log(imageUrl);
-
-        await space.deleteImage(imageUrl);
+      if (!category) {
+        return res.status(404).send("Category not found");
       }
 
-      // TODO: delete all items in category before
+      // Delete the category's image from S3 if it exists
+      if (category.imageUrl) {
+        const imageKey = category.imageUrl.split("amazonaws.com/")[1];
+        await space.deleteImage(imageKey);
+      }
 
+      // Delete all items in the category
+      await space.deleteFolder(`items/${categoryId}`);
+      await db.deleteItemsByCategoryId(categoryId);
+
+      // Delete the category itself
       await db.deleteCategory(categoryId);
+
+      const categories = await db.getCategoriesWithItems();
+      res.status(200).json(categories);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
+
+// ------------- ITEM ENDPOINTS -------------
+
+// Create new item
+router.post(
+  "/item",
+  verifyToken,
+  checkRole("admin"),
+  space.upload.single("image"),
+  async (req, res) => {
+    try {
+      let item = req.body.item;
+
+      if (typeof item === "string") {
+        item = JSON.parse(item);
+      }
+
+      item.uuid = uuidv4();
+
+      // Handle image upload if provided
+      if (req.file) {
+        item.imageUrl = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${req.file.key}`;
+      }
+
+      // Convert availability object to individual fields if provided
+      if (item.availability) {
+        item.availableMonday = item.availability.monday;
+        item.availableTuesday = item.availability.tuesday;
+        item.availableWednesday = item.availability.wednesday;
+        item.availableThursday = item.availability.thursday;
+        item.availableFriday = item.availability.friday;
+        item.availableSaturday = item.availability.saturday;
+        item.availableSunday = item.availability.sunday;
+        delete item.availability;
+      }
+
+      // Convert availableAddOnUuids to JSON string if it's an array
+      if (Array.isArray(item.availableAddOnUuids)) {
+        item.availableAddOnUuids = JSON.stringify(item.availableAddOnUuids);
+      }
+
+      await db.addItem(item, item.categoryId);
+
       const categories = await db.getCategoriesWithItems();
       res.status(201).json(categories);
     } catch (error) {
@@ -84,26 +175,231 @@ router.delete(
   }
 );
 
-router.post("/item", verifyToken, checkRole("admin"), async (req, res) => {
-  const { item, categoryId, image } = req.body;
+// Get a single item
+router.get("/item/:id", verifyToken, checkRole("admin"), async (req, res) => {
   try {
-    await db.addItem(item, categoryId);
-    res.status(201).send("Item created");
+    const item = await db.findItem(req.params.id);
+    if (!item) {
+      return res.status(404).send("Item not found");
+    }
+
+    const plainItem = item.get({ plain: true });
+
+    // Parse availableAddOnUuids
+    plainItem.availableAddOnUuids = plainItem.availableAddOnUuids
+      ? JSON.parse(plainItem.availableAddOnUuids)
+      : [];
+
+    // Format availability as an object for frontend convenience
+    plainItem.availability = {
+      monday: plainItem.availableMonday,
+      tuesday: plainItem.availableTuesday,
+      wednesday: plainItem.availableWednesday,
+      thursday: plainItem.availableThursday,
+      friday: plainItem.availableFriday,
+      saturday: plainItem.availableSaturday,
+      sunday: plainItem.availableSunday,
+    };
+
+    res.json(plainItem);
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
 });
 
+// Update an item
+router.put(
+  "/item/:id",
+  verifyToken,
+  checkRole("admin"),
+  space.upload.single("image"),
+  async (req, res) => {
+    try {
+      let item = req.body.item;
+      if (typeof item === "string") {
+        item = JSON.parse(item);
+      }
+
+      const existingItem = await db.findItem(req.params.id);
+      if (!existingItem) {
+        return res.status(404).send("Item not found");
+      }
+
+      // Ensure the item keeps its UUID
+      item.uuid = req.params.id;
+
+      // Handle image upload if provided
+      if (req.file) {
+        // Delete old image if exists
+        if (existingItem.imageUrl) {
+          const oldImageKey = existingItem.imageUrl.split("amazonaws.com/")[1];
+          await space.deleteImage(oldImageKey);
+        }
+
+        // Set new image URL
+        item.imageUrl = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${req.file.key}`;
+      }
+
+      // else {
+      //   // Keep existing image
+      //   item.imageUrl = existingItem.imageUrl;
+      // }
+
+      // Convert availability object to individual fields if provided
+      if (item.availability) {
+        item.availableMonday = item.availability.monday;
+        item.availableTuesday = item.availability.tuesday;
+        item.availableWednesday = item.availability.wednesday;
+        item.availableThursday = item.availability.thursday;
+        item.availableFriday = item.availability.friday;
+        item.availableSaturday = item.availability.saturday;
+        item.availableSunday = item.availability.sunday;
+        delete item.availability;
+      }
+
+      // Convert availableAddOnUuids to JSON string if it's an array
+      if (Array.isArray(item.availableAddOnUuids)) {
+        item.availableAddOnUuids = JSON.stringify(item.availableAddOnUuids);
+      }
+
+      await db.updateItem(item);
+
+      const categories = await db.getCategoriesWithItems();
+      res.status(200).json(categories);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
+
+// Delete an item
+router.delete(
+  "/item/:id",
+  verifyToken,
+  checkRole("admin"),
+  async (req, res) => {
+    try {
+      const itemId = req.params.id;
+      const item = await db.findItem(itemId);
+
+      if (!item) {
+        return res.status(404).send("Item not found");
+      }
+
+      // Delete the item's image from S3 if it exists
+      if (item.imageUrl) {
+        const imageKey = item.imageUrl.split("amazonaws.com/")[1];
+        await space.deleteImage(imageKey);
+      }
+
+      await db.deleteItem(itemId);
+
+      const categories = await db.getCategoriesWithItems();
+      res.status(200).json(categories);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
+
+// ------------- ADD-ON ENDPOINTS -------------
+
+// Create new add-on
 router.post("/add-on", verifyToken, checkRole("admin"), async (req, res) => {
-  const addOn = req.body;
   try {
+    let addOn = req.body;
+
+    if (typeof addOn === "string") {
+      addOn = JSON.parse(addOn);
+    }
+
+    // Generate UUID if not provided
+    if (!addOn.uuid) {
+      addOn.uuid = uuidv4();
+    }
+
+    // Set default inStock value if not provided
+    if (addOn.inStock === undefined) {
+      addOn.inStock = true;
+    }
+
     await db.addAddOn(addOn);
-    res.status(201).send("Add-on created");
+
+    const addOns = await db.getAddOns();
+    res.status(201).json(addOns);
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
 });
+
+// Get a single add-on
+router.get("/add-on/:id", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    const addOn = await db.findAddOn(req.params.id);
+    if (!addOn) {
+      return res.status(404).send("Add-on not found");
+    }
+    res.json(addOn.get({ plain: true }));
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// Update an add-on
+router.put("/add-on/:id", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    let addOn = req.body;
+
+    if (typeof addOn === "string") {
+      addOn = JSON.parse(addOn);
+    }
+
+    const existingAddOn = await db.findAddOn(req.params.id);
+    if (!existingAddOn) {
+      return res.status(404).send("Add-on not found");
+    }
+
+    // Ensure UUID is preserved
+    addOn.uuid = req.params.id;
+
+    await db.updateAddOn(addOn);
+
+    const addOns = await db.getAddOns();
+    res.status(200).json(addOns);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// Delete an add-on
+router.delete(
+  "/add-on/:id",
+  verifyToken,
+  checkRole("admin"),
+  async (req, res) => {
+    try {
+      const addOnId = req.params.id;
+
+      const existingAddOn = await db.findAddOn(addOnId);
+      if (!existingAddOn) {
+        return res.status(404).send("Add-on not found");
+      }
+
+      await db.deleteAddOn(addOnId);
+
+      const addOns = await db.getAddOns();
+      res.status(200).json(addOns);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
 
 module.exports = router;

@@ -13,6 +13,18 @@ router.get("/categories", async (req, res) => {
   }
 });
 
+// Get menu items filtered by day
+router.get("/menu/:day?", async (req, res) => {
+  try {
+    const day = req.params.day;
+    const availableItems = await db.getCategoriesWithAvailableItems(day);
+    res.json(availableItems);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 router.get("/add-ons", async (req, res) => {
   try {
     const addOns = await db.getAddOns();

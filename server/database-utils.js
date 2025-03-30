@@ -47,6 +47,11 @@ const AddOn = sequelize.define("AddOn", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  inStock: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
 });
 
 // Define Category model
@@ -76,7 +81,7 @@ const Category = sequelize.define("Category", {
   },
 });
 
-// Define Item model
+// Define Item model with availability fields
 const Item = sequelize.define("Item", {
   uuid: {
     type: DataTypes.STRING,
@@ -128,11 +133,47 @@ const Item = sequelize.define("Item", {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  // Availability fields - one for each day of the week
+  availableMonday: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
+  availableTuesday: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
+  availableWednesday: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
+  availableThursday: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
+  availableFriday: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
+  availableSaturday: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
+  availableSunday: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
 });
 
 // Setting up associations
-Category.hasMany(Item, { foreignKey: "categoryId", as: "items" }); // Use 'items' as alias fo the FE
-Item.belongsTo(Category, { foreignKey: "categoryId", as: "category" }); // Use 'category' as alias fo the FE
+Category.hasMany(Item, { foreignKey: "categoryId", as: "items" });
+Item.belongsTo(Category, { foreignKey: "categoryId", as: "category" });
 
 // Sync all models with the database
 async function syncModels() {
@@ -171,6 +212,14 @@ async function updateAddOn(addOn) {
   await AddOn.upsert(addOn);
 }
 
+async function findAddOn(addOnId) {
+  return await AddOn.findOne({ where: { uuid: addOnId } });
+}
+
+async function deleteAddOn(addOnId) {
+  await AddOn.destroy({ where: { uuid: addOnId } });
+}
+
 // Functions for category
 async function addCategory(category) {
   await Category.create(category);
@@ -195,12 +244,26 @@ async function findCategory(categoryId) {
 
 // Functions for item
 async function addItem(item, categoryId) {
+  console.log(categoryId);
+
   item.categoryId = categoryId;
   await Item.create(item);
 }
 
 async function updateItem(item) {
   await Item.upsert(item);
+}
+
+async function findItem(itemId) {
+  return await Item.findOne({ where: { uuid: itemId } });
+}
+
+async function deleteItem(itemId) {
+  await Item.destroy({ where: { uuid: itemId } });
+}
+
+async function deleteItemsByCategoryId(categoryId) {
+  await Item.destroy({ where: { categoryId } });
 }
 
 async function getAddOns() {
@@ -217,7 +280,7 @@ async function getCategoriesWithItems() {
     include: [
       {
         model: Item,
-        as: "items", // -> Use the same alias as defined in the association
+        as: "items",
       },
     ],
   });
@@ -228,6 +291,79 @@ async function getCategoriesWithItems() {
       item.availableAddOnUuids = item.availableAddOnUuids
         ? JSON.parse(item.availableAddOnUuids)
         : [];
+
+      // Format availability as an object for frontend convenience
+      item.availability = {
+        monday: item.availableMonday,
+        tuesday: item.availableTuesday,
+        wednesday: item.availableWednesday,
+        thursday: item.availableThursday,
+        friday: item.availableFriday,
+        saturday: item.availableSaturday,
+        sunday: item.availableSunday,
+      };
+
+      return item;
+    });
+
+    return {
+      ...cat.get({ plain: true }),
+      items,
+    };
+  });
+}
+
+// Get categories with items available on a specific day
+async function getCategoriesWithAvailableItems(day) {
+  if (!day) {
+    // Default to current day of the week
+    const days = [
+      "sunday",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+    ];
+    day = days[new Date().getDay()].toLowerCase();
+  }
+
+  day = day.toLowerCase();
+  const availabilityField = `available${
+    day.charAt(0).toUpperCase() + day.slice(1)
+  }`;
+
+  const categories = await Category.findAll({
+    include: [
+      {
+        model: Item,
+        as: "items",
+        where: {
+          [availabilityField]: true,
+        },
+      },
+    ],
+  });
+
+  return categories.map((cat) => {
+    const items = cat.get({ plain: true }).items.map((item) => {
+      // Parse availableAddOnUuids as an array
+      item.availableAddOnUuids = item.availableAddOnUuids
+        ? JSON.parse(item.availableAddOnUuids)
+        : [];
+
+      // Format availability as an object for frontend convenience
+      item.availability = {
+        monday: item.availableMonday,
+        tuesday: item.availableTuesday,
+        wednesday: item.availableWednesday,
+        thursday: item.availableThursday,
+        friday: item.availableFriday,
+        saturday: item.availableSaturday,
+        sunday: item.availableSunday,
+      };
+
       return item;
     });
 
@@ -243,15 +379,25 @@ module.exports = {
   User,
   Category,
   Item,
+  AddOn,
   readUsersFromDatabase,
   findUser,
   addUser,
   addAddOn,
+  updateAddOn,
+  findAddOn,
+  deleteAddOn,
   addCategory,
-  addItem,
-  getAddOns,
-  getCategoriesWithItems,
-  clearDatabase,
+  updateCategory,
   deleteCategory,
   findCategory,
+  addItem,
+  updateItem,
+  findItem,
+  deleteItem,
+  deleteItemsByCategoryId,
+  getAddOns,
+  getCategoriesWithItems,
+  getCategoriesWithAvailableItems,
+  clearDatabase,
 };
