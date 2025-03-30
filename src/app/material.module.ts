@@ -23,6 +23,10 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   imports: [
@@ -47,6 +51,10 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatCardModule,
     MatTabsModule,
     MatBadgeModule,
+    MatMenuModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    MatProgressSpinnerModule,
   ],
   exports: [
     MatDividerModule,
@@ -70,6 +78,10 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatCardModule,
     MatTabsModule,
     MatBadgeModule,
+    MatMenuModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     {

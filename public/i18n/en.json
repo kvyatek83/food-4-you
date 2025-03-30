@@ -49,7 +49,7 @@
     "containOneItem": "{{includingItems}} item",
     "containItems": "{{includingItems}} items",
     "serchLabel": "Search",
-    "serchPlaceholder": "Type ccategory...",
+    "serchPlaceholder": "Type category...",
     "tableHeader": {
       "image": "Image",
       "name": "Name",
@@ -60,6 +60,7 @@
   "categoryForm": {
     "new": "Add New Category",
     "edit": "Edit Category",
+    "saveCategory": "Saving Category",
     "save": "Save",
     "enName": "English Name",
     "enError": "English name is required",
@@ -71,6 +72,79 @@
     "newImage": "New Image",
     "create": "Create",
     "cancel": "Cancel"
+  },
+  "itemOverview": {
+    "gridView": "Grid View",
+    "tableView": "Table View",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Type item...",
+    "categoryFilterLabel": "Filter category",
+    "addOnsAvailable": "{{count}} add-ons available",
+    "tableHeader": {
+      "name": "Name",
+      "price": "Price",
+      "addOns": "Add-ons",
+      "addOnPrice": "Price per add-on ",
+      "freeAddOnAllowed": "Free Add-ons allowed",
+      "image": "Image",
+      "actions": "Actions"
+    }
+  },
+  "itemForm": {
+    "create": "Add New Item",
+    "edit": "Edit Item",
+    "save": "Save",
+    "cancel": "Cancel",
+    "basicInfo": "Basic Information",
+    "details": "Item Details",
+    "image": "Item Image",
+    "addOns": "Add-ons Options",
+    "parentCategory": "Parent Category",
+    "parentCategoryError": "Parent category is required",
+    "enName": "English Name",
+    "enError": "English name is required",
+    "heName": "Hebrew Name",
+    "heError": "Hebrew name is required",
+    "esName": "Spanish Name",
+    "esError": "Spanish name is required",
+    "price": "Price",
+    "priceError": "Price is required",
+    "enDetails": "English Description",
+    "enDetailsError": "English description is required",
+    "heDetails": "Hebrew Description",
+    "heDetailsError": "Hebrew description is required",
+    "esDetails": "Spanish Description",
+    "esDetailsError": "Spanish description is required",
+    "existingImage": "Existing Image",
+    "newImage": "New Image",
+    "availableAddOns": "Available Add-ons",
+    "availableAddOnsPlaceholder": "Search Add-ons",
+    "addOnPrice": "Add-on Price",
+    "freeAvailableAddOns": "Free Add-ons Included",
+    "freeAddOnsHint": "Number of add-ons customers can select for free"
+  },
+  "addOnOverview": {
+    "searchLabel": "Search",
+    "searchPlaceholder": "Type add-on...",
+    "noAddOns": "No add-ons found",
+    "tableHeader": {
+      "enName": "English Name",
+      "heName": "Hebrew Name",
+      "esName": "Spanish Name",
+      "actions": "Actions"
+    }
+  },
+  "addOnForm": {
+    "create": "Add New Add-on",
+    "edit": "Edit Add-on",
+    "save": "Save",
+    "cancel": "Cancel",
+    "enName": "English Name",
+    "enError": "English name is required",
+    "heName": "Hebrew Name",
+    "heError": "Hebrew name is required",
+    "esName": "Spanish Name",
+    "esError": "Spanish name is required"
   },
   "menu": {
     "category": "Category",

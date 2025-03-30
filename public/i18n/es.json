@@ -2,10 +2,10 @@
   "appName": "BeOne",
   "hello": "Hola {{value}}",
   "login": {
-    "title": "Welcome to",
-    "companyName": "Chabad house",
+    "title": "Bienvenido a",
+    "companyName": "Casa de Chabad",
     "username": "Introduce tu nombre de usuario",
-    "usernamePlaceholder": "Your User Name",
+    "usernamePlaceholder": "Tu nombre de usuario",
     "password": "Introduce tu contraseña",
     "submit": "Iniciar sesión"
   },
@@ -14,68 +14,142 @@
       "buttons": {
         "titles": {
           "generalOverview": "General",
-          "categoriesOverview": "Categories",
-          "itemsOverview": "Items",
-          "addOnsOverview": "Add-Ons",
-          "ordersOverview": "Orders",
-          "scheduleOverview": "Schedule"
+          "categoriesOverview": "Categorías",
+          "itemsOverview": "Artículos",
+          "addOnsOverview": "Complementos",
+          "ordersOverview": "Pedidos",
+          "scheduleOverview": "Horario"
         }
       }
     }
   },
   "loadFiles": {
-    "load": "Load dish image",
-    "upload": "Upload your list",
-    "dnd": "Drag and drop image here",
-    "or": "Or",
-    "browse": "Browse for image",
-    "submit": "Submit",
-    "cancel": "Cancel"
+    "load": "Cargar imagen del plato",
+    "upload": "Subir tu lista",
+    "dnd": "Arrastra y suelta la imagen aquí",
+    "or": "O",
+    "browse": "Buscar imagen",
+    "submit": "Enviar",
+    "cancel": "Cancelar"
   },
   "deleteConfirmationModal": {
-    "title": "Are you sure you want to delete {{name}}?",
-    "titleOnCallback": "Deletion in progress",
-    "categoryWithItems": "This category has {{itemAmount}} items, move them first or they will be remove too!",
-    "categoryWithoutItems": "This category will permanently remove.",
-    "item": "This item will permanently remove.",
-    "addOnExistOnItems": "This add-on exist in {{itemAmount}} items, this action will delete it from all items as well.",
-    "addOnNotExistOnItems": "This add-on will permanently remove.",
-    "cancel": "Cancel",
-    "submit": "Delete"
+    "title": "¿Estás seguro de que quieres eliminar {{name}}?",
+    "titleOnCallback": "Eliminación en progreso",
+    "categoryWithItems": "Esta categoría tiene {{itemAmount}} artículos, muévelos primero o también se eliminarán.",
+    "categoryWithoutItems": "Esta categoría se eliminará permanentemente.",
+    "item": "Este artículo se eliminará permanentemente.",
+    "addOnExistOnItems": "Este complemento existe en {{itemAmount}} artículos, esta acción lo eliminará de todos los artículos también.",
+    "addOnNotExistOnItems": "Este complemento se eliminará permanentemente.",
+    "cancel": "Cancelar",
+    "submit": "Eliminar"
   },
   "categoryOverview": {
-    "gridView": "Grid View",
-    "tableView": "Table View",
-    "notContainItems": "No items yet",
-    "containOneItem": "{{includingItems}} items",
-    "containItems": "{{includingItems}} item",
-    "serchLabel": "Search",
-    "serchPlaceholder": "Type ccategory...",
+    "gridView": "Vista de cuadrícula",
+    "tableView": "Vista de tabla",
+    "notContainItems": "Aún no hay artículos",
+    "containOneItem": "{{includingItems}} artículo",
+    "containItems": "{{includingItems}} artículos",
+    "serchLabel": "Buscar",
+    "serchPlaceholder": "Buscar categoría...",
     "tableHeader": {
-      "image": "Image",
-      "name": "Name",
-      "actions": "Actions",
-      "itemsIncluded": "Items"
+      "image": "Imagen",
+      "name": "Nombre",
+      "actions": "Acciones",
+      "itemsIncluded": "Artículos"
     }
   },
   "categoryForm": {
-    "new": "Add New Category",
-    "edit": "Edit Category",
-    "enName": "English Name",
-    "enError": "English name is required",
-    "esName": "Spanish Name",
-    "esError": "Spanish name is required",
-    "heName": "Hebrew Name",
-    "heError": "Hebrew name is required",
-    "existingImage": "Existing Image",
-    "newImage": "New Image",
-    "save": "Save",
-    "create": "Create",
-    "cancel": "Cancel"
+    "new": "Añadir nueva categoría",
+    "edit": "Editar categoría",
+    "saveCategory": "Saving Category",
+    "enName": "Nombre en inglés",
+    "enError": "El nombre en inglés es obligatorio",
+    "esName": "Nombre en español",
+    "esError": "El nombre en español es obligatorio",
+    "heName": "Nombre en hebreo",
+    "heError": "El nombre en hebreo es obligatorio",
+    "existingImage": "Imagen existente",
+    "newImage": "Nueva imagen",
+    "save": "Guardar",
+    "create": "Crear",
+    "cancel": "Cancelar"
+  },
+  "itemOverview": {
+    "gridView": "Vista de cuadrícula",
+    "tableView": "Vista de tabla",
+    "searchLabel": "Buscar",
+    "searchPlaceholder": "Buscar artículo...",
+    "categoryFilterLabel": "Categoría de filtro",
+    "addOnsAvailable": "{{count}} complementos disponibles",
+    "tableHeader": {
+      "name": "Nombre",
+      "price": "Precio",
+      "addOns": "Complementos",
+      "addOnPrice": "Price per add-on ",
+      "freeAddOnAllowed": "Free Add-ons allowed",
+      "image": "Imagen",
+      "actions": "Acciones"
+    }
+  },
+  "itemForm": {
+    "create": "Añadir nuevo artículo",
+    "edit": "Editar artículo",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "basicInfo": "Información básica",
+    "details": "Detalles del artículo",
+    "image": "Imagen del artículo",
+    "addOns": "Opciones de complementos",
+    "parentCategory": "Parent Category",
+    "parentCategoryError": "Parent category is required",
+    "enName": "Nombre en inglés",
+    "enError": "El nombre en inglés es obligatorio",
+    "heName": "Nombre en hebreo",
+    "heError": "El nombre en hebreo es obligatorio",
+    "esName": "Nombre en español",
+    "esError": "El nombre en español es obligatorio",
+    "price": "Precio",
+    "priceError": "El precio es obligatorio",
+    "enDetails": "Descripción en inglés",
+    "enDetailsError": "La descripción en inglés es obligatoria",
+    "heDetails": "Descripción en hebreo",
+    "heDetailsError": "La descripción en hebreo es obligatoria",
+    "esDetails": "Descripción en español",
+    "esDetailsError": "La descripción en español es obligatoria",
+    "existingImage": "Imagen existente",
+    "newImage": "Nueva imagen",
+    "availableAddOns": "Complementos disponibles",
+    "availableAddOnsPlaceholder": "Search Add-ons",
+    "addOnPrice": "Precio de complementos",
+    "freeAvailableAddOns": "Complementos gratuitos incluidos",
+    "freeAddOnsHint": "Número de complementos que los clientes pueden seleccionar gratis"
+  },
+  "addOnOverview": {
+    "searchLabel": "Buscar",
+    "searchPlaceholder": "Buscar complemento...",
+    "noAddOns": "No se encontraron complementos",
+    "tableHeader": {
+      "enName": "Nombre en inglés",
+      "heName": "Nombre en hebreo",
+      "esName": "Nombre en español",
+      "actions": "Acciones"
+    }
+  },
+  "addOnForm": {
+    "create": "Añadir nuevo complemento",
+    "edit": "Editar complemento",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "enName": "Nombre en inglés",
+    "enError": "El nombre en inglés es obligatorio",
+    "heName": "Nombre en hebreo",
+    "heError": "El nombre en hebreo es obligatorio",
+    "esName": "Nombre en español",
+    "esError": "El nombre en español es obligatorio"
   },
   "menu": {
-    "category": "Category",
-    "item": "Item"
+    "category": "Categoría",
+    "item": "Artículo"
   },
   "addOns": {
     "title": "Por favor, verifica lo que deseas",
@@ -84,9 +158,9 @@
     "close": "Cerrar"
   },
   "itemPreview": {
-    "title": "Preview {{itemName}} was selected",
-    "noAdditions": "No Additions.",
-    "close": "close"
+    "title": "Vista previa del resumen de {{itemName}}",
+    "noAdditions": "Sin complementos.",
+    "close": "Cerrar"
   },
   "notifications": {
     "title": {

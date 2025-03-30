@@ -60,6 +60,7 @@
   "categoryForm": {
     "new": "יצירת קטגוריה חדשה",
     "edit": "עריכת קטגוריה קיימת",
+    "saveCategory": "שמירה מתבצעת",
     "enName": "שם באנגלית",
     "enError": "שם באנגלית נדרש",
     "esName": "שם בספרדית",
@@ -71,6 +72,79 @@
     "save": "שמירה",
     "create": "יצירה",
     "cancel": "ביטול"
+  },
+  "itemOverview": {
+    "gridView": "תצוגת קלפים",
+    "tableView": "תצוגת טבלה",
+    "searchLabel": "חיפוש",
+    "searchPlaceholder": "נא להקליד מנה",
+    "categoryFilterLabel": "סינון לפי קטגוריה",
+    "addOnsAvailable": "{{count}} תוספות זמינות",
+    "tableHeader": {
+      "name": "שם",
+      "price": "מחיר",
+      "addOns": "תוספות",
+      "addOnPrice": "מחיר לתוספת",
+      "freeAddOnAllowed": "כמות תוספות בחינם",
+      "image": "תמונה",
+      "actions": "פעולות"
+    }
+  },
+  "itemForm": {
+    "create": "יצירת מנה חדשה",
+    "edit": "עריכת מנה",
+    "save": "שמירה",
+    "cancel": "ביטול",
+    "basicInfo": "מידע בסיסי",
+    "details": "פרטי המנה",
+    "image": "תמונת המנה",
+    "addOns": "אפשרויות תוספות",
+    "parentCategory": "תחת קטגוריה",
+    "parentCategoryError": "קטגוריה נדרשת",
+    "enName": "שם באנגלית",
+    "enError": "שם באנגלית נדרש",
+    "heName": "שם בעברית",
+    "heError": "שם בעברית נדרש",
+    "esName": "שם בספרדית",
+    "esError": "שם בספרדית נדרש",
+    "price": "מחיר",
+    "priceError": "מחיר נדרש",
+    "enDetails": "תיאור באנגלית",
+    "enDetailsError": "תיאור באנגלית נדרש",
+    "heDetails": "תיאור בעברית",
+    "heDetailsError": "תיאור בעברית נדרש",
+    "esDetails": "תיאור בספרדית",
+    "esDetailsError": "תיאור בספרדית נדרש",
+    "existingImage": "תמונה קיימת",
+    "newImage": "תמונה חדשה",
+    "availableAddOns": "תוספות זמינות",
+    "availableAddOnsPlaceholder": "חיפוש תוספות",
+    "addOnPrice": "מחיר תוספת",
+    "freeAvailableAddOns": "תוספות חינם כלולות",
+    "freeAddOnsHint": "מספר התוספות שהלקוחות יכולים לבחור בחינם"
+  },
+  "addOnOverview": {
+    "searchLabel": "חיפוש",
+    "searchPlaceholder": "נא להקליד תוספת",
+    "noAddOns": "לא נמצאו תוספות",
+    "tableHeader": {
+      "enName": "שם באנגלית",
+      "heName": "שם בעברית",
+      "esName": "שם בספרדית",
+      "actions": "פעולות"
+    }
+  },
+  "addOnForm": {
+    "create": "יצירת תוספת חדשה",
+    "edit": "עריכת תוספת",
+    "save": "שמירה",
+    "cancel": "ביטול",
+    "enName": "שם באנגלית",
+    "enError": "שם באנגלית נדרש",
+    "heName": "שם בעברית",
+    "heError": "שם בעברית נדרש",
+    "esName": "שם בספרדית",
+    "esError": "שם בספרדית נדרש"
   },
   "menu": {
     "category": "קטגוריה",
