@@ -57,8 +57,6 @@ export class CategoriesOverviewComponent {
       .pipe(filter((term) => term !== null))
       .subscribe((term) => {
         this.filteredCategories = this.categories.filter((category) => {
-          console.log(term);
-
           const value = term.toLowerCase();
           return (
             category.enName.toLowerCase().includes(value) ||
@@ -81,7 +79,6 @@ export class CategoriesOverviewComponent {
   }
 
   editCategory(category: Category) {
-    console.log('Edit category:', category);
     const dialogRef = this.dialog.open(CategoryFormComponent, {
       data: {
         category,

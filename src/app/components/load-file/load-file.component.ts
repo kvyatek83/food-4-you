@@ -105,7 +105,6 @@ export class LoadFileComponent implements OnDestroy {
       this.currentFile = file;
       setTimeout(() => {
         this.showPreview = true;
-        console.log('aaa');
       }, 200);
       this.currentFile.progress = 0;
       this.simulateUpload();

@@ -244,8 +244,6 @@ async function findCategory(categoryId) {
 
 // Functions for item
 async function addItem(item, categoryId) {
-  console.log(categoryId);
-
   item.categoryId = categoryId;
   await Item.create(item);
 }

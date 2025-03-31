@@ -47,8 +47,6 @@ export class ItemAddOnsSelectionsComponent {
   ) {
     this.lang$ = this.languageService.currentLanguage$;
 
-    console.log(data);
-
     this.pricePerAddOn = data?.addOnPrice;
     this.freeAvailableAddOns = data?.freeAvailableAddOns;
     this.availableAddOns = (data.availableAddOnUuids as string[])
