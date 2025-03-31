@@ -1,1 +1,163 @@
-<p>items-overview works!</p>
+<div
+  *ngIf="lang$ | async; let lang"
+  appLanguageDirection
+  (languageChanged)="languageChanged($event)"
+>
+  <mat-toolbar class="controls">
+    <div class="tool-bar-actions">
+      <button mat-fab aria-label="Add new item" (click)="addNewItem()">
+        <mat-icon>add</mat-icon>
+      </button>
+      <div [dir]="dir">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ "itemOverview.searchLabel" | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="searchTerm"
+            [placeholder]="'itemOverview.searchPlaceholder' | translate"
+          />
+        </mat-form-field>
+      </div>
+      <div [dir]="dir">
+        <mat-form-field appearance="outline">
+          <mat-label>{{
+            "itemOverview.categoryFilterLabel" | translate
+          }}</mat-label>
+          <mat-select [formControl]="selectedCategory">
+            <mat-option>--</mat-option>
+            <ng-container *ngFor="let category of categories">
+              <mat-option [value]="category">{{
+                category | propertiesTranslation : lang : "Name"
+              }}</mat-option>
+            </ng-container>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <mat-button-toggle-group class="view-mode-buttons" [(value)]="viewMode">
+      <mat-button-toggle value="grid">
+        <mat-icon>grid_view</mat-icon>{{ "itemOverview.gridView" | translate }}
+      </mat-button-toggle>
+      <mat-button-toggle value="table">
+        <mat-icon>table_chart</mat-icon>
+        {{ "itemOverview.tableView" | translate }}
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </mat-toolbar>
+
+  <div *ngIf="viewMode === 'grid'" class="grid-view" appLanguageDirection>
+    <mat-card *ngFor="let item of filteredItems" class="card">
+      <div class="card-image">
+        <img [src]="item.imageUrl" alt="{{ item.enName }}" />
+      </div>
+      <div class="card-content">
+        <mat-card-title
+          ><span>
+            {{ item | propertiesTranslation : lang : "Name" }}
+          </span>
+          -
+          <span class="item-price">{{ item?.price }} GTQ</span>
+        </mat-card-title>
+        <mat-card-content>
+          <p class="item-details">
+            {{ item | propertiesTranslation : lang : "Details" }}
+          </p>
+          <p *ngIf="item.availableAddOnUuids?.length">
+            {{
+              "itemOverview.addOnsAvailable"
+                | translate : { count: item.availableAddOnUuids?.length }
+            }}
+          </p>
+        </mat-card-content>
+      </div>
+      <mat-divider></mat-divider>
+
+      <mat-card-actions class="mat-card-actions">
+        <div class="action-icon-wrapper edit-action" (click)="editItem(item)">
+          <mat-icon>edit</mat-icon>
+        </div>
+        <mat-divider vertical></mat-divider>
+        <div
+          class="action-icon-wrapper delete-action"
+          (click)="deleteItem(item)"
+        >
+          <mat-icon>delete</mat-icon>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <table
+    mat-table
+    [dataSource]="filteredItems"
+    *ngIf="viewMode === 'table'"
+    appLanguageDirection
+  >
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "itemOverview.tableHeader.name" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let item">
+        {{ item | propertiesTranslation : lang : "Name" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "itemOverview.tableHeader.price" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let item">{{ item?.price }} GTQ</td>
+    </ng-container>
+
+    <ng-container matColumnDef="addOns">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "itemOverview.tableHeader.addOns" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let item">
+        {{ item.availableAddOnUuids?.length || 0 }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="addOnPrice">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "itemOverview.tableHeader.addOnPrice" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let item">{{ item.addOnPrice || 0 }} GTQ</td>
+    </ng-container>
+
+    <ng-container matColumnDef="freeAddOnAllowed">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "itemOverview.tableHeader.freeAddOnAllowed" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let item">
+        {{ item.freeAvailableAddOns || 0 }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="image">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "itemOverview.tableHeader.image" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let item">
+        <img [src]="item.imageUrl" alt="{{ item.enName }}" width="50" />
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "itemOverview.tableHeader.actions" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let item">
+        <button mat-icon-button (click)="editItem(item)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteItem(item)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>
