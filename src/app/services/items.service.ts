@@ -114,6 +114,22 @@ export class ItemsService {
       .pipe(tap((categories: Category[]) => this.setAllItems(categories)));
   }
 
+  editCategory(
+    category: Partial<Category>,
+    imageFile?: File
+  ): Observable<Category[]> {
+    const formData = new FormData();
+    formData.append('category', JSON.stringify(category));
+
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    return this.http
+      .put<Category[]>(`api/admin/category`, formData)
+      .pipe(tap((categories: Category[]) => this.setAllItems(categories)));
+  }
+
   deleteCategory(category: Category): Observable<Category[]> {
     return this.http
       .delete<Category[]>(`api/admin/category/${category.uuid}`)
