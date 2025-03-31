@@ -1,24 +1,26 @@
+::ng-deep {
+  .selected-language {
+    border: 1px solid var(--mat-sys-primary, #005cbb) !important;
+  }
+  .arrow-down {
+    border-top: 5px solid var(--mat-sys-primary, #005cbb) !important;
+  }
+
+  .language-name {
+    color: var(--mat-sys-primary, #005cbb) !important;
+  }
+
+  .dropdown-menu {
+    background: var(--mat-sys-primary-container, #d7e3ff) !important;
+  }
+}
+
 .dashboard-wrapper {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
 }
-
-// .sidenav {
-//   transition: transform 0.3s ease; /* Smooth transition for the transform */
-//   width: 225px; /* Full width when open */
-//   transform: translateX(0); /* Fully visible when open */
-// }
-
-// .mat-sidenav-container {
-//   overflow: hidden; /* Hide overflow when collapsed */
-// }
-
-// .mat-sidenav-container .sidenav.mat-sidenav-collapsed {
-//   transform: translateX(-60px); /* Adjust this value to show part of the icon */
-//   width: 60px; /* Width for the closed state */
-// }
 
 .spacer {
   flex: 1 1 auto;
@@ -37,35 +39,6 @@
   border-right: 1px solid black !important;
 }
 
-// .mat-drawer {
-//   border-radius: 0 !important;
-//   width: 225px;
-// }
-
-// .menu-buttons {
-//   height: 100%;
-//   background: var(--mat-sys-primary-container, #d7e3ff);
-// }
-
-// .menu-button {
-//   display: flex;
-//   align-items: center;
-//   // justify-content: center;
-//   gap: 20px;
-//   padding: 0 18px;
-//   height: 70px;
-//   width: 100%;
-//   font-size: 18px;
-//   font-weight: 600;
-//   font-family: "Arial", sans-serif;
-//   cursor: pointer;
-
-//   &:not(:last-child) {
-//     border-bottom: 1px solid;
-//   }
-// }
-
-// Add these to your CSS
 .mat-drawer {
   border-radius: 0 !important;
   transition: width 0.3s ease;
@@ -88,7 +61,6 @@
 .menu-button {
   display: flex;
   align-items: center;
-  // justify-content: center;
   gap: 25px;
   padding: 0 20px;
   height: 70px;
@@ -110,13 +82,6 @@
       font-size: 20px;
     }
   }
-  // &:not(:first-child) {
-  //   border-top: 1px solid;
-  // }
-
-  // &:not(:last-child) {
-  //   border-bottom: 1px solid;
-  // }
 }
 
 .active-menu-button {

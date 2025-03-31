@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Observable, tap } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { LanguageType, LanguageService } from '../../services/lang.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MaterialModule } from '../../material.module';
@@ -34,7 +34,7 @@ export class DeleteConfirmationModalComponent {
     @Inject(MAT_DIALOG_DATA)
     public data: {
       type?: DeleteTyep;
-      cb: Observable<any>;
+      cb: (obj?: Category | Item) => Observable<any>;
       objectToDelete: Category | Item;
       usedAmund?: number;
     },
@@ -51,8 +51,11 @@ export class DeleteConfirmationModalComponent {
     this.cbPennding = true;
     this.dialogRef.disableClose = true;
 
-    this.data.cb.pipe(tap(console.log)).subscribe(() => {
-      this.dialogRef.close(true);
-    });
+    this.data
+      .cb(this.objectToDelete)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.dialogRef.close(true);
+      });
   }
 }

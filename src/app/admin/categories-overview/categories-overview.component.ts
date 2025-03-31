@@ -1,13 +1,5 @@
 import { Component, inject } from '@angular/core';
-import {
-  combineLatest,
-  delay,
-  filter,
-  Observable,
-  of,
-  startWith,
-  switchMap,
-} from 'rxjs';
+import { delay, filter, Observable, take } from 'rxjs';
 import { ItemsService } from '../../services/items.service';
 import { Category } from '../../travler/travler.models';
 import { MaterialModule } from '../../material.module';
@@ -43,7 +35,7 @@ export class CategoriesOverviewComponent {
   readonly dialog = inject(MatDialog);
   public lang$: Observable<LanguageType> = new Observable<LanguageType>();
 
-  viewMode: 'grid' | 'table' = 'grid'; // Default view mode
+  viewMode: 'grid' | 'table' = 'grid';
   searchTerm = new FormControl('');
   displayedColumns: string[] = ['name', 'items', 'image', 'actions'];
 
@@ -77,75 +69,45 @@ export class CategoriesOverviewComponent {
       });
   }
 
-  categoryImageChanged(file: File): void {
-    console.log(file);
-    const formData = new FormData();
-    formData.set('file', file, file.name);
-    console.log(formData);
-  }
-
-  categoryImageRemoved(): void {}
-
   addNewCategory(): void {
     const dialogRef = this.dialog.open(CategoryFormComponent, {
-      width: '70%',
       data: {
-        uploadType: 'remote',
+        cb: (data: { category: Category; image: File }) =>
+          this.itemsService.createCategory(data.category, data.image),
       },
     });
 
-    dialogRef
-      .afterClosed()
-      .pipe(
-        switchMap((a) => this.itemsService.createCategory(a.category, a.image))
-      )
-      .subscribe((a) => {
-        console.log(a);
-      });
+    dialogRef.afterClosed().pipe(take(1)).subscribe();
   }
 
   editCategory(category: Category) {
-    // Implement edit functionality
     console.log('Edit category:', category);
     const dialogRef = this.dialog.open(CategoryFormComponent, {
-      width: '70%',
       data: {
         category,
+        cb: (data: { category: Category; image?: File }) =>
+          this.itemsService
+            .editCategory(data.category, data.image)
+            .pipe(delay(2000)),
       },
     });
 
-    dialogRef
-      .afterClosed()
-      .pipe(
-        switchMap((a) => this.itemsService.createCategory(a.category, a.image))
-      )
-      .subscribe((a) => {
-        console.log(a);
-      });
+    dialogRef.afterClosed().pipe(take(1)).subscribe();
   }
 
   deleteCategory(category: Category) {
     const dialogRef = this.dialog.open(DeleteConfirmationModalComponent, {
+      autoFocus: false,
       data: {
         type: 'category',
-        // cb: this.itemsService.deleteCategory(category)
-        cb: of([1, 2, 3]).pipe(delay(200000)),
+        cb: (category: Category) =>
+          this.itemsService.deleteCategory(category).pipe(delay(2000)),
         objectToDelete: category,
         usedAmund: category.items.length,
       },
     });
 
-    dialogRef
-      .afterClosed()
-      // .pipe(
-      //   switchMap((a) => this.itemsService.deleteCategory(category))
-      // )
-      .subscribe((a) => {
-        console.log(a);
-      });
-    // this.itemsService.deleteCategory(category).subscribe((a) => {
-    //   console.log(a);
-    // });
+    dialogRef.afterClosed().pipe(take(1)).subscribe();
   }
 
   languageChanged(languageDirection: LanguageDirection): void {

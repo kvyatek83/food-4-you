@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { MaterialModule } from '../../material.module';
 import {
   LanguageDirection,
@@ -39,9 +39,14 @@ export class CategoryFormComponent {
   public categoryForm!: FormGroup;
   public categoryImage: File | undefined;
   public dir: LanguageDirection = 'ltr';
+  public cbPennding = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { category?: Category },
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      category?: Category;
+      cb: (data: { category: Category; image?: File }) => Observable<any>;
+    },
     private dialogRef: MatDialogRef<CategoryFormComponent>,
     private languageService: LanguageService,
     private fb: FormBuilder
@@ -70,7 +75,16 @@ export class CategoryFormComponent {
         category: this.categoryForm.value,
         image: this.categoryImage,
       };
-      this.dialogRef.close(formData);
+
+      this.cbPennding = true;
+      this.dialogRef.disableClose = true;
+
+      this.data
+        .cb(formData)
+        .pipe(take(1))
+        .subscribe(() => {
+          this.dialogRef.close(true);
+        });
     }
   }
 
