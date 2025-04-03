@@ -1,0 +1,100 @@
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes moveRight {
+  0% {
+    transform: translateX(-15px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(-15px);
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes dashOffset {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.empty-box {
+  animation: float 4s ease-in-out infinite, pulse 5s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.box-lid {
+  animation: float 3.5s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+.item-placeholder {
+  animation: float 3s ease-in-out infinite;
+  //   animation-delay: 0.2s;
+}
+
+.item-placeholder2 {
+  animation: float 4s ease-in-out infinite;
+  //   animation-delay: 0.3s;
+}
+
+.item-placeholder3 {
+  animation: float 3.2s ease-in-out infinite;
+  //   animation-delay: 0.7s;
+}
+
+.text {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.box-shadow {
+  animation: blink 4s ease-in-out infinite;
+}
+
+.dashed-line {
+  stroke-dasharray: 5;
+  animation: dashOffset 15s linear infinite;
+}

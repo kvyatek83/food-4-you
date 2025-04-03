@@ -16,6 +16,8 @@ import {
   LanguageService,
   LanguageType,
 } from '../../services/lang.service';
+import { NoResultsComponent } from '../../components/no-results/no-results.component';
+import { NoDataComponent } from '../../components/no-data/no-data.component';
 
 @Component({
   selector: 'app-categories-overview',
@@ -27,6 +29,8 @@ import {
     TranslateModule,
     PropertiesTranslationPipe,
     LanguageDirectionDirective,
+    NoDataComponent,
+    NoResultsComponent,
   ],
   templateUrl: './categories-overview.component.html',
   styleUrl: './categories-overview.component.scss',
@@ -42,15 +46,19 @@ export class CategoriesOverviewComponent {
   categories: Category[] = [];
   filteredCategories: Category[] = [];
   dir: LanguageDirection = 'ltr';
+  loadingData = false;
 
   constructor(
     private itemsService: ItemsService,
     private languageService: LanguageService
   ) {
+    this.loadingData = true;
+
     this.lang$ = this.languageService.currentLanguage$;
     this.itemsService.allItems$.subscribe((categories) => {
       this.categories = categories;
       this.filteredCategories = categories;
+      this.loadingData = false;
     });
 
     this.searchTerm.valueChanges

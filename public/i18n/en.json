@@ -93,6 +93,7 @@
   "itemForm": {
     "create": "Add New Item",
     "edit": "Edit Item",
+    "savingItem": "Saving Item",
     "save": "Save",
     "cancel": "Cancel",
     "basicInfo": "Basic Information",
@@ -193,5 +194,18 @@
       "file": "The file was successfully download",
       "allMessageSent": "All messages sent"
     }
+  },
+  "noData": {
+    "titleICategories": "No Categories Found",
+    "titleItems": "No Items Found",
+    "titleAddOns": "No Add-Ons Found",
+    "subTitleCategories": "Create your first category to get started",
+    "subTitleItems": "Create your first item to get started",
+    "subTitleAddOns": "Create your first add-on to get started"
+  },
+  "noResults": {
+    "title": "No results found",
+    "titleWithParams": "No results for {{value}}",
+    "subTitle": "Try adjusting your search terms"
   }
 }

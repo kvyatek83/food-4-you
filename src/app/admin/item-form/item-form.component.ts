@@ -9,7 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { combineLatest, map, Observable, of, startWith, tap } from 'rxjs';
+import { combineLatest, map, Observable, startWith, take } from 'rxjs';
 import { MaterialModule } from '../../material.module';
 import {
   LanguageDirection,
@@ -137,14 +137,13 @@ export class ItemFormComponent implements OnInit {
         item: this.itemForm.value,
         image: this.itemImage,
       };
-      this.cbPennding = true;
-      console.log(formData);
 
+      this.cbPennding = true;
       this.dialogRef.disableClose = true;
 
       this.data
         .cb(formData)
-        .pipe(tap(console.log))
+        .pipe(take(1))
         .subscribe(() => {
           this.dialogRef.close(true);
         });
@@ -171,8 +170,6 @@ export class ItemFormComponent implements OnInit {
   }
 
   private initForm(): void {
-    console.log(this.data);
-
     this.itemForm = this.fb.group({
       uuid: [this.data.item?.uuid || ''],
       categoryId: [this.data.categoryUuid || '', Validators.required],

@@ -8,7 +8,7 @@
       <button mat-fab aria-label="Add new item" (click)="addNewItem()">
         <mat-icon>add</mat-icon>
       </button>
-      <div [dir]="dir">
+      <div *ngIf="categories && categories.length" [dir]="dir">
         <mat-form-field appearance="outline">
           <mat-label>{{ "itemOverview.searchLabel" | translate }}</mat-label>
           <input
@@ -18,7 +18,7 @@
           />
         </mat-form-field>
       </div>
-      <div [dir]="dir">
+      <div *ngIf="categories && categories.length" [dir]="dir">
         <mat-form-field appearance="outline">
           <mat-label>{{
             "itemOverview.categoryFilterLabel" | translate
@@ -160,4 +160,33 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
+
+  <ng-container *ngIf="!loadingData; else loading">
+    <ng-container *ngIf="items && items.length > 0; else noData">
+      <ng-container *ngIf="filteredItems.length === 0">
+        <div class="no-results">
+          <app-no-results
+            [titleParams]="
+              !selectedCategory.value
+                ? searchTerm.value
+                : (selectedCategory.value
+                    | propertiesTranslation : lang : 'Name') +
+                  ' - ' +
+                  searchTerm.value
+            "
+          ></app-no-results>
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-template #noData>
+      <div class="no-data">
+        <app-no-data [type]="'item'"></app-no-data>
+      </div>
+    </ng-template>
+  </ng-container>
+  <ng-template #loading>
+    <div class="loading">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
 </div>

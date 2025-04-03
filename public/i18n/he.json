@@ -93,6 +93,7 @@
   "itemForm": {
     "create": "יצירת מנה חדשה",
     "edit": "עריכת מנה",
+    "savingItem": "שמירה מתבצעת",
     "save": "שמירה",
     "cancel": "ביטול",
     "basicInfo": "מידע בסיסי",
@@ -193,5 +194,18 @@
       "file": "הקובץ ירד בהצלחה",
       "allMessageSent": "כל ההודעות נשלחו"
     }
+  },
+  "noData": {
+    "titleICategories": "לא נמצאו קטגוריות",
+    "titleItems": "לא נמצאו מנות",
+    "titleAddOns": "לא נמצאו תוספות",
+    "subTitleCategories": "בבקשה ליצור את הקטגוריה הראשונה שלך",
+    "subTitleItems": "בבקשה ליצור את המנה הראשונה שלך",
+    "subTitleAddOns": "בבקשה ליצור את התוספת הראשונה שלך"
+  },
+  "noResults": {
+    "title": "לא נמצאו תוצאות",
+    "titleWithParams": "אין תוצאות עבור {{value}}",
+    "subTitle": "נא לשנות את תנאי החיפוש"
   }
 }

@@ -1,0 +1,86 @@
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.no-results-wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+.magnifier {
+  animation: float 3s ease-in-out infinite, pulse 4s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.search-pulse {
+  stroke-dasharray: 150;
+  stroke-dashoffset: 150;
+  animation: dash 2s ease-in-out forwards;
+}
+
+.doc {
+  animation: float 3s ease-in-out infinite;
+  animation-delay: 0.2s;
+}
+
+.doc2 {
+  animation: float 3.5s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+.doc3 {
+  animation: float 2.8s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+.question-mark {
+  animation: float 4s ease-in-out infinite;
+  animation-delay: 0.7s;
+}
+
+.text {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}

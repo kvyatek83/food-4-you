@@ -16,6 +16,8 @@ import {
   LanguageService,
   LanguageType,
 } from '../../services/lang.service';
+import { NoDataComponent } from '../../components/no-data/no-data.component';
+import { NoResultsComponent } from '../../components/no-results/no-results.component';
 
 @Component({
   selector: 'app-items-overview',
@@ -27,6 +29,8 @@ import {
     TranslateModule,
     PropertiesTranslationPipe,
     LanguageDirectionDirective,
+    NoDataComponent,
+    NoResultsComponent,
   ],
   templateUrl: './items-overview.component.html',
   styleUrl: './items-overview.component.scss',
@@ -53,16 +57,19 @@ export class ItemsOverviewComponent {
   categories: Category[] = [];
   filteredItems: Item[] = [];
   dir: LanguageDirection = 'ltr';
+  loadingData = false;
 
   constructor(
     private itemsService: ItemsService,
     private languageService: LanguageService
   ) {
+    this.loadingData = true;
     this.lang$ = this.languageService.currentLanguage$;
     this.itemsService.allItems$.subscribe((categories) => {
       this.categories = categories;
       this.items = categories.map((category) => category.items).flat();
       this.filteredItems = categories.map((category) => category.items).flat();
+      this.loadingData = false;
     });
 
     combineLatest([
@@ -98,7 +105,8 @@ export class ItemsOverviewComponent {
 
   addNewItem(): void {
     const dialogRef = this.dialog.open(ItemFormComponent, {
-      width: '90%',
+      width: 'auto',
+      maxWidth: '90%',
       data: {
         cb: (data: { item: Item; image: File }) =>
           this.itemsService.createItem(data.item, data.image),
@@ -113,7 +121,8 @@ export class ItemsOverviewComponent {
       cat.items.some((ite) => ite.uuid === item.uuid)
     )?.uuid;
     const dialogRef = this.dialog.open(ItemFormComponent, {
-      width: '90%',
+      width: 'auto',
+      maxWidth: '90%',
       data: {
         item,
         categoryUuid,

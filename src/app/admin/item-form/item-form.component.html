@@ -4,312 +4,363 @@
   appLanguageDirection
   (languageChanged)="languageChanged($event)"
 >
-  <ng-container *ngIf="data.item; else newForm">
-    <h2 mat-dialog-title>
-      {{ "itemForm.edit" | translate }}
-    </h2>
+  <ng-container *ngIf="!cbPennding; else cbPendingTitle">
+    <ng-container *ngIf="data.item; else newForm">
+      <h2 mat-dialog-title>
+        {{ "itemForm.edit" | translate }}
+      </h2>
+    </ng-container>
+    <ng-template #newForm>
+      <h2 mat-dialog-title>
+        {{ "itemForm.create" | translate }}
+      </h2>
+    </ng-template>
   </ng-container>
-  <ng-template #newForm>
+
+  <ng-template #cbPendingTitle>
     <h2 mat-dialog-title>
-      {{ "itemForm.create" | translate }}
+      {{ "itemForm.savingItem" | translate }}
     </h2>
   </ng-template>
 
   <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
     <div mat-dialog-content>
-      <div class="form-row">
-        <div class="form-column">
-          <!-- Basic Info Section -->
-          <div class="form-section">
-            <mat-form-field appearance="outline" [dir]="dir">
-              <mat-label>{{ "itemForm.parentCategory" | translate }}</mat-label>
-              <mat-select formControlName="categoryId" required>
-                <mat-option>--</mat-option>
-                <ng-container *ngFor="let category of categories">
-                  <mat-option [value]="category.uuid">{{
-                    category | propertiesTranslation : lang : "Name"
-                  }}</mat-option>
-                </ng-container>
-              </mat-select>
-              <mat-error
-                appLanguageDirection
-                *ngIf="
-                  itemForm.get('categoryId')?.invalid &&
-                  itemForm.get('categoryId')?.touched
-                "
-              >
-                {{ "itemForm.parentCategoryError" | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="full-width" [dir]="dir">
-              <mat-label>{{ "itemForm.enName" | translate }}</mat-label>
-              <input matInput formControlName="enName" required />
-              <mat-error
-                appLanguageDirection
-                *ngIf="
-                  itemForm.get('enName')?.invalid &&
-                  itemForm.get('enName')?.touched
-                "
-              >
-                {{ "itemForm.enError" | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="full-width" [dir]="dir">
-              <mat-label>{{ "itemForm.heName" | translate }}</mat-label>
-              <input matInput formControlName="heName" required />
-              <mat-error
-                appLanguageDirection
-                *ngIf="
-                  itemForm.get('heName')?.invalid &&
-                  itemForm.get('heName')?.touched
-                "
-              >
-                {{ "itemForm.heError" | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="full-width" [dir]="dir">
-              <mat-label>{{ "itemForm.esName" | translate }}</mat-label>
-              <input matInput formControlName="esName" required />
-              <mat-error
-                appLanguageDirection
-                *ngIf="
-                  itemForm.get('esName')?.invalid &&
-                  itemForm.get('esName')?.touched
-                "
-              >
-                {{ "itemForm.esError" | translate }}
-              </mat-error>
-            </mat-form-field>
-          </div>
-
-          <!-- Image Section -->
-          <div class="form-section">
-            <ng-container
-              *ngIf="itemForm.get('imageUrl')?.value; else noExistingImage"
-            >
-              <div class="image-section">
-                <mat-tab-group>
-                  <mat-tab [label]="'itemForm.existingImage' | translate">
-                    <div class="tab-body-content">
-                      <img
-                        [src]="itemForm.get('imageUrl')?.value"
-                        class="existing-image"
-                        [alt]="itemForm.get('enName')?.value"
-                      />
-                    </div>
-                  </mat-tab>
-                  <mat-tab>
-                    <ng-template mat-tab-label>
-                      <div
-                        *ngIf="itemImage; else withoutBadge"
-                        appLanguageDirection
-                        matBadge="!"
-                        matBadgeOverlap="false"
-                      >
-                        {{ "itemForm.newImage" | translate }}
-                      </div>
-                      <ng-template #withoutBadge>
-                        <div>
-                          {{ "itemForm.newImage" | translate }}
-                        </div>
-                      </ng-template>
-                    </ng-template>
-                    <div class="tab-body-content">
-                      <div class="form-load-file">
-                        <load-file
-                          (fileSelected)="imageChanged($event)"
-                          (fileRemoved)="imageRemoved()"
-                        ></load-file>
-                      </div>
-                    </div>
-                  </mat-tab>
-                </mat-tab-group>
-              </div>
-            </ng-container>
-            <ng-template #noExistingImage>
-              <div class="form-load-file">
-                <load-file
-                  (fileSelected)="imageChanged($event)"
-                  (fileRemoved)="imageRemoved()"
-                ></load-file>
-              </div>
-            </ng-template>
-          </div>
-        </div>
-
-        <div class="form-column">
-          <!-- Details Section -->
-          <div class="form-section">
-            <mat-form-field appearance="outline" class="full-width" [dir]="dir">
-              <mat-label>{{ "itemForm.enDetails" | translate }}</mat-label>
-              <textarea
-                matInput
-                formControlName="enDetails"
-                required
-                rows="2"
-              ></textarea>
-              <mat-error
-                appLanguageDirection
-                *ngIf="
-                  itemForm.get('enDetails')?.invalid &&
-                  itemForm.get('enDetails')?.touched
-                "
-              >
-                {{ "itemForm.enDetailsError" | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="full-width" [dir]="dir">
-              <mat-label>{{ "itemForm.heDetails" | translate }}</mat-label>
-              <textarea
-                matInput
-                formControlName="heDetails"
-                required
-                rows="2"
-              ></textarea>
-              <mat-error
-                appLanguageDirection
-                *ngIf="
-                  itemForm.get('heDetails')?.invalid &&
-                  itemForm.get('heDetails')?.touched
-                "
-              >
-                {{ "itemForm.heDetailsError" | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="full-width" [dir]="dir">
-              <mat-label>{{ "itemForm.esDetails" | translate }}</mat-label>
-              <textarea
-                matInput
-                formControlName="esDetails"
-                required
-                rows="2"
-              ></textarea>
-              <mat-error
-                appLanguageDirection
-                *ngIf="
-                  itemForm.get('esDetails')?.invalid &&
-                  itemForm.get('esDetails')?.touched
-                "
-              >
-                {{ "itemForm.esDetailsError" | translate }}
-              </mat-error>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="full-width" [dir]="dir">
-              <mat-label>{{ "itemForm.price" | translate }}</mat-label>
-              <input
-                matInput
-                type="number"
-                formControlName="price"
-                required
-                min="0"
-                step="0.01"
-              />
-              <span matTextSuffix>GTQ</span>
-              <mat-error
-                appLanguageDirection
-                *ngIf="
-                  itemForm.get('price')?.invalid &&
-                  itemForm.get('price')?.touched
-                "
-              >
-                {{ "itemForm.priceError" | translate }}
-              </mat-error>
-            </mat-form-field>
-          </div>
-
-          <!-- Add-ons Section -->
-          <div class="form-section" *ngIf="availableAddOns?.length">
-            <mat-form-field appearance="outline" class="full-width" [dir]="dir">
-              <mat-label>{{
-                "itemForm.availableAddOns" | translate
-              }}</mat-label>
-              <mat-chip-grid #chipGrid aria-label="Add-On selection">
-                <mat-chip-row
-                  *ngFor="
-                    let addOnUuid of itemForm.get('availableAddOnUuids')?.value
+      <ng-container *ngIf="!cbPennding; else cbPendingContent">
+        <div class="form-row">
+          <div class="form-column">
+            <!-- Basic Info Section -->
+            <div class="form-section">
+              <mat-form-field appearance="outline" [dir]="dir">
+                <mat-label>{{
+                  "itemForm.parentCategory" | translate
+                }}</mat-label>
+                <mat-select formControlName="categoryId" required>
+                  <mat-option>--</mat-option>
+                  <ng-container *ngFor="let category of categories">
+                    <mat-option [value]="category.uuid">{{
+                      category | propertiesTranslation : lang : "Name"
+                    }}</mat-option>
+                  </ng-container>
+                </mat-select>
+                <mat-error
+                  appLanguageDirection
+                  *ngIf="
+                    itemForm.get('categoryId')?.invalid &&
+                    itemForm.get('categoryId')?.touched
                   "
-                  selectable
-                  [removable]="true"
-                  (removed)="remove(addOnUuid)"
                 >
-                  {{
-                    getAddOnName(addOnUuid)
-                      | propertiesTranslation : lang : "Name"
-                  }}
-                  <button matChipRemove>
-                    <mat-icon>cancel</mat-icon>
-                  </button>
-                </mat-chip-row>
-              </mat-chip-grid>
-              <input
-                [placeholder]="'itemForm.availableAddOns' | translate"
-                #addOnInput
-                [formControl]="addOnCtrl"
-                [matChipInputFor]="chipGrid"
-                [matAutocomplete]="auto"
-                (matChipInputTokenEnd)="add($event)"
-              />
-              <mat-autocomplete
-                #auto="matAutocomplete"
-                (optionSelected)="selected($event)"
-              >
-                <mat-option
-                  *ngFor="let addOn of filteredAddOns | async"
-                  [value]="addOn.uuid"
-                >
-                  {{ addOn | propertiesTranslation : lang : "Name" }}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
+                  {{ "itemForm.parentCategoryError" | translate }}
+                </mat-error>
+              </mat-form-field>
 
-            <div class="split-width-row">
               <mat-form-field
                 appearance="outline"
                 class="full-width"
                 [dir]="dir"
-                *ngIf="itemForm.get('availableAddOnUuids')?.value?.length"
               >
-                <mat-label>{{ "itemForm.addOnPrice" | translate }}</mat-label>
+                <mat-label>{{ "itemForm.enName" | translate }}</mat-label>
+                <input matInput formControlName="enName" required />
+                <mat-error
+                  appLanguageDirection
+                  *ngIf="
+                    itemForm.get('enName')?.invalid &&
+                    itemForm.get('enName')?.touched
+                  "
+                >
+                  {{ "itemForm.enError" | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="full-width"
+                [dir]="dir"
+              >
+                <mat-label>{{ "itemForm.heName" | translate }}</mat-label>
+                <input matInput formControlName="heName" required />
+                <mat-error
+                  appLanguageDirection
+                  *ngIf="
+                    itemForm.get('heName')?.invalid &&
+                    itemForm.get('heName')?.touched
+                  "
+                >
+                  {{ "itemForm.heError" | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="full-width"
+                [dir]="dir"
+              >
+                <mat-label>{{ "itemForm.esName" | translate }}</mat-label>
+                <input matInput formControlName="esName" required />
+                <mat-error
+                  appLanguageDirection
+                  *ngIf="
+                    itemForm.get('esName')?.invalid &&
+                    itemForm.get('esName')?.touched
+                  "
+                >
+                  {{ "itemForm.esError" | translate }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Image Section -->
+            <div class="form-section">
+              <ng-container
+                *ngIf="itemForm.get('imageUrl')?.value; else noExistingImage"
+              >
+                <div class="image-section">
+                  <mat-tab-group>
+                    <mat-tab [label]="'itemForm.existingImage' | translate">
+                      <div class="tab-body-content">
+                        <img
+                          [src]="itemForm.get('imageUrl')?.value"
+                          class="existing-image"
+                          [alt]="itemForm.get('enName')?.value"
+                        />
+                      </div>
+                    </mat-tab>
+                    <mat-tab>
+                      <ng-template mat-tab-label>
+                        <div
+                          *ngIf="itemImage; else withoutBadge"
+                          appLanguageDirection
+                          matBadge="!"
+                          matBadgeOverlap="false"
+                        >
+                          {{ "itemForm.newImage" | translate }}
+                        </div>
+                        <ng-template #withoutBadge>
+                          <div>
+                            {{ "itemForm.newImage" | translate }}
+                          </div>
+                        </ng-template>
+                      </ng-template>
+                      <div class="tab-body-content">
+                        <div class="form-load-file">
+                          <load-file
+                            (fileSelected)="imageChanged($event)"
+                            (fileRemoved)="imageRemoved()"
+                          ></load-file>
+                        </div>
+                      </div>
+                    </mat-tab>
+                  </mat-tab-group>
+                </div>
+              </ng-container>
+              <ng-template #noExistingImage>
+                <div class="form-load-file">
+                  <load-file
+                    (fileSelected)="imageChanged($event)"
+                    (fileRemoved)="imageRemoved()"
+                  ></load-file>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+
+          <div class="form-column">
+            <!-- Details Section -->
+            <div class="form-section">
+              <mat-form-field
+                appearance="outline"
+                class="full-width"
+                [dir]="dir"
+              >
+                <mat-label>{{ "itemForm.enDetails" | translate }}</mat-label>
+                <textarea
+                  matInput
+                  formControlName="enDetails"
+                  required
+                  rows="2"
+                ></textarea>
+                <mat-error
+                  appLanguageDirection
+                  *ngIf="
+                    itemForm.get('enDetails')?.invalid &&
+                    itemForm.get('enDetails')?.touched
+                  "
+                >
+                  {{ "itemForm.enDetailsError" | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="full-width"
+                [dir]="dir"
+              >
+                <mat-label>{{ "itemForm.heDetails" | translate }}</mat-label>
+                <textarea
+                  matInput
+                  formControlName="heDetails"
+                  required
+                  rows="2"
+                ></textarea>
+                <mat-error
+                  appLanguageDirection
+                  *ngIf="
+                    itemForm.get('heDetails')?.invalid &&
+                    itemForm.get('heDetails')?.touched
+                  "
+                >
+                  {{ "itemForm.heDetailsError" | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="full-width"
+                [dir]="dir"
+              >
+                <mat-label>{{ "itemForm.esDetails" | translate }}</mat-label>
+                <textarea
+                  matInput
+                  formControlName="esDetails"
+                  required
+                  rows="2"
+                ></textarea>
+                <mat-error
+                  appLanguageDirection
+                  *ngIf="
+                    itemForm.get('esDetails')?.invalid &&
+                    itemForm.get('esDetails')?.touched
+                  "
+                >
+                  {{ "itemForm.esDetailsError" | translate }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                class="full-width"
+                [dir]="dir"
+              >
+                <mat-label>{{ "itemForm.price" | translate }}</mat-label>
                 <input
                   matInput
                   type="number"
-                  formControlName="addOnPrice"
+                  formControlName="price"
+                  required
                   min="0"
                   step="0.01"
                 />
                 <span matTextSuffix>GTQ</span>
+                <mat-error
+                  appLanguageDirection
+                  *ngIf="
+                    itemForm.get('price')?.invalid &&
+                    itemForm.get('price')?.touched
+                  "
+                >
+                  {{ "itemForm.priceError" | translate }}
+                </mat-error>
               </mat-form-field>
+            </div>
+
+            <!-- Add-ons Section -->
+            <div class="form-section" *ngIf="availableAddOns?.length">
               <mat-form-field
                 appearance="outline"
                 class="full-width"
                 [dir]="dir"
-                *ngIf="itemForm.get('availableAddOnUuids')?.value?.length"
               >
                 <mat-label>{{
-                  "itemForm.freeAvailableAddOns" | translate
+                  "itemForm.availableAddOns" | translate
                 }}</mat-label>
+                <mat-chip-grid #chipGrid aria-label="Add-On selection">
+                  <mat-chip-row
+                    *ngFor="
+                      let addOnUuid of itemForm.get('availableAddOnUuids')
+                        ?.value
+                    "
+                    selectable
+                    [removable]="true"
+                    (removed)="remove(addOnUuid)"
+                  >
+                    {{
+                      getAddOnName(addOnUuid)
+                        | propertiesTranslation : lang : "Name"
+                    }}
+                    <button matChipRemove>
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </mat-chip-row>
+                </mat-chip-grid>
                 <input
-                  matInput
-                  type="number"
-                  formControlName="freeAvailableAddOns"
-                  min="0"
-                  step="1"
+                  [placeholder]="'itemForm.availableAddOns' | translate"
+                  #addOnInput
+                  [formControl]="addOnCtrl"
+                  [matChipInputFor]="chipGrid"
+                  [matAutocomplete]="auto"
+                  (matChipInputTokenEnd)="add($event)"
                 />
-                <!-- <mat-hint>{{ "itemForm.freeAddOnsHint" | translate }}</mat-hint> -->
+                <mat-autocomplete
+                  #auto="matAutocomplete"
+                  (optionSelected)="selected($event)"
+                >
+                  <mat-option
+                    *ngFor="let addOn of filteredAddOns | async"
+                    [value]="addOn.uuid"
+                  >
+                    {{ addOn | propertiesTranslation : lang : "Name" }}
+                  </mat-option>
+                </mat-autocomplete>
               </mat-form-field>
+
+              <div class="split-width-row">
+                <mat-form-field
+                  appearance="outline"
+                  class="full-width"
+                  [dir]="dir"
+                  *ngIf="itemForm.get('availableAddOnUuids')?.value?.length"
+                >
+                  <mat-label>{{ "itemForm.addOnPrice" | translate }}</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    formControlName="addOnPrice"
+                    min="0"
+                    step="0.01"
+                  />
+                  <span matTextSuffix>GTQ</span>
+                </mat-form-field>
+                <mat-form-field
+                  appearance="outline"
+                  class="full-width"
+                  [dir]="dir"
+                  *ngIf="itemForm.get('availableAddOnUuids')?.value?.length"
+                >
+                  <mat-label>{{
+                    "itemForm.freeAvailableAddOns" | translate
+                  }}</mat-label>
+                  <input
+                    matInput
+                    type="number"
+                    formControlName="freeAvailableAddOns"
+                    min="0"
+                    step="1"
+                  />
+                </mat-form-field>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </ng-container>
+
+      <ng-template #cbPendingContent>
+        <div class="saving-spinner">
+          <mat-spinner></mat-spinner>
+        </div>
+      </ng-template>
     </div>
 
     <div mat-dialog-actions align="center">
-      <button mat-button type="button" mat-dialog-close>
+      <button mat-button type="button" mat-dialog-close [disabled]="cbPennding">
         {{ "itemForm.cancel" | translate }}
       </button>
       <button
@@ -317,6 +368,7 @@
         color="primary"
         type="submit"
         [disabled]="
+          cbPennding ||
           itemForm.invalid ||
           (!this.itemForm.controls['imageUrl'].value && !this.itemImage)
         "

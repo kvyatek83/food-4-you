@@ -109,3 +109,20 @@ table {
     background-color: #c75959;
   }
 }
+
+.no-results {
+  width: 50%;
+  margin: auto;
+}
+
+.no-data {
+  width: 50%;
+  margin: auto;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+}
