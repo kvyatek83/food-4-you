@@ -5,6 +5,7 @@ import {
   combineLatest,
   Observable,
   of,
+  switchMap,
   tap,
 } from 'rxjs';
 import { AddOn, Category, Item } from '../travler/travler.models';
@@ -55,10 +56,7 @@ export class ItemsService {
     private notificationsService: NotificationsService,
     private translate: TranslateService
   ) {
-    combineLatest([
-      this.http.get<Category[]>('/api/categories'),
-      this.http.get<AddOn[]>('/api/add-ons'),
-    ])
+    combineLatest([this.fetchAllItems(), this.fetchAddOns()])
       .pipe(
         catchError((error) => {
           if (error.status === 404) {
@@ -92,6 +90,14 @@ export class ItemsService {
         this.setAllAddOns(addOns);
         this.setAllItems(categories);
       });
+  }
+
+  fetchAllItems(): Observable<Category[]> {
+    return this.http.get<Category[]>('/api/categories');
+  }
+
+  fetchAddOns(): Observable<AddOn[]> {
+    return this.http.get<AddOn[]>('/api/add-ons');
   }
 
   getAddOnByUuid(addOnUuid: string): AddOn | undefined {
@@ -166,5 +172,25 @@ export class ItemsService {
     return this.http
       .delete<Category[]>(`api/admin/item/${item.uuid}`)
       .pipe(tap((categories: Category[]) => this.setAllItems(categories)));
+  }
+
+  createAddOn(addOn: Partial<AddOn>): Observable<AddOn[]> {
+    return this.http
+      .post<AddOn[]>(`api/admin/add-on`, addOn)
+      .pipe(tap((adOns: AddOn[]) => this.setAllAddOns(adOns)));
+  }
+
+  editAddOn(addOn: Partial<AddOn>): Observable<AddOn[]> {
+    return this.http
+      .put<AddOn[]>(`api/admin/add-on/${addOn.uuid}`, addOn)
+      .pipe(tap((adOns: AddOn[]) => this.setAllAddOns(adOns)));
+  }
+
+  deleteAddOn(addOn: Partial<AddOn>): Observable<Category[]> {
+    return this.http.delete<AddOn[]>(`api/admin/add-on/${addOn.uuid}`).pipe(
+      tap((adOns: AddOn[]) => this.setAllAddOns(adOns)),
+      switchMap(() => this.fetchAllItems()),
+      tap((categories: Category[]) => this.setAllItems(categories))
+    );
   }
 }

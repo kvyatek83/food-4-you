@@ -126,15 +126,19 @@
     "freeAddOnsHint": "Número de complementos que los clientes pueden seleccionar gratis"
   },
   "addOnOverview": {
+    "gridView": "Grid View",
+    "tableView": "Table View",
     "searchLabel": "Buscar",
     "searchPlaceholder": "Buscar complemento...",
     "noAddOns": "No se encontraron complementos",
     "tableHeader": {
+      "name": "Nombre",
+      "inStock": "In Stock",
       "enName": "Nombre en inglés",
-      "heName": "Nombre en hebreo",
-      "esName": "Nombre en español",
       "actions": "Acciones"
-    }
+    },
+    "yes": "Yes",
+    "no": "No"
   },
   "addOnForm": {
     "create": "Añadir nuevo complemento",

@@ -7,7 +7,7 @@ import { MaterialModule } from '../../material.module';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { CommonModule } from '@angular/common';
-import { Category, Item } from '../../travler/travler.models';
+import { AddOn, Category, Item } from '../../travler/travler.models';
 
 type DeleteTyep = 'category' | 'item' | 'add-on';
 
@@ -34,7 +34,7 @@ export class DeleteConfirmationModalComponent {
     @Inject(MAT_DIALOG_DATA)
     public data: {
       type?: DeleteTyep;
-      cb: (obj?: Category | Item) => Observable<any>;
+      cb: (obj?: Category | Item | AddOn) => Observable<any>;
       objectToDelete: Category | Item;
       usedAmund?: number;
     },

@@ -39,13 +39,14 @@
           <ng-container *ngIf="usedAmund; else noItemsInCategory">
             {{
               "deleteConfirmationModal.addOnExistOnItems"
-                | translate : { itemName: usedAmund }
+                | translate : { itemAmount: usedAmund }
             }}
           </ng-container>
           <ng-template #noItemsInCategory>
             {{ "deleteConfirmationModal.addOnNotExistOnItems" | translate }}
           </ng-template>
         </ng-container>
+        <!-- TODO: replace with default message -->
         <ng-container *ngSwitchDefault> AAAAA </ng-container>
       </ng-container>
     </ng-container>

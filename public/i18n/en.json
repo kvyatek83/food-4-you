@@ -125,15 +125,18 @@
     "freeAddOnsHint": "Number of add-ons customers can select for free"
   },
   "addOnOverview": {
+    "gridView": "Grid View",
+    "tableView": "Table View",
     "searchLabel": "Search",
     "searchPlaceholder": "Type add-on...",
     "noAddOns": "No add-ons found",
     "tableHeader": {
-      "enName": "English Name",
-      "heName": "Hebrew Name",
-      "esName": "Spanish Name",
+      "name": "Name",
+      "inStock": "In Stock",
       "actions": "Actions"
-    }
+    },
+    "yes": "Yes",
+    "no": "No"
   },
   "addOnForm": {
     "create": "Add New Add-on",

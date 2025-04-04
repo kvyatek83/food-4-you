@@ -1,0 +1,120 @@
+.controls {
+  display: flex;
+  align-items: center;
+}
+
+.tool-bar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 35px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.view-mode-buttons {
+  direction: ltr;
+}
+
+.grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 200px;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  height: 115px;
+}
+
+.mat-mdc-card-title {
+  margin: auto !important;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-mdc-header-cell,
+.mat-mdc-cell {
+  text-align: center;
+}
+
+.mat-card-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mat-mdc-card-actions {
+  direction: ltr;
+  padding: 0 !important;
+  min-height: auto !important;
+}
+
+.action-icon-wrapper {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  cursor: pointer;
+
+  &:first-child {
+    border-radius: 0 0 0 12px;
+  }
+
+  &:last-child {
+    border-radius: 0 0 12px 0;
+  }
+}
+
+.mat-divider.mat-divider-vertical {
+  height: 100%;
+}
+
+.edit-action {
+  color: var(--mat-sys-primary, #005cbb);
+  &:hover {
+    color: white;
+    background-color: var(--mat-sys-primary, #005cbb);
+  }
+}
+
+.delete-action {
+  color: #c75959;
+
+  &:hover {
+    color: white;
+    background-color: #c75959;
+  }
+}
+
+.no-results {
+  width: 50%;
+  margin: auto;
+}
+
+.no-data {
+  width: 50%;
+  margin: auto;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+}

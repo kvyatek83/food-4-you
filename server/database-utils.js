@@ -217,6 +217,21 @@ async function findAddOn(addOnId) {
 }
 
 async function deleteAddOn(addOnId) {
+  const allItems = await Item.findAll();
+
+  for (const item of allItems) {
+    if (item.availableAddOnUuids) {
+      let addOnUuids = JSON.parse(item.availableAddOnUuids);
+
+      if (addOnUuids.includes(addOnId)) {
+        addOnUuids = addOnUuids.filter((uuid) => uuid !== addOnId);
+        await item.update({
+          availableAddOnUuids: JSON.stringify(addOnUuids),
+        });
+      }
+    }
+  }
+
   await AddOn.destroy({ where: { uuid: addOnId } });
 }
 

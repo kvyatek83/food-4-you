@@ -3,6 +3,7 @@ export interface AddOn {
   enName: string;
   heName: string;
   esName: string;
+  inStock: boolean;
 }
 
 export interface Item {

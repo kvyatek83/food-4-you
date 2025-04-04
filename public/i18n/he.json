@@ -125,15 +125,18 @@
     "freeAddOnsHint": "מספר התוספות שהלקוחות יכולים לבחור בחינם"
   },
   "addOnOverview": {
+    "gridView": "תצוגת קלפים",
+    "tableView": "תצוגת טבלה",
     "searchLabel": "חיפוש",
     "searchPlaceholder": "נא להקליד תוספת",
     "noAddOns": "לא נמצאו תוספות",
     "tableHeader": {
-      "enName": "שם באנגלית",
-      "heName": "שם בעברית",
-      "esName": "שם בספרדית",
+      "name": "שם",
+      "inStock": "זמין במלאי",
       "actions": "פעולות"
-    }
+    },
+    "yes": "כן",
+    "no": "לא"
   },
   "addOnForm": {
     "create": "יצירת תוספת חדשה",
