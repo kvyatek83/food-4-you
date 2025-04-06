@@ -153,6 +153,41 @@
     "esName": "Nombre en español",
     "esError": "El nombre en español es obligatorio"
   },
+  "scheduleOverview": {
+    "searchLabel": "Buscar artículos",
+    "searchPlaceholder": "Ingrese nombre del artículo",
+    "filterByAvailability": "Filtrar por disponibilidad",
+    "filterByDay": "Filtrar por día",
+    "itemName": "Nombre del artículo",
+    "allDays": "Todos los días",
+    "actions": "Acciones",
+    "saveChanges": "Guardar cambios",
+    "editItem": "Editar artículo",
+    "filterOptions": {
+      "all": "Todos los artículos",
+      "available": "Artículos disponibles",
+      "unavailable": "Artículos no disponibles"
+    },
+    "dayOptions": {
+      "all": "Todos los días",
+      "monday": "Lunes",
+      "tuesday": "Martes",
+      "wednesday": "Miércoles",
+      "thursday": "Jueves",
+      "friday": "Viernes",
+      "saturday": "Sábado",
+      "sunday": "Domingo"
+    },
+    "daysShort": {
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mié",
+      "thu": "Jue",
+      "fri": "Vie",
+      "sat": "Sáb",
+      "sun": "Dom"
+    }
+  },
   "menu": {
     "category": "Categoría",
     "item": "Artículo"

@@ -1,16 +1,24 @@
 // schedule-overview.component.ts
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { combineLatest, debounceTime, Observable, startWith } from 'rxjs';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { MaterialModule } from '../../material.module';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
 import { Item } from '../../travler/travler.models';
 import { ItemsService } from '../../services/items.service';
+import { NoDataComponent } from '../../components/no-data/no-data.component';
+import { NoResultsComponent } from '../../components/no-results/no-results.component';
+import {
+  LanguageDirection,
+  LanguageService,
+  LanguageType,
+} from '../../services/lang.service';
 
 @Component({
   selector: 'app-schedule-overview',
@@ -23,6 +31,8 @@ import { ItemsService } from '../../services/items.service';
     TranslateModule,
     PropertiesTranslationPipe,
     LanguageDirectionDirective,
+    NoDataComponent,
+    NoResultsComponent,
   ],
   styleUrls: ['./schedule-overview.component.scss'],
 })
@@ -30,15 +40,17 @@ export class ScheduleOverviewComponent implements OnInit {
   dataSource = new MatTableDataSource<Item>([]);
   displayedColumns: string[] = [
     'name',
+    'allDays',
+    'sunday',
     'monday',
     'tuesday',
     'wednesday',
     'thursday',
     'friday',
     'saturday',
-    'sunday',
     'actions',
   ];
+  searchTerm = new FormControl('');
   availabilityFilter = new FormControl('all');
   dayFilter = new FormControl('all');
 
@@ -46,33 +58,60 @@ export class ScheduleOverviewComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   filterOptions = [
-    { value: 'all', viewValue: 'All Items' },
-    { value: 'available', viewValue: 'Available Items' },
-    { value: 'unavailable', viewValue: 'Unavailable Items' },
+    { value: 'all', viewValue: 'scheduleOverview.filterOptions.all' },
+    {
+      value: 'available',
+      viewValue: 'scheduleOverview.filterOptions.available',
+    },
+    {
+      value: 'unavailable',
+      viewValue: 'scheduleOverview.filterOptions.unavailable',
+    },
   ];
 
   dayOptions = [
-    { value: 'all', viewValue: 'All Days' },
-    { value: 'monday', viewValue: 'Monday' },
-    { value: 'tuesday', viewValue: 'Tuesday' },
-    { value: 'wednesday', viewValue: 'Wednesday' },
-    { value: 'thursday', viewValue: 'Thursday' },
-    { value: 'friday', viewValue: 'Friday' },
-    { value: 'saturday', viewValue: 'Saturday' },
-    { value: 'sunday', viewValue: 'Sunday' },
+    { value: 'all', viewValue: 'scheduleOverview.dayOptions.all' },
+    { value: 'monday', viewValue: 'scheduleOverview.dayOptions.monday' },
+    { value: 'tuesday', viewValue: 'scheduleOverview.dayOptions.tuesday' },
+    { value: 'wednesday', viewValue: 'scheduleOverview.dayOptions.wednesday' },
+    { value: 'thursday', viewValue: 'scheduleOverview.dayOptions.thursday' },
+    { value: 'friday', viewValue: 'scheduleOverview.dayOptions.friday' },
+    { value: 'saturday', viewValue: 'scheduleOverview.dayOptions.saturday' },
+    { value: 'sunday', viewValue: 'scheduleOverview.dayOptions.sunday' },
   ];
 
-  constructor(private itemsService: ItemsService) {}
+  public lang$: Observable<LanguageType>;
+  dir: LanguageDirection = 'ltr';
+  loadingData = false;
+  filteredItems: Item[] = [];
+  allDaysMap: { [key: string]: boolean } = {};
+
+  days = [
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday',
+  ];
+
+  constructor(
+    private itemsService: ItemsService,
+    private languageService: LanguageService
+  ) {
+    this.lang$ = this.languageService.currentLanguage$;
+  }
 
   ngOnInit(): void {
+    this.loadingData = true;
     this.loadItems();
 
-    // Set up filters
-    this.availabilityFilter.valueChanges.subscribe(() => {
-      this.applyFilters();
-    });
-
-    this.dayFilter.valueChanges.subscribe(() => {
+    combineLatest([
+      this.searchTerm.valueChanges.pipe(debounceTime(300), startWith('')),
+      this.availabilityFilter.valueChanges.pipe(startWith('')),
+      this.dayFilter.valueChanges.pipe(startWith('')),
+    ]).subscribe(() => {
       this.applyFilters();
     });
   }
@@ -98,23 +137,59 @@ export class ScheduleOverviewComponent implements OnInit {
             sunday: false,
           };
         }
+
+        // Initialize allDays status
+        this.updateAllDaysStatus(item);
         return item;
       });
 
       this.dataSource.data = itemsWithAvailability;
+      this.filteredItems = itemsWithAvailability;
+      this.loadingData = false;
     });
+  }
+
+  toggleAllDays(item: Item): void {
+    if (!item.availability) return;
+
+    const currentStatus = this.allDaysMap[item.uuid] || false;
+    const newStatus = !currentStatus;
+
+    // Update all days
+    this.days.forEach((day) => {
+      item.availability![day as keyof typeof item.availability] = newStatus;
+    });
+
+    // Update the allDays status
+    this.allDaysMap[item.uuid] = newStatus;
+
+    this.saveItemAvailability(item);
+  }
+
+  updateAllDaysStatus(item: Item): void {
+    if (!item.availability || !item.uuid) return;
+
+    const allEnabled = this.days.every(
+      (day) => item.availability![day as keyof typeof item.availability]
+    );
+
+    this.allDaysMap[item.uuid] = allEnabled;
   }
 
   toggleAvailability(item: Item, day: string): void {
     if (item.availability) {
       item.availability[day as keyof typeof item.availability] =
         !item.availability[day as keyof typeof item.availability];
+
+      // Update allDays status
+      this.updateAllDaysStatus(item);
+
       this.saveItemAvailability(item);
     }
   }
 
   saveItemAvailability(item: Item): void {
-    // this.itemService.updateItem(item).subscribe({
+    // this.itemsService.updateItem(item).subscribe({
     //   next: () => {
     //     // You might want to show a snackbar confirmation here
     //   },
@@ -129,8 +204,18 @@ export class ScheduleOverviewComponent implements OnInit {
     this.dataSource.filterPredicate = (data: Item, filter: string) => {
       const availabilityFilterValue = this.availabilityFilter.value;
       const dayFilterValue = this.dayFilter.value;
+      const term = this.searchTerm.value?.toLowerCase() || '';
 
-      // Handle day filter
+      // First apply term filter
+      const matchesTerm =
+        term === '' ||
+        data.enName.toLowerCase().includes(term) ||
+        data.esName?.toLowerCase().includes(term) ||
+        data.heName?.toLowerCase().includes(term);
+
+      if (!matchesTerm) return false;
+
+      // Then apply day filter
       if (dayFilterValue !== 'all' && data.availability) {
         if (availabilityFilterValue === 'available') {
           return data.availability[
@@ -164,15 +249,10 @@ export class ScheduleOverviewComponent implements OnInit {
 
     // This triggers the filter
     this.dataSource.filter = 'trigger';
+    this.filteredItems = this.dataSource.filteredData;
   }
 
-  getDayName(day: string): string {
-    return day.charAt(0).toUpperCase() + day.slice(1);
-  }
-
-  getDisplayName(item: Item): string {
-    // Return name based on language preference, defaulting to English
-    // You can customize this based on your app's language settings
-    return item.enName;
+  languageChanged(languageDirection: LanguageDirection): void {
+    this.dir = languageDirection;
   }
 }

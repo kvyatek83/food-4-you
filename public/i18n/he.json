@@ -151,6 +151,41 @@
     "esName": "שם בספרדית",
     "esError": "שם בספרדית נדרש"
   },
+  "scheduleOverview": {
+    "searchLabel": "חיפוש פריטים",
+    "searchPlaceholder": "הזן שם פריט",
+    "filterByAvailability": "סינון לפי זמינות",
+    "filterByDay": "סינון לפי יום",
+    "itemName": "שם הפריט",
+    "allDays": "כל הימים",
+    "actions": "פעולות",
+    "saveChanges": "שמור שינויים",
+    "editItem": "ערוך פריט",
+    "filterOptions": {
+      "all": "כל הפריטים",
+      "available": "פריטים זמינים",
+      "unavailable": "פריטים לא זמינים"
+    },
+    "dayOptions": {
+      "all": "כל הימים",
+      "monday": "יום שני",
+      "tuesday": "יום שלישי",
+      "wednesday": "יום רביעי",
+      "thursday": "יום חמישי",
+      "friday": "יום שישי",
+      "saturday": "יום שבת",
+      "sunday": "יום ראשון"
+    },
+    "daysShort": {
+      "mon": "ב'",
+      "tue": "ג'",
+      "wed": "ד'",
+      "thu": "ה'",
+      "fri": "ו'",
+      "sat": "ש'",
+      "sun": "א'"
+    }
+  },
   "menu": {
     "category": "קטגוריה",
     "item": "פריט"

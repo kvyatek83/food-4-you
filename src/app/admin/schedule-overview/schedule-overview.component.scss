@@ -1,4 +1,3 @@
-/* schedule-overview.component.scss */
 .schedule-container {
   margin: 20px;
   border-radius: 8px;
@@ -6,7 +5,7 @@
 }
 
 .filters-container {
-  padding: 16px 24px;
+  padding: 16px 0;
 }
 
 .filters {
@@ -40,7 +39,8 @@
   .mat-column-thursday,
   .mat-column-friday,
   .mat-column-saturday,
-  .mat-column-sunday {
+  .mat-column-sunday,
+  .mat-column-allDays {
     width: 60px;
     text-align: center;
   }
@@ -53,6 +53,24 @@
       justify-content: center;
     }
   }
+}
+
+.no-results {
+  width: 50%;
+  margin: auto;
+}
+
+.no-data {
+  width: 50%;
+  margin: auto;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+  min-height: 300px;
 }
 
 // Responsive adjustments
