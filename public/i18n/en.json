@@ -128,6 +128,7 @@
     "gridView": "Grid View",
     "tableView": "Table View",
     "searchLabel": "Search",
+    "inStockFilterLabel": "In Stock",
     "searchPlaceholder": "Type add-on...",
     "noAddOns": "No add-ons found",
     "tableHeader": {

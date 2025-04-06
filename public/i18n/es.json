@@ -129,6 +129,7 @@
     "gridView": "Grid View",
     "tableView": "Table View",
     "searchLabel": "Buscar",
+    "inStockFilterLabel": "In Stock",
     "searchPlaceholder": "Buscar complemento...",
     "noAddOns": "No se encontraron complementos",
     "tableHeader": {

@@ -128,6 +128,7 @@
     "gridView": "תצוגת קלפים",
     "tableView": "תצוגת טבלה",
     "searchLabel": "חיפוש",
+    "inStockFilterLabel": "זמין במלאי",
     "searchPlaceholder": "נא להקליד תוספת",
     "noAddOns": "לא נמצאו תוספות",
     "tableHeader": {

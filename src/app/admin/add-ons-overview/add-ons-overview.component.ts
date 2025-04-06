@@ -40,6 +40,7 @@ export class AddOnsOverviewComponent {
   public lang$: Observable<LanguageType> = new Observable<LanguageType>();
 
   searchTerm = new FormControl('');
+  inStockFilter = new FormControl<boolean | null>(null);
   displayedColumns: string[] = ['name', 'inStock', 'actions'];
   addOns: AddOn[] = [];
   filteredAddOns: AddOn[] = [];
@@ -56,8 +57,11 @@ export class AddOnsOverviewComponent {
     this.lang$ = this.languageService.currentLanguage$;
     this.loadAddOns();
 
-    this.searchTerm.valueChanges.pipe(startWith('')).subscribe((term) => {
-      this.filterAddOns(term || '');
+    combineLatest([
+      this.inStockFilter.valueChanges.pipe(startWith(null)),
+      this.searchTerm.valueChanges.pipe(startWith('')),
+    ]).subscribe(([inStock, term]) => {
+      this.filterAddOns(term || '', inStock);
     });
   }
 
@@ -74,14 +78,17 @@ export class AddOnsOverviewComponent {
     });
   }
 
-  private filterAddOns(term: string): void {
+  private filterAddOns(term: string, inStock: boolean | null): void {
     const value = term.toLowerCase();
-    this.filteredAddOns = this.addOns.filter(
-      (addOn) =>
-        addOn.enName.toLowerCase().includes(value) ||
-        addOn.esName.toLowerCase().includes(value) ||
-        addOn.heName.toLowerCase().includes(value)
-    );
+    this.filteredAddOns = this.addOns.filter((addOn) => {
+      return (
+        (addOn.enName.toLowerCase().includes(value) ||
+          addOn.esName.toLowerCase().includes(value) ||
+          addOn.heName.toLowerCase().includes(value)) &&
+        inStock !== null &&
+        addOn.inStock === inStock
+      );
+    });
   }
 
   addNewAddOn(): void {
