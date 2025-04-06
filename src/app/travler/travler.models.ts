@@ -20,15 +20,17 @@ export interface Item {
   addOnPrice?: number;
   freeAvailableAddOns?: number;
   kitchenOrders?: string;
-  availability?: {
-    monday: boolean;
-    tuesday: boolean;
-    wednesday: boolean;
-    thursday: boolean;
-    friday: boolean;
-    saturday: boolean;
-    sunday: boolean;
-  };
+  availability?: DaysInWeek;
+}
+
+export interface DaysInWeek {
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+  saturday: boolean;
+  sunday: boolean;
 }
 
 export interface Category {

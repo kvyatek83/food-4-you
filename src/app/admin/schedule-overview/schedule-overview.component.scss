@@ -1,11 +1,10 @@
 .schedule-container {
-  margin: 20px;
   border-radius: 8px;
   overflow: hidden;
 }
 
 .filters-container {
-  padding: 16px 0;
+  padding: 4px 0 16px 0;
 }
 
 .filters {
@@ -55,6 +54,26 @@
   }
 }
 
+.mat-column-actions {
+  width: 200px;
+
+  button {
+    opacity: 0.8;
+
+    &:not([disabled]):hover {
+      opacity: 1;
+    }
+
+    &[disabled] {
+      opacity: 0.4;
+    }
+  }
+}
+
+td.mat-cell mat-spinner {
+  margin: 0 auto;
+}
+
 .no-results {
   width: 50%;
   margin: auto;
@@ -73,7 +92,6 @@
   min-height: 300px;
 }
 
-// Responsive adjustments
 @media screen and (max-width: 768px) {
   .filters {
     flex-direction: column;
@@ -84,7 +102,6 @@
   }
 
   .schedule-table {
-    // Make the table scrollable horizontally on smaller screens
     display: block;
     overflow-x: auto;
 

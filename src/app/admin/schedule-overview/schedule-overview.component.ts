@@ -1,4 +1,3 @@
-// schedule-overview.component.ts
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -10,7 +9,7 @@ import { combineLatest, debounceTime, Observable, startWith } from 'rxjs';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { MaterialModule } from '../../material.module';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
-import { Item } from '../../travler/travler.models';
+import { DaysInWeek, Item } from '../../travler/travler.models';
 import { ItemsService } from '../../services/items.service';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { NoResultsComponent } from '../../components/no-results/no-results.component';
@@ -19,6 +18,16 @@ import {
   LanguageService,
   LanguageType,
 } from '../../services/lang.service';
+
+const INIT_WEEK: DaysInWeek = {
+  monday: false,
+  tuesday: false,
+  wednesday: false,
+  thursday: false,
+  friday: false,
+  saturday: false,
+  sunday: false,
+};
 
 @Component({
   selector: 'app-schedule-overview',
@@ -86,15 +95,11 @@ export class ScheduleOverviewComponent implements OnInit {
   filteredItems: Item[] = [];
   allDaysMap: { [key: string]: boolean } = {};
 
-  days = [
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
-    'sunday',
-  ];
+  originalItemsState: { [key: string]: DaysInWeek } = {};
+  modifiedRows: Set<string> = new Set();
+  savingRows: { [key: string]: boolean } = {};
+
+  days = Object.keys(INIT_WEEK) as (keyof DaysInWeek)[];
 
   constructor(
     private itemsService: ItemsService,
@@ -122,23 +127,18 @@ export class ScheduleOverviewComponent implements OnInit {
   }
 
   loadItems(): void {
+    this.loadingData = true;
     this.itemsService.allItems$.subscribe((categories) => {
-      // Initialize availability if not present
       const items = categories.map((category) => category.items).flat();
       const itemsWithAvailability = items.map((item) => {
         if (!item.availability) {
-          item.availability = {
-            monday: false,
-            tuesday: false,
-            wednesday: false,
-            thursday: false,
-            friday: false,
-            saturday: false,
-            sunday: false,
-          };
+          item.availability = INIT_WEEK;
         }
 
-        // Initialize allDays status
+        this.originalItemsState[item.uuid] = {
+          ...item.availability,
+        };
+
         this.updateAllDaysStatus(item);
         return item;
       });
@@ -150,20 +150,92 @@ export class ScheduleOverviewComponent implements OnInit {
   }
 
   toggleAllDays(item: Item): void {
-    if (!item.availability) return;
+    if (!item.availability || !item.uuid) return;
 
     const currentStatus = this.allDaysMap[item.uuid] || false;
     const newStatus = !currentStatus;
 
-    // Update all days
     this.days.forEach((day) => {
       item.availability![day as keyof typeof item.availability] = newStatus;
     });
 
-    // Update the allDays status
     this.allDaysMap[item.uuid] = newStatus;
 
-    this.saveItemAvailability(item);
+    this.checkForChanges(item);
+  }
+
+  toggleAvailability(item: Item, day: string): void {
+    if (item.availability) {
+      item.availability[day as keyof typeof item.availability] =
+        !item.availability[day as keyof typeof item.availability];
+
+      this.updateAllDaysStatus(item);
+
+      this.checkForChanges(item);
+    }
+  }
+
+  checkForChanges(item: Item): void {
+    if (!item.uuid || !this.originalItemsState[item.uuid]) return;
+
+    const originalAvailability = this.originalItemsState[item.uuid];
+    const currentAvailability = item.availability;
+
+    const hasChanges = this.days.some(
+      (day) => originalAvailability[day] !== currentAvailability?.[day]
+    );
+
+    if (hasChanges) {
+      this.modifiedRows.add(item.uuid);
+    } else {
+      this.modifiedRows.delete(item.uuid);
+    }
+  }
+
+  revertItemChanges(item: Item): void {
+    if (!item.uuid || !this.originalItemsState[item.uuid]) return;
+
+    item.availability = { ...this.originalItemsState[item.uuid] };
+
+    this.updateAllDaysStatus(item);
+
+    this.modifiedRows.delete(item.uuid);
+  }
+
+  saveItemAvailability(item: Item): void {
+    if (!item.uuid) return;
+
+    this.savingRows[item.uuid] = true;
+
+    setTimeout(() => {
+      if (item.availability) {
+        this.originalItemsState[item.uuid] = { ...item.availability };
+      }
+
+      this.modifiedRows.delete(item.uuid);
+      this.savingRows[item.uuid] = false;
+    }, 1000);
+
+    // If using actual API:
+    /*
+  this.itemsService.updateItem(item).pipe(
+    finalize(() => {
+      this.savingRows[item.uuid] = false;
+    })
+  ).subscribe({
+    next: () => {
+      // Update original state after successful save
+      if (item.availability) {
+        this.originalItemsState[item.uuid].availability = { ...item.availability };
+      }
+      // Remove from modified list
+      this.modifiedRows.delete(item.uuid);
+    },
+    error: (err) => {
+      console.error('Error updating item availability:', err);
+    }
+  });
+  */
   }
 
   updateAllDaysStatus(item: Item): void {
@@ -176,37 +248,12 @@ export class ScheduleOverviewComponent implements OnInit {
     this.allDaysMap[item.uuid] = allEnabled;
   }
 
-  toggleAvailability(item: Item, day: string): void {
-    if (item.availability) {
-      item.availability[day as keyof typeof item.availability] =
-        !item.availability[day as keyof typeof item.availability];
-
-      // Update allDays status
-      this.updateAllDaysStatus(item);
-
-      this.saveItemAvailability(item);
-    }
-  }
-
-  saveItemAvailability(item: Item): void {
-    // this.itemsService.updateItem(item).subscribe({
-    //   next: () => {
-    //     // You might want to show a snackbar confirmation here
-    //   },
-    //   error: (err) => {
-    //     console.error('Error updating item availability:', err);
-    //     // Handle error, maybe revert the change in UI
-    //   }
-    // });
-  }
-
   applyFilters(): void {
     this.dataSource.filterPredicate = (data: Item, filter: string) => {
       const availabilityFilterValue = this.availabilityFilter.value;
       const dayFilterValue = this.dayFilter.value;
       const term = this.searchTerm.value?.toLowerCase() || '';
 
-      // First apply term filter
       const matchesTerm =
         term === '' ||
         data.enName.toLowerCase().includes(term) ||
@@ -215,7 +262,6 @@ export class ScheduleOverviewComponent implements OnInit {
 
       if (!matchesTerm) return false;
 
-      // Then apply day filter
       if (dayFilterValue !== 'all' && data.availability) {
         if (availabilityFilterValue === 'available') {
           return data.availability[
@@ -226,11 +272,9 @@ export class ScheduleOverviewComponent implements OnInit {
             dayFilterValue as keyof typeof data.availability
           ];
         }
-        // If 'all availability' is selected, just return true when filtering by day
         return true;
       }
 
-      // Handle availability filter across all days
       if (availabilityFilterValue !== 'all' && data.availability) {
         const isAvailableOnAnyDay = Object.values(data.availability).some(
           (value) => value
@@ -243,13 +287,19 @@ export class ScheduleOverviewComponent implements OnInit {
         }
       }
 
-      // Default case: no filtering
       return true;
     };
 
-    // This triggers the filter
     this.dataSource.filter = 'trigger';
     this.filteredItems = this.dataSource.filteredData;
+  }
+
+  isRowModified(uuid: string): boolean {
+    return this.modifiedRows.has(uuid);
+  }
+
+  isRowSaving(uuid: string): boolean {
+    return this.savingRows[uuid] === true;
   }
 
   languageChanged(languageDirection: LanguageDirection): void {
