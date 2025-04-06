@@ -19,6 +19,16 @@ export interface Item {
   availableAddOnUuids?: string[];
   addOnPrice?: number;
   freeAvailableAddOns?: number;
+  kitchenOrders?: string;
+  availability?: {
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+  };
 }
 
 export interface Category {

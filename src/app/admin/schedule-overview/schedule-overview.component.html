@@ -1,1 +1,161 @@
-<p>schedule-overview works!</p>
+<!-- schedule-overview.component.html -->
+<div class="schedule-container mat-elevation-z8">
+  <div class="filters-container">
+    <div class="filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Filter by availability</mat-label>
+        <mat-select [formControl]="availabilityFilter">
+          <mat-option
+            *ngFor="let option of filterOptions"
+            [value]="option.value"
+          >
+            {{ option.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Filter by day</mat-label>
+        <mat-select [formControl]="dayFilter">
+          <mat-option *ngFor="let option of dayOptions" [value]="option.value">
+            {{ option.viewValue }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <table mat-table [dataSource]="dataSource" matSort class="schedule-table">
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Item Name</th>
+      <td mat-cell *matCellDef="let item">{{ getDisplayName(item) }}</td>
+    </ng-container>
+
+    <!-- Monday Column -->
+    <ng-container matColumnDef="monday">
+      <th mat-header-cell *matHeaderCellDef>Mon</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-checkbox
+          color="primary"
+          [checked]="item.availability?.monday"
+          (change)="toggleAvailability(item, 'monday')"
+          aria-label="Available on Monday"
+        >
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Tuesday Column -->
+    <ng-container matColumnDef="tuesday">
+      <th mat-header-cell *matHeaderCellDef>Tue</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-checkbox
+          color="primary"
+          [checked]="item.availability?.tuesday"
+          (change)="toggleAvailability(item, 'tuesday')"
+          aria-label="Available on Tuesday"
+        >
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Wednesday Column -->
+    <ng-container matColumnDef="wednesday">
+      <th mat-header-cell *matHeaderCellDef>Wed</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-checkbox
+          color="primary"
+          [checked]="item.availability?.wednesday"
+          (change)="toggleAvailability(item, 'wednesday')"
+          aria-label="Available on Wednesday"
+        >
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Thursday Column -->
+    <ng-container matColumnDef="thursday">
+      <th mat-header-cell *matHeaderCellDef>Thu</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-checkbox
+          color="primary"
+          [checked]="item.availability?.thursday"
+          (change)="toggleAvailability(item, 'thursday')"
+          aria-label="Available on Thursday"
+        >
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Friday Column -->
+    <ng-container matColumnDef="friday">
+      <th mat-header-cell *matHeaderCellDef>Fri</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-checkbox
+          color="primary"
+          [checked]="item.availability?.friday"
+          (change)="toggleAvailability(item, 'friday')"
+          aria-label="Available on Friday"
+        >
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Saturday Column -->
+    <ng-container matColumnDef="saturday">
+      <th mat-header-cell *matHeaderCellDef>Sat</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-checkbox
+          color="primary"
+          [checked]="item.availability?.saturday"
+          (change)="toggleAvailability(item, 'saturday')"
+          aria-label="Available on Saturday"
+        >
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Sunday Column -->
+    <ng-container matColumnDef="sunday">
+      <th mat-header-cell *matHeaderCellDef>Sun</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-checkbox
+          color="primary"
+          [checked]="item.availability?.sunday"
+          (change)="toggleAvailability(item, 'sunday')"
+          aria-label="Available on Sunday"
+        >
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let item">
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="saveItemAvailability(item)">
+            <mat-icon>save</mat-icon>
+            <span>Save Changes</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>edit</mat-icon>
+            <span>Edit Item</span>
+          </button>
+        </mat-menu>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <mat-paginator
+    [pageSizeOptions]="[100, 25, 50, 100]"
+    showFirstLastButtons
+  ></mat-paginator>
+</div>
