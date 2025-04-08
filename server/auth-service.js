@@ -20,7 +20,7 @@ function verifyToken(req, res, next) {
 
 function checkRole(role) {
   return function (req, res, next) {
-    if (req.userRole === role) {
+    if (req.userRole === "admin" || req.userRole === role) {
       next();
     } else {
       res

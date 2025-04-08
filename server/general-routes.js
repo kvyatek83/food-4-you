@@ -23,11 +23,14 @@ router.post("/login", async (req, res) => {
       .send({ message: `userUnauthorized`, params: req.body.username });
   }
 
+  const role = user.role.toUpperCase();
+  const expiresInKey = `${role}_EXPIRES_IN`;
+
   const token = jwt.sign(
     { id: user.id, role: user.role },
     process.env.JWT_SECRET,
     {
-      expiresIn: process.env.EXPIRES_IN || "24h",
+      expiresIn: process.env[expiresInKey] || "24h",
     }
   );
 

@@ -49,10 +49,18 @@ export class LoginComponent {
         )
         .pipe(take(1))
         .subscribe((allowed) => {
-          this.loading = false;
-
           if (allowed) {
-            this.router.navigate(['/admin']);
+            const authUser = window.localStorage.getItem('auth-user');
+            if (authUser) {
+              const token = JSON.parse(authUser);
+              if (token) {
+                const tokenPayload = JSON.parse(
+                  window.atob(token.split('.')[1])
+                );
+
+                this.router.navigate([`/${tokenPayload.role}`]);
+              }
+            }
           }
         });
     } else {

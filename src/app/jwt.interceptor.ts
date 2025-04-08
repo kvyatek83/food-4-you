@@ -14,7 +14,7 @@ export class JwtInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (!req.url.includes('admin')) {
+    if (!req.url.includes('admin') && !req.url.includes('travler')) {
       return next.handle(req);
     }
 
@@ -22,6 +22,14 @@ export class JwtInterceptor implements HttpInterceptor {
     const authUser = window.localStorage.getItem('auth-user');
     if (authUser) {
       const token = JSON.parse(authUser);
+
+      // TODO: if token exp and client fire http call, nav to login
+      // const tokenPayload = JSON.parse(window.atob(token.split('.')[1]));
+
+      // if (Date.now() < tokenPayload.exp * 1000) {
+      // } else {
+
+      // }
 
       if (token) {
         authReq = req.clone({

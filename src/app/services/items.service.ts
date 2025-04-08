@@ -93,11 +93,11 @@ export class ItemsService {
   }
 
   fetchAllItems(): Observable<Category[]> {
-    return this.http.get<Category[]>('/api/categories');
+    return this.http.get<Category[]>('/api/travler/categories');
   }
 
   fetchAddOns(): Observable<AddOn[]> {
-    return this.http.get<AddOn[]>('/api/add-ons');
+    return this.http.get<AddOn[]>('/api/travler/add-ons');
   }
 
   getAddOnByUuid(addOnUuid: string): AddOn | undefined {

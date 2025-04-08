@@ -8,6 +8,7 @@ export const routes: Routes = [
     path: 'travler',
     loadChildren: () =>
       import('./travler/travler.module').then((m) => m.TravlerModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'admin',
