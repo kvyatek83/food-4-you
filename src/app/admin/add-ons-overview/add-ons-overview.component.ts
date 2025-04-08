@@ -81,12 +81,17 @@ export class AddOnsOverviewComponent {
   private filterAddOns(term: string, inStock: boolean | null): void {
     const value = term.toLowerCase();
     this.filteredAddOns = this.addOns.filter((addOn) => {
+      let inStockFilter = true;
+
+      if (inStock !== null) {
+        inStockFilter = addOn.inStock === inStock;
+      }
+
       return (
         (addOn.enName.toLowerCase().includes(value) ||
           addOn.esName.toLowerCase().includes(value) ||
           addOn.heName.toLowerCase().includes(value)) &&
-        inStock !== null &&
-        addOn.inStock === inStock
+        inStockFilter
       );
     });
   }

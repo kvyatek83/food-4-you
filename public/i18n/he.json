@@ -152,19 +152,21 @@
     "esError": "שם בספרדית נדרש"
   },
   "scheduleOverview": {
-    "searchLabel": "חיפוש פריטים",
-    "searchPlaceholder": "הזן שם פריט",
+    "searchLabel": "חיפוש מנות",
+    "searchPlaceholder": "הזן שם מנה",
     "filterByAvailability": "סינון לפי זמינות",
     "filterByDay": "סינון לפי יום",
-    "itemName": "שם הפריט",
+    "saveAllChanges": "שמור הכל",
+    "revertAllChanges": "בטל הכל",
+    "itemName": "שם המנה",
     "allDays": "כל הימים",
     "actions": "פעולות",
     "saveChanges": "שמור שינויים",
-    "editItem": "ערוך פריט",
+    "revertChanges": "בטל שינויים",
     "filterOptions": {
-      "all": "כל הפריטים",
-      "available": "פריטים זמינים",
-      "unavailable": "פריטים לא זמינים"
+      "all": "כל המנות",
+      "available": "מנות זמינות",
+      "unavailable": "מנות לא זמינות"
     },
     "dayOptions": {
       "all": "כל הימים",

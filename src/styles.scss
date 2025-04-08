@@ -53,6 +53,10 @@ body {
   padding: 0 10px 10px !important;
 }
 
+.spacer {
+  flex: 1 1 auto;
+}
+
 .rtl {
   direction: rtl;
   text-align: right;
