@@ -4,6 +4,67 @@ const db = require("./database-utils");
 const space = require("./space-utils");
 const { v4: uuidv4 } = require("uuid");
 const { verifyToken, checkRole } = require("./auth-service");
+const {
+  uploadDatabaseToS3,
+  listBackups,
+  downloadBackup,
+} = require("./backup-utils");
+
+// ------------- CONFIG ENDPOINTS -------------
+router.post("/config", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    // res.status(201).json(categories);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.get("/config", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    const envs = {
+      printerIp: process.env.PRINTER_IP,
+    };
+
+    res.json(envs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// ------------- BACKUP ENDPOINTS -------------
+router.post("/backup", async (req, res) => {
+  try {
+    await uploadDatabaseToS3();
+    res.status(200).send("Backup completed.");
+  } catch (error) {
+    res.status(500).send("Backup failed.");
+  }
+});
+
+router.get("/backups", async (req, res) => {
+  try {
+    const backups = await listBackups();
+    res.status(200).json(backups);
+  } catch (error) {
+    res.status(500).send("Error fetching backup list.");
+  }
+});
+
+router.post("/restore", async (req, res) => {
+  const { backupKey } = req.body;
+  if (!backupKey) {
+    return res.status(400).send("Backup key is required.");
+  }
+
+  try {
+    await downloadBackup(backupKey);
+    res.status(200).send("Database restored from backup.");
+  } catch (error) {
+    res.status(500).send("Failed to restore database backup.");
+  }
+});
 
 // ------------- CATEGORY ENDPOINTS -------------
 
@@ -401,5 +462,7 @@ router.delete(
     }
   }
 );
+
+// ------------- ORDERS ENDPOINTS -------------
 
 module.exports = router;
