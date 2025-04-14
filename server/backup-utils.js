@@ -8,6 +8,7 @@ const bucketName = process.env.AWS_S3_BUCKET; // Your S3 bucket name
 const backupPrefix = "backups/"; // Folder name in S3 to store backups
 const maxBackups = 3; // Maximum number of backups to keep
 
+// Upload Database to S3
 const uploadDatabaseToS3 = async () => {
   if (!fs.existsSync(dbPath)) {
     console.error("Database file does not exist, cannot perform backup.");
@@ -17,7 +18,7 @@ const uploadDatabaseToS3 = async () => {
   const fileStream = fs.createReadStream(dbPath);
   const newBackupKey = `${backupPrefix}backup-${Date.now()}-app.db`; // Unique key for the new backup
 
-  console.log(newBackupKey);
+  console.log(`Preparing to upload: ${newBackupKey}`);
 
   // Upload new backup
   const uploadParams = {
@@ -25,22 +26,21 @@ const uploadDatabaseToS3 = async () => {
     Key: newBackupKey,
     Body: fileStream,
   };
-  console.log(JSON.stringify(uploadParams));
 
   try {
-    await s3.upload(uploadParams).promise(); // Correctly call upload method
-    console.log(`Database backup uploaded successfully at ${newBackupKey}`);
+    const data = await s3.upload(uploadParams).promise(); // Correctly call upload method
+    console.log(`Database backup uploaded successfully at ${data.Location}`);
 
     // Manage old backups
     await manageOldBackups();
   } catch (err) {
-    console.error("Error uploading database to S3: ", err);
+    console.error("Error uploading database to S3:", err);
   }
 };
 
+// Manage old backups
 const manageOldBackups = async () => {
   try {
-    // List current backups
     const listedObjects = await s3
       .listObjectsV2({
         Bucket: bucketName,
@@ -75,7 +75,7 @@ const manageOldBackups = async () => {
   }
 };
 
-// Function to list backups - allows access via GET request
+// Function to list backups
 const listBackups = async () => {
   try {
     const listedObjects = await s3

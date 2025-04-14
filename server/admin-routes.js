@@ -1,4 +1,6 @@
 const express = require("express");
+const path = require("path");
+const fs = require("fs");
 const router = express.Router();
 const db = require("./database-utils");
 const space = require("./space-utils");
@@ -34,16 +36,16 @@ router.get("/config", verifyToken, checkRole("admin"), async (req, res) => {
 });
 
 // ------------- BACKUP ENDPOINTS -------------
-router.post("/backup", async (req, res) => {
+router.post("/backup", verifyToken, checkRole("admin"), async (req, res) => {
   try {
     await uploadDatabaseToS3();
-    res.status(200).send("Backup completed.");
+    res.status(201).send("Backup completed.");
   } catch (error) {
     res.status(500).send("Backup failed.");
   }
 });
 
-router.get("/backups", async (req, res) => {
+router.get("/backups", verifyToken, checkRole("admin"), async (req, res) => {
   try {
     const backups = await listBackups();
     res.status(200).json(backups);
@@ -52,16 +54,30 @@ router.get("/backups", async (req, res) => {
   }
 });
 
-router.post("/restore", async (req, res) => {
+router.post("/restore", verifyToken, checkRole("admin"), async (req, res) => {
   const { backupKey } = req.body;
   if (!backupKey) {
     return res.status(400).send("Backup key is required.");
   }
 
   try {
+    // Download the backup
     await downloadBackup(backupKey);
-    res.status(200).send("Database restored from backup.");
+    const restoredDbPath = path.join(__dirname, "restored-app.db");
+    const currentDbPath = path.join(__dirname, process.env.DB_PATH || "app.db");
+
+    // Close current database connections
+    await db.closeConnections();
+
+    // Replace the database file
+    fs.renameSync(restoredDbPath, currentDbPath);
+
+    // Reinitialize the database connection
+    await db.initializeDatabase();
+
+    res.status(201).send("Database restored successfully.");
   } catch (error) {
+    console.error("Failed to restore database backup:", error);
     res.status(500).send("Failed to restore database backup.");
   }
 });

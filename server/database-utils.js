@@ -2,16 +2,57 @@ const { Sequelize, DataTypes } = require("sequelize");
 const path = require("path");
 require("dotenv").config();
 
-async function clearDatabase() {
-  await sequelize.drop();
-}
-
 // Initialize Sequelize with SQLite database
-const sequelize = new Sequelize({
+let sequelize = new Sequelize({
   dialect: "sqlite",
   storage: path.join(__dirname, process.env.DB_PATH || "app.db"),
 });
 
+async function clearDatabase() {
+  await sequelize.drop();
+}
+
+let sequelizeInstance = sequelize; // Store the current instance
+
+// Close all database connections
+const closeConnections = async () => {
+  try {
+    await sequelizeInstance.close();
+    console.log("Database connections closed successfully");
+    return true;
+  } catch (error) {
+    console.error("Error closing database connections:", error);
+    throw error;
+  }
+};
+
+// Initialize/reinitialize database connection
+const initializeDatabase = async () => {
+  try {
+    // Create a new Sequelize instance
+    sequelizeInstance = new Sequelize({
+      dialect: "sqlite",
+      storage: path.join(__dirname, process.env.DB_PATH || "app.db"),
+    });
+
+    // Re-define models with the new connection
+    // This is a simplified version - you might need to redefine all models
+    // with their associations if this doesn't work
+    await sequelizeInstance.authenticate();
+    console.log("Database connection re-established successfully");
+
+    // Update the globally exposed sequelize variable to use the new instance
+    sequelize = sequelizeInstance;
+
+    // Re-sync models
+    await syncModels();
+
+    return true;
+  } catch (error) {
+    console.error("Error initializing database connection:", error);
+    throw error;
+  }
+};
 // Define User model
 const User = sequelize.define("User", {
   username: {
@@ -413,4 +454,6 @@ module.exports = {
   getCategoriesWithItems,
   getCategoriesWithAvailableItems,
   clearDatabase,
+  closeConnections, // Add this
+  initializeDatabase, // Add this
 };

@@ -24,16 +24,6 @@ export interface GuestDetails {
   providedIn: 'root',
 })
 export class AuthService {
-  private _guestDetails$ = new BehaviorSubject<GuestDetails | null>(null);
-
-  get guestDetails$(): Observable<GuestDetails | null> {
-    return this._guestDetails$.asObservable();
-  }
-
-  get guestDetails(): GuestDetails | null {
-    return this._guestDetails$.value;
-  }
-
   constructor(
     private http: HttpClient,
     private notificationsService: NotificationsService,

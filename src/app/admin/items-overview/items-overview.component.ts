@@ -105,8 +105,7 @@ export class ItemsOverviewComponent {
 
   addNewItem(): void {
     const dialogRef = this.dialog.open(ItemFormComponent, {
-      width: 'auto',
-      maxWidth: '90%',
+      width: '90%',
       data: {
         cb: (data: { item: Item; image: File }) =>
           this.itemsService.createItem(data.item, data.image),
@@ -121,8 +120,7 @@ export class ItemsOverviewComponent {
       cat.items.some((ite) => ite.uuid === item.uuid)
     )?.uuid;
     const dialogRef = this.dialog.open(ItemFormComponent, {
-      width: 'auto',
-      maxWidth: '90%',
+      width: '90%',
       data: {
         item,
         categoryUuid,
