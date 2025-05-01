@@ -151,6 +151,46 @@
     "esName": "שם בספרדית",
     "esError": "שם בספרדית נדרש"
   },
+  "ordersOverview": {
+    "searchLabel": "חיפוש הזמנות",
+    "searchPlaceholder": "חיפוש לפי מזהה, שם לקוח או טלפון",
+    "printedFilterLabel": "סינון לפי מצב הדפסה",
+    "dateFilterLabel": "סינון לפי תאריך",
+    "yes": "כן",
+    "no": "לא",
+    "anonymous": "אנונימי",
+    "printed": "הודפס",
+    "notPrinted": "לא הודפס",
+    "viewDetails": "צפה בפרטי ההזמנה",
+    "markAsPrinted": "סמן כמודפס",
+    "tableHeader": {
+      "orderNumber": "מס' הזמנה",
+      "orderId": "מזהה הזמנה",
+      "date": "תאריך ושעה",
+      "customer": "לקוח",
+      "items": "פריטים",
+      "total": "סה״כ",
+      "printed": "הודפס",
+      "actions": "פעולות"
+    }
+  },
+  "orderDetails": {
+    "title": "פרטי הזמנה",
+    "orderNumber": "מספר הזמנה",
+    "orderId": "מזהה הזמנה",
+    "date": "תאריך ושעה",
+    "customer": "לקוח",
+    "phone": "טלפון",
+    "printed": "הודפס",
+    "itemsTitle": "פריטים בהזמנה",
+    "addOns": "תוספות",
+    "itemTotal": "סה״כ לפריט",
+    "total": "סה״כ להזמנה",
+    "close": "סגור",
+    "markAsPrinted": "סמן כמודפס",
+    "yes": "כן",
+    "no": "לא"
+  },
   "scheduleOverview": {
     "searchLabel": "חיפוש מנות",
     "searchPlaceholder": "הזן שם מנה",

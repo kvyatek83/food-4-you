@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map, of } from 'rxjs';
-import { Item } from '../travler/travler.models';
+import {
+  CustomerDetails,
+  Item,
+  OrderResponse,
+} from '../travler/travler.models';
+import { HttpClient } from '@angular/common/http';
 
 export interface CartItem {
   itemUuid: string;
@@ -29,7 +34,7 @@ export class CartService {
   private cartItems = new BehaviorSubject<CartItem[]>([]);
   public cartItems$ = this.cartItems.asObservable();
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.initializeCart();
     this.setupExpiryCheck();
   }
@@ -215,5 +220,26 @@ export class CartService {
     });
 
     return `${totalPrice.toFixed(2)} GTQ`;
+  }
+
+  placeOrder(customerDetails: CustomerDetails): Observable<OrderResponse> {
+    // Get current cart items
+    const cartItems = this.cartItems.value.map((cartItem) => {
+      return {
+        ...cartItem,
+        items: Array.from(cartItem.items.values()),
+      };
+    });
+
+    console.log(cartItems);
+
+    // Prepare order payload
+    const orderPayload = {
+      customerDetails,
+      cartItems,
+    };
+
+    // Send order to server
+    return this.http.post<OrderResponse>(`/api/travler/orders`, orderPayload);
   }
 }

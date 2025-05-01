@@ -153,6 +153,46 @@
     "esName": "Nombre en español",
     "esError": "El nombre en español es obligatorio"
   },
+  "ordersOverview": {
+    "searchLabel": "Buscar pedidos",
+    "searchPlaceholder": "Buscar por ID, nombre o teléfono",
+    "printedFilterLabel": "Filtrar por estado de impresión",
+    "dateFilterLabel": "Filtrar por fecha",
+    "yes": "Sí",
+    "no": "No",
+    "anonymous": "Anónimo",
+    "printed": "Impreso",
+    "notPrinted": "No impreso",
+    "viewDetails": "Ver detalles del pedido",
+    "markAsPrinted": "Marcar como impreso",
+    "tableHeader": {
+      "orderNumber": "Nº de pedido",
+      "orderId": "ID del pedido",
+      "date": "Fecha y hora",
+      "customer": "Cliente",
+      "items": "Artículos",
+      "total": "Total",
+      "printed": "Impreso",
+      "actions": "Acciones"
+    }
+  },
+  "orderDetails": {
+    "title": "Detalles del Pedido",
+    "orderNumber": "Número de pedido",
+    "orderId": "ID del pedido",
+    "date": "Fecha y hora",
+    "customer": "Cliente",
+    "phone": "Teléfono",
+    "printed": "Impreso",
+    "itemsTitle": "Artículos del pedido",
+    "addOns": "Complementos",
+    "itemTotal": "Total del artículo",
+    "total": "Total del pedido",
+    "close": "Cerrar",
+    "markAsPrinted": "Marcar como impreso",
+    "yes": "Sí",
+    "no": "No"
+  },
   "scheduleOverview": {
     "searchLabel": "Buscar artículos",
     "searchPlaceholder": "Ingrese nombre del artículo",

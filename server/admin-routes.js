@@ -481,4 +481,57 @@ router.delete(
 
 // ------------- ORDERS ENDPOINTS -------------
 
+router.get("/orders", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    let orders;
+    if (req.query.startDate && req.query.endDate) {
+      const startDate = new Date(req.query.startDate);
+      const endDate = new Date(req.query.endDate);
+      orders = await db.getOrdersByDateRange(startDate, endDate, page, limit);
+    } else {
+      orders = await db.getAllOrders(page, limit);
+    }
+
+    res.json(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ error: "Failed to fetch orders" });
+  }
+});
+
+// Get order statistics
+router.get(
+  "/orders/stats",
+  verifyToken,
+  checkRole("admin"),
+  async (req, res) => {
+    try {
+      // Default to last 30 days if no date range
+      const startDate = req.query.startDate
+        ? new Date(req.query.startDate)
+        : new Date(new Date().setDate(new Date().getDate() - 30));
+
+      const endDate = req.query.endDate
+        ? new Date(req.query.endDate)
+        : new Date();
+
+      const stats = await db.getOrderStats(startDate, endDate);
+
+      res.json({
+        period: {
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+        },
+        ...stats,
+      });
+    } catch (error) {
+      console.error("Error fetching order statistics:", error);
+      res.status(500).json({ error: "Failed to fetch order statistics" });
+    }
+  }
+);
+
 module.exports = router;

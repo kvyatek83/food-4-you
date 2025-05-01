@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
-type DataTyep = 'category' | 'item' | 'add-on';
+type DataTyep = 'category' | 'item' | 'add-on' | 'order';
 
 @Component({
   selector: 'app-no-data',

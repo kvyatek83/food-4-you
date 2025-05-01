@@ -1,0 +1,98 @@
+<div
+  *ngIf="lang$ | async; let lang"
+  appLanguageDirection
+  class="order-details-wrapper"
+>
+  <h2 mat-dialog-title>{{ "orderDetails.title" | translate }}</h2>
+
+  <div class="order-details">
+    <div class="detail-row">
+      <span class="label">{{ "orderDetails.orderId" | translate }}:</span>
+      <span class="value">{{ data.order.uuid }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="label">{{ "orderDetails.date" | translate }}:</span>
+      <span class="value">{{ data.order.orderDate | date : "medium" }}</span>
+    </div>
+
+    <div class="detail-row" *ngIf="data.order.customerName">
+      <span class="label">{{ "orderDetails.customer" | translate }}:</span>
+      <span class="value">{{ data.order.customerName }}</span>
+    </div>
+
+    <div class="detail-row" *ngIf="data.order.customerPhone">
+      <span class="label">{{ "orderDetails.phone" | translate }}:</span>
+      <span class="value">{{ data.order.customerPhone }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="label">{{ "orderDetails.printed" | translate }}:</span>
+      <span class="value">{{
+        data.order.printed
+          ? ("orderDetails.yes" | translate)
+          : ("orderDetails.no" | translate)
+      }}</span>
+    </div>
+
+    <h3 class="items-title">{{ "orderDetails.itemsTitle" | translate }}</h3>
+
+    <mat-divider></mat-divider>
+  </div>
+
+  <mat-dialog-content>
+    <div class="order-items">
+      <div *ngFor="let item of data.order.items" class="order-item">
+        <div class="item-header">
+          <span class="item-name"
+            >{{ item.quantity }}x {{ item.itemName }}</span
+          >
+          <span class="item-price">{{ item.price | currency : "GTQ " }}</span>
+        </div>
+
+        <div
+          *ngIf="item.selectedAddOns && item.selectedAddOns.length > 0"
+          class="item-addons"
+        >
+          <span class="addon-label"
+            >{{ "orderDetails.addOns" | translate }}:</span
+          >
+          <span class="addon-count">{{ item.selectedAddOns.length }}</span>
+        </div>
+
+        <div class="item-total">
+          <span>{{ "orderDetails.itemTotal" | translate }}:</span>
+          <span>{{ item.itemTotalPrice | currency : "GTQ " }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <div class="order-total-wrapper">
+      <mat-divider></mat-divider>
+
+      <div class="order-total">
+        <span class="total-label">{{ "orderDetails.total" | translate }}:</span>
+        <span class="total-amount">{{
+          data.order.totalAmount | currency : "GTQ "
+        }}</span>
+      </div>
+    </div>
+
+    <button
+      mat-stroked-button
+      [mat-dialog-close]="{ printed: data.order.printed }"
+    >
+      {{ "orderDetails.close" | translate }}
+    </button>
+    <button
+      mat-flat-button
+      color="primary"
+      *ngIf="!data.order.printed"
+      (click)="markAsPrinted()"
+    >
+      {{ "orderDetails.markAsPrinted" | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

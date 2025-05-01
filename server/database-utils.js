@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const path = require("path");
+const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
 
 // Initialize Sequelize with SQLite database
@@ -53,7 +54,7 @@ const initializeDatabase = async () => {
     throw error;
   }
 };
-// Define User model
+
 const User = sequelize.define("User", {
   username: {
     type: DataTypes.STRING,
@@ -70,7 +71,6 @@ const User = sequelize.define("User", {
   },
 });
 
-// Define AddOn model
 const AddOn = sequelize.define("AddOn", {
   uuid: {
     type: DataTypes.STRING,
@@ -95,7 +95,6 @@ const AddOn = sequelize.define("AddOn", {
   },
 });
 
-// Define Category model
 const Category = sequelize.define("Category", {
   uuid: {
     type: DataTypes.STRING,
@@ -122,7 +121,6 @@ const Category = sequelize.define("Category", {
   },
 });
 
-// Define Item model with availability fields
 const Item = sequelize.define("Item", {
   uuid: {
     type: DataTypes.STRING,
@@ -174,7 +172,6 @@ const Item = sequelize.define("Item", {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  // Availability fields - one for each day of the week
   availableMonday: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
@@ -212,9 +209,82 @@ const Item = sequelize.define("Item", {
   },
 });
 
-// Setting up associations
 Category.hasMany(Item, { foreignKey: "categoryId", as: "items" });
 Item.belongsTo(Category, { foreignKey: "categoryId", as: "category" });
+
+const Order = sequelize.define("Order", {
+  uuid: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    defaultValue: () => uuidv4(),
+  },
+  customerName: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  customerPhone: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  totalAmount: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+  printed: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
+  orderDate: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
+});
+
+const OrderItem = sequelize.define("OrderItem", {
+  uuid: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    defaultValue: () => uuidv4(),
+  },
+  itemUuid: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    index: true,
+  },
+  itemName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  price: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 1,
+  },
+  selectedAddOns: {
+    type: DataTypes.TEXT, // JSON string of selected add-on UUIDs
+    allowNull: true,
+    get() {
+      const rawValue = this.getDataValue("selectedAddOns");
+      return rawValue ? JSON.parse(rawValue) : [];
+    },
+    set(value) {
+      this.setDataValue("selectedAddOns", JSON.stringify(value || []));
+    },
+  },
+  itemTotalPrice: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+  },
+});
+
+Order.hasMany(OrderItem, { foreignKey: "orderUuid", as: "items" });
+OrderItem.belongsTo(Order, { foreignKey: "orderUuid", as: "order" });
 
 // Sync all models with the database
 async function syncModels() {
@@ -428,12 +498,168 @@ async function getCategoriesWithAvailableItems(day) {
   });
 }
 
+// Functions for orders
+async function createOrder(orderData) {
+  const transaction = await sequelize.transaction();
+
+  try {
+    const { items, ...orderDetails } = orderData;
+
+    // Create the order
+    const order = await Order.create(orderDetails, { transaction });
+
+    // Process all items
+    const orderItems = items.map((item) => ({
+      ...item,
+      orderUuid: order.uuid,
+    }));
+
+    // Create all order items
+    await OrderItem.bulkCreate(orderItems, { transaction });
+
+    await transaction.commit();
+    return getOrderById(order.uuid);
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  }
+}
+
+async function getOrderById(orderId) {
+  return Order.findOne({
+    where: { uuid: orderId },
+    include: [
+      {
+        model: OrderItem,
+        as: "items",
+      },
+    ],
+  });
+}
+
+async function getAllOrders(page = 1, limit = 10) {
+  const offset = (page - 1) * limit;
+
+  const { count, rows } = await Order.findAndCountAll({
+    include: [
+      {
+        model: OrderItem,
+        as: "items",
+      },
+    ],
+    order: [["orderDate", "DESC"]],
+    limit,
+    offset,
+  });
+
+  return {
+    orders: rows,
+    totalCount: count,
+    currentPage: page,
+    totalPages: Math.ceil(count / limit),
+  };
+}
+
+async function getOrdersByDateRange(startDate, endDate, page = 1, limit = 10) {
+  const offset = (page - 1) * limit;
+
+  const { count, rows } = await Order.findAndCountAll({
+    where: {
+      orderDate: {
+        [Sequelize.Op.between]: [startDate, endDate],
+      },
+    },
+    include: [
+      {
+        model: OrderItem,
+        as: "items",
+      },
+    ],
+    order: [["orderDate", "DESC"]],
+    limit,
+    offset,
+  });
+
+  return {
+    orders: rows,
+    totalCount: count,
+    currentPage: page,
+    totalPages: Math.ceil(count / limit),
+  };
+}
+
+async function getOrderStats(startDate, endDate) {
+  // Count of orders
+  const orderCount = await Order.count({
+    where: {
+      orderDate: {
+        [Sequelize.Op.between]: [startDate, endDate],
+      },
+    },
+  });
+
+  // Sum of all items across orders
+  const itemCount = await OrderItem.sum("quantity", {
+    include: [
+      {
+        model: Order,
+        as: "order",
+        attributes: [],
+        where: {
+          orderDate: {
+            [Sequelize.Op.between]: [startDate, endDate],
+          },
+        },
+      },
+    ],
+  });
+
+  // Total revenue
+  const revenue = await Order.sum("totalAmount", {
+    where: {
+      orderDate: {
+        [Sequelize.Op.between]: [startDate, endDate],
+      },
+    },
+  });
+
+  // Most popular items
+  const popularItems = await sequelize.query(
+    `
+    SELECT oi.itemUuid, oi.itemName, SUM(oi.quantity) as totalOrdered
+    FROM OrderItems oi
+    JOIN Orders o ON o.uuid = oi.orderUuid
+    WHERE o.orderDate BETWEEN :startDate AND :endDate
+    GROUP BY oi.itemUuid, oi.itemName
+    ORDER BY totalOrdered DESC
+    LIMIT 10
+  `,
+    {
+      replacements: { startDate, endDate },
+      type: Sequelize.QueryTypes.SELECT,
+    }
+  );
+
+  return {
+    orderCount: orderCount || 0,
+    itemCount: itemCount || 0,
+    revenue: revenue || 0,
+    popularItems,
+  };
+}
+
+async function updateOrderPrintStatus(orderId, printed) {
+  await Order.update({ printed }, { where: { uuid: orderId } });
+}
+
 module.exports = {
   syncModels,
   User,
   Category,
   Item,
   AddOn,
+  Order,
+  OrderItem,
   readUsersFromDatabase,
   findUser,
   addUser,
@@ -453,6 +679,12 @@ module.exports = {
   getAddOns,
   getCategoriesWithItems,
   getCategoriesWithAvailableItems,
+  createOrder,
+  getOrderById,
+  getAllOrders,
+  getOrdersByDateRange,
+  getOrderStats,
+  updateOrderPrintStatus,
   clearDatabase,
   closeConnections, // Add this
   initializeDatabase, // Add this

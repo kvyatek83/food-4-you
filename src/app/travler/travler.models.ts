@@ -42,3 +42,34 @@ export interface Category {
   imageUrl: string;
   items: Item[];
 }
+
+export interface Order {
+  uuid: string;
+  customerName: string;
+  customerPhone: string;
+  totalAmount: number;
+  printed: boolean;
+  orderDate: string;
+  items: OrderItem[];
+}
+
+export interface OrderItem {
+  uuid: string;
+  itemUuid: string;
+  itemName: string;
+  price: number;
+  quantity: number;
+  selectedAddOns: string[];
+  itemTotalPrice: number;
+}
+
+export interface CustomerDetails {
+  name?: string;
+  phone?: string;
+}
+
+export interface OrderResponse {
+  success: boolean;
+  message: string;
+  order: any;
+}

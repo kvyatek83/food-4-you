@@ -151,6 +151,44 @@
     "esName": "Spanish Name",
     "esError": "Spanish name is required"
   },
+  "ordersOverview": {
+    "searchLabel": "Search orders",
+    "searchPlaceholder": "Search by ID or customer name",
+    "printedFilterLabel": "Filter by print status",
+    "dateFilterLabel": "Filter by date",
+    "yes": "Yes",
+    "no": "No",
+    "anonymous": "Anonymous",
+    "printed": "Printed",
+    "notPrinted": "Not Printed",
+    "viewDetails": "View order details",
+    "markAsPrinted": "Mark as printed",
+    "tableHeader": {
+      "orderId": "Order ID",
+      "date": "Date & Time",
+      "customer": "Customer",
+      "items": "Items",
+      "total": "Total",
+      "printed": "Printed",
+      "actions": "Actions"
+    }
+  },
+  "orderDetails": {
+    "title": "Order Details",
+    "orderId": "Order ID",
+    "date": "Date & Time",
+    "customer": "Customer",
+    "phone": "Phone",
+    "printed": "Printed",
+    "itemsTitle": "Order Items",
+    "addOns": "Add-ons",
+    "itemTotal": "Item Total",
+    "total": "Order Total",
+    "close": "Close",
+    "markAsPrinted": "Mark as Printed",
+    "yes": "Yes",
+    "no": "No"
+  },
   "scheduleOverview": {
     "searchLabel": "Search items",
     "searchPlaceholder": "Enter item name",

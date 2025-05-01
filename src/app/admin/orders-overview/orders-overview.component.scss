@@ -1,0 +1,58 @@
+.controls {
+  display: flex;
+  align-items: center;
+}
+
+.tool-bar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 35px;
+}
+
+.orders-table {
+  width: 100%;
+}
+
+.mat-mdc-header-cell,
+.mat-mdc-cell {
+  text-align: center;
+}
+
+.printed-status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+
+  &.printed {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.not-printed {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+}
+
+.customer-phone {
+  font-size: 0.85em;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.no-results {
+  width: 50%;
+  margin: auto;
+}
+
+.no-data {
+  width: 50%;
+  margin: auto;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+}

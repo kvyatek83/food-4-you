@@ -1,1 +1,176 @@
-<p>orders-overview works!</p>
+<div
+  *ngIf="lang$ | async; let lang"
+  appLanguageDirection
+  (languageChanged)="languageChanged($event)"
+>
+  <mat-toolbar class="controls">
+    <div class="tool-bar-actions">
+      <div *ngIf="orders && orders.length" [dir]="dir">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ "ordersOverview.searchLabel" | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="searchTerm"
+            [placeholder]="'ordersOverview.searchPlaceholder' | translate"
+          />
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="orders && orders.length" [dir]="dir">
+        <mat-form-field appearance="outline">
+          <mat-label>{{
+            "ordersOverview.printedFilterLabel" | translate
+          }}</mat-label>
+          <mat-select [formControl]="printedFilter">
+            <mat-option [value]="null">--</mat-option>
+            <mat-option [value]="true">{{
+              "ordersOverview.yes" | translate
+            }}</mat-option>
+            <mat-option [value]="false">{{
+              "ordersOverview.no" | translate
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="orders && orders.length" [dir]="dir">
+        <mat-form-field appearance="outline">
+          <mat-label>{{
+            "ordersOverview.dateFilterLabel" | translate
+          }}</mat-label>
+          <input matInput [matDatepicker]="picker" [formControl]="dateFilter" />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <table
+    mat-table
+    [dataSource]="filteredOrders"
+    appLanguageDirection
+    class="orders-table"
+  >
+    <ng-container matColumnDef="orderId">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "ordersOverview.tableHeader.orderId" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let order">
+        {{ formatOrderId(order.uuid) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "ordersOverview.tableHeader.date" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let order">
+        {{ order.orderDate | date : "short" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="customer">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "ordersOverview.tableHeader.customer" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let order">
+        <div>
+          {{ order.customerName || ("ordersOverview.anonymous" | translate) }}
+        </div>
+        <div *ngIf="order.customerPhone" class="customer-phone">
+          {{ order.customerPhone }}
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="items">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "ordersOverview.tableHeader.items" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let order">
+        {{ getTotalItemCountLabel(order) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="total">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "ordersOverview.tableHeader.total" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let order">
+        {{ order.totalAmount | currency : "GTQ " }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="printed">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "ordersOverview.tableHeader.printed" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let order">
+        <div
+          [ngClass]="
+            order.printed
+              ? 'printed-status printed'
+              : 'printed-status not-printed'
+          "
+        >
+          {{
+            order.printed
+              ? ("ordersOverview.printed" | translate)
+              : ("ordersOverview.notPrinted" | translate)
+          }}
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ "ordersOverview.tableHeader.actions" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let order">
+        <button
+          mat-icon-button
+          (click)="viewOrderDetails(order)"
+          matTooltip="{{ 'ordersOverview.viewDetails' | translate }}"
+        >
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          *ngIf="!order.printed"
+          color="primary"
+          (click)="markAsPrinted(order)"
+          matTooltip="{{ 'ordersOverview.markAsPrinted' | translate }}"
+        >
+          <mat-icon>print</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <ng-container *ngIf="!loadingData; else loading">
+    <ng-container *ngIf="orders && orders.length > 0; else noData">
+      <ng-container *ngIf="filteredOrders.length === 0">
+        <div class="no-results">
+          <app-no-results [titleParams]="searchTerm.value"></app-no-results>
+        </div>
+      </ng-container>
+    </ng-container>
+    <ng-template #noData>
+      <div class="no-data">
+        <app-no-data [type]="'order'"></app-no-data>
+      </div>
+    </ng-template>
+  </ng-container>
+  <ng-template #loading>
+    <div class="loading">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
+</div>

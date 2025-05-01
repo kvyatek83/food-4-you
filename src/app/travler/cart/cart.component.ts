@@ -7,7 +7,7 @@ import {
   ReceiptPrinterService,
 } from '../../services/printer.service';
 import { ItemsPreviewComponent } from '../items-preview/items-preview.component';
-import { combineLatest, filter } from 'rxjs';
+import { combineLatest, filter, take } from 'rxjs';
 import { ItemsService } from '../../services/items.service';
 
 @Component({
@@ -41,6 +41,14 @@ export class CartComponent {
       });
 
     this.checkPrinter();
+  }
+
+  processOrder(): void {
+    // TODO: take name from user
+    this.cartService
+      .placeOrder({ name: 'Nati' })
+      .pipe(take(1))
+      .subscribe((a) => console.log(a));
   }
 
   checkPrinter(): void {
