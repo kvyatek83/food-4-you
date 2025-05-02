@@ -43,7 +43,7 @@ export class OrdersOverviewComponent implements OnInit, OnDestroy {
   dateFilter = new FormControl<Date | null>(null);
 
   displayedColumns: string[] = [
-    'orderId',
+    'orderNumber',
     'date',
     'customer',
     'items',
@@ -51,6 +51,7 @@ export class OrdersOverviewComponent implements OnInit, OnDestroy {
     'printed',
     'actions',
   ];
+
   orders: Order[] = [];
   filteredOrders: Order[] = [];
   dir: LanguageDirection = 'ltr';
@@ -186,14 +187,5 @@ export class OrdersOverviewComponent implements OnInit, OnDestroy {
 
   languageChanged(languageDirection: LanguageDirection): void {
     this.dir = languageDirection;
-  }
-
-  getTotalItemCountLabel(order: Order): string {
-    const count = this.calculateOrderItemCount(order);
-    return count === 1 ? '1 item' : `${count} items`;
-  }
-
-  formatOrderId(uuid: string): string {
-    return uuid.substring(0, 8) + '...';
   }
 }

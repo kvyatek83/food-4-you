@@ -7,8 +7,8 @@
 
   <div class="order-details">
     <div class="detail-row">
-      <span class="label">{{ "orderDetails.orderId" | translate }}:</span>
-      <span class="value">{{ data.order.uuid }}</span>
+      <span class="label">{{ "orderDetails.orderNumber" | translate }}:</span>
+      <span class="value">#{{ data.order.orderNumber }}</span>
     </div>
 
     <div class="detail-row">
@@ -57,7 +57,9 @@
           <span class="addon-label"
             >{{ "orderDetails.addOns" | translate }}:</span
           >
-          <span class="addon-count">{{ item.selectedAddOns.length }}</span>
+          <span class="addon-count">{{
+            item.selectedAddOns | addOnUuidsToAddOns : lang
+          }}</span>
         </div>
 
         <div class="item-total">

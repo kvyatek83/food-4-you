@@ -218,6 +218,10 @@ const Order = sequelize.define("Order", {
     primaryKey: true,
     defaultValue: () => uuidv4(),
   },
+  orderNumber: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   customerName: {
     type: DataTypes.STRING,
     allowNull: true,
@@ -498,12 +502,35 @@ async function getCategoriesWithAvailableItems(day) {
   });
 }
 
+async function getNextOrderNumber() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set to beginning of day
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  // Find highest order number for today
+  const latestOrder = await Order.findOne({
+    where: {
+      orderDate: {
+        [Sequelize.Op.between]: [today, tomorrow],
+      },
+    },
+    order: [["orderNumber", "DESC"]],
+  });
+
+  return latestOrder ? latestOrder.orderNumber + 1 : 1;
+}
+
 // Functions for orders
 async function createOrder(orderData) {
   const transaction = await sequelize.transaction();
 
   try {
     const { items, ...orderDetails } = orderData;
+
+    // Generate sequential order number for today
+    orderDetails.orderNumber = await getNextOrderNumber();
 
     // Create the order
     const order = await Order.create(orderDetails, { transaction });

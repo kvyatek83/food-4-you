@@ -8,6 +8,7 @@ import { Order } from '../../travler/travler.models';
 import { Observable } from 'rxjs';
 import { LanguageService, LanguageType } from '../../services/lang.service';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
+import { AddOnUuidsToAddOnsPipe } from '../../pipes/add-on-uuids-to-add-ons.pipe';
 
 @Component({
   templateUrl: './order-details.component.html',
@@ -16,6 +17,7 @@ import { LanguageDirectionDirective } from '../../directives/language-direction.
     MaterialModule,
     TranslateModule,
     LanguageDirectionDirective,
+    AddOnUuidsToAddOnsPipe,
   ],
   styleUrls: ['./order-details.component.scss'],
 })

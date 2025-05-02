@@ -26,10 +26,6 @@
   flex: 1;
 }
 
-.order-items {
-  //   margin: 15px 0;
-}
-
 .order-item {
   margin-bottom: 15px;
   padding-bottom: 15px;
@@ -53,6 +49,8 @@
 }
 
 .item-addons {
+  display: flex;
+  gap: 5px;
   margin: 5px 0;
   font-size: 0.9em;
   color: #666;
@@ -61,7 +59,7 @@
 .item-total {
   display: flex;
   justify-content: space-between;
-  font-size: 0.9em;
+  font-weight: 700;
 }
 
 .order-total-wrapper {

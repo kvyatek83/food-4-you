@@ -49,7 +49,7 @@ router.get("/add-ons", verifyToken, checkRole("travler"), async (req, res) => {
 
 router.post("/orders", verifyToken, checkRole("travler"), async (req, res) => {
   try {
-    const { customerDetails, cartItems, addOns } = req.body;
+    const { customerDetails, cartItems } = req.body;
 
     // Prepare order data structure
     const orderData = {

@@ -155,11 +155,13 @@
   },
   "ordersOverview": {
     "searchLabel": "Buscar pedidos",
-    "searchPlaceholder": "Buscar por ID, nombre o teléfono",
+    "searchPlaceholder": "Buscar por numero, nombre o teléfono",
     "printedFilterLabel": "Filtrar por estado de impresión",
     "dateFilterLabel": "Filtrar por fecha",
     "yes": "Sí",
     "no": "No",
+    "singleItem": "1 artículo",
+    "multipleItems": "{{quantity}} artículos",
     "anonymous": "Anónimo",
     "printed": "Impreso",
     "notPrinted": "No impreso",
@@ -167,7 +169,6 @@
     "markAsPrinted": "Marcar como impreso",
     "tableHeader": {
       "orderNumber": "Nº de pedido",
-      "orderId": "ID del pedido",
       "date": "Fecha y hora",
       "customer": "Cliente",
       "items": "Artículos",
@@ -179,7 +180,6 @@
   "orderDetails": {
     "title": "Detalles del Pedido",
     "orderNumber": "Número de pedido",
-    "orderId": "ID del pedido",
     "date": "Fecha y hora",
     "customer": "Cliente",
     "phone": "Teléfono",

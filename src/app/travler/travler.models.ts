@@ -45,6 +45,7 @@ export interface Category {
 
 export interface Order {
   uuid: string;
+  orderNumber: number;
   customerName: string;
   customerPhone: string;
   totalAmount: number;

@@ -13,6 +13,7 @@ import {
 } from '../../services/lang.service';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
+import { ItemsService } from '../../services/items.service';
 
 interface DashboardMenuButton {
   titleKey: string;
@@ -42,7 +43,8 @@ export class DashboardComponent {
 
   constructor(
     private router: Router,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private _: ItemsService
   ) {
     this.lang$ = this.languageService.currentLanguage$;
     this.router.events

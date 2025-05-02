@@ -55,13 +55,11 @@
     appLanguageDirection
     class="orders-table"
   >
-    <ng-container matColumnDef="orderId">
+    <ng-container matColumnDef="orderNumber">
       <th mat-header-cell *matHeaderCellDef>
-        {{ "ordersOverview.tableHeader.orderId" | translate }}
+        {{ "ordersOverview.tableHeader.orderNumber" | translate }}
       </th>
-      <td mat-cell *matCellDef="let order">
-        {{ formatOrderId(order.uuid) }}
-      </td>
+      <td mat-cell *matCellDef="let order">#{{ order.orderNumber }}</td>
     </ng-container>
 
     <ng-container matColumnDef="date">
@@ -92,7 +90,14 @@
         {{ "ordersOverview.tableHeader.items" | translate }}
       </th>
       <td mat-cell *matCellDef="let order">
-        {{ getTotalItemCountLabel(order) }}
+        {calculateOrderItemCount(order), plural, =1 {
+        {{ "ordersOverview.singleItem" | translate }}
+        } other {
+        {{
+          "ordersOverview.multipleItems"
+            | translate : { quantity: calculateOrderItemCount(order) }
+        }}
+        }}
       </td>
     </ng-container>
 

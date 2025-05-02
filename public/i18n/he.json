@@ -153,11 +153,13 @@
   },
   "ordersOverview": {
     "searchLabel": "חיפוש הזמנות",
-    "searchPlaceholder": "חיפוש לפי מזהה, שם לקוח או טלפון",
+    "searchPlaceholder": "חיפוש לפי מספר הזמנה, שם לקוח או טלפון",
     "printedFilterLabel": "סינון לפי מצב הדפסה",
     "dateFilterLabel": "סינון לפי תאריך",
     "yes": "כן",
     "no": "לא",
+    "singleItem": "פריט אחד",
+    "multipleItems": "{{quantity}} פריטים",
     "anonymous": "אנונימי",
     "printed": "הודפס",
     "notPrinted": "לא הודפס",
@@ -165,7 +167,6 @@
     "markAsPrinted": "סמן כמודפס",
     "tableHeader": {
       "orderNumber": "מס' הזמנה",
-      "orderId": "מזהה הזמנה",
       "date": "תאריך ושעה",
       "customer": "לקוח",
       "items": "פריטים",
@@ -177,7 +178,6 @@
   "orderDetails": {
     "title": "פרטי הזמנה",
     "orderNumber": "מספר הזמנה",
-    "orderId": "מזהה הזמנה",
     "date": "תאריך ושעה",
     "customer": "לקוח",
     "phone": "טלפון",
