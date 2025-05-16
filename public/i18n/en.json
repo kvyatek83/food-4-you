@@ -42,6 +42,41 @@
     "cancel": "Cancel",
     "submit": "Delete"
   },
+  "generalOverview": {
+    "title": "General Overview",
+    "systemInfo": {
+      "title": "System Information",
+      "appVersion": "Application Version",
+      "dbVersion": "Database Version",
+      "lastUpdate": "Last Updated"
+    },
+    "backups": {
+      "title": "Database Backups",
+      "createBackup": "Create New Backup",
+      "selectBackup": "Select Backup",
+      "restoreBackup": "Restore Selected Backup",
+      "noBackups": "No backups available. Create your first backup."
+    },
+    "configuration": {
+      "title": "System Configuration",
+      "taxRate": "Tax Rate",
+      "defaultCurrency": "Default Currency",
+      "maxItemsPerOrder": "Maximum Items Per Order",
+      "allowReservations": "Allow Reservations",
+      "notifyAdmin": "Notify Admin on New Orders",
+      "save": "Save Configuration",
+      "reset": "Reset"
+    },
+    "statistics": {
+      "title": "Order Statistics",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "orders": "Orders",
+      "revenue": "Revenue",
+      "average": "Average"
+    }
+  },
   "categoryOverview": {
     "gridView": "Grid View",
     "tableView": "Table View",
@@ -288,5 +323,11 @@
     "title": "No results found",
     "titleWithParams": "No results for {{value}}",
     "subTitle": "Try adjusting your search terms"
+  },
+  "cart": {
+    "emptyCart": "Your cart is empty",
+    "backToMenu": "Go back to menu",
+    "clearCart": "Clear cart",
+    "order": "Order"
   }
 }

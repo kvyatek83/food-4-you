@@ -4,20 +4,155 @@
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  width: 90%;
+  width: 100%;
+  // margin: auto;
+  position: relative;
+  min-height: 450px;
+}
+
+// Empty cart styling
+.empty-cart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  text-align: center;
+  padding: 20px;
+  width: 100%;
   background: rgba(255, 255, 255, 0.8);
-  margin: auto;
 }
 
 .empty-cart {
   height: 350px;
+  margin-bottom: 20px;
 }
 
+.empty-cart-text {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #666;
+}
+
+.back-to-menu-link {
+  color: var(--mat-sys-primary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: rgba(0, 92, 187, 0.1);
+    text-decoration: underline;
+  }
+}
+
+// Cart items styling
 .cart-items {
-  width: 80%;
-  margin: 15px 0;
+  width: 100%;
+  height: 100%;
+  // padding: 5px 0;
+  display: grid;
+  grid-template-rows: 1fr 70px;
 }
 
+.items-wrapper {
+  // margin: 15px 0;
+  width: 90%;
+  margin: 0 auto;
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  -webkit-overflow-scrolling: touch;
+
+  // &::before,
+  // &::after {
+  //   content: "";
+  //   position: fixed;
+  //   left: 0;
+  //   right: 0;
+  //   height: 50px;
+  //   pointer-events: none;
+  //   z-index: 10;
+  //   opacity: 0;
+  //   transition: opacity 0s ease-in-out;
+  //   z-index: 20;
+  // }
+
+  // &.top-gradient {
+  //   &::before {
+  //     width: 90%;
+  //     margin: 0 auto;
+  //     opacity: 1;
+  //     background: linear-gradient(
+  //       to bottom,
+  //       rgba(255, 255, 255, 0) 0%,
+  //       rgb(255 255 255 / 80%) 0%,
+  //       rgba(255, 255, 255, 0) 100%
+  //     );
+  //   }
+  // }
+
+  // &.bottom-gradient {
+  //   &::after {
+  //     bottom: 70px;
+  //     opacity: 1;
+  //     background: linear-gradient(
+  //       to top,
+  //       rgba(111, 82, 55, 1) 0%,
+  //       rgba(111, 82, 55, 0.8) 0%,
+  //       rgba(111, 82, 55, 0) 100%
+  //     );
+  //   }
+  // }
+}
+
+.items-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.items {
+  margin: 15px 10%;
+}
+
+// Cart actions (buttons)
+.cart-actions-wrapper {
+  width: 100%;
+  padding: 15px 0;
+
+  background: rgba(111, 82, 55, 0.8);
+  border-bottom: 0.5px solid white;
+}
+.cart-actions {
+  display: flex;
+  justify-content: space-between;
+  // margin-top: 20px;
+  align-self: flex-end;
+  width: 70%;
+  margin: 0 auto;
+
+  button {
+    display: flex;
+    align-items: center;
+
+    mat-icon {
+      margin-right: 8px;
+    }
+  }
+
+  [dir="rtl"] & {
+    button mat-icon {
+      margin-right: 0;
+      margin-left: 8px;
+    }
+  }
+}
+
+// Gradient styles
 .gradient {
   &::before,
   &::after {
@@ -47,6 +182,19 @@
   &.bottom-gradient {
     &::after {
       bottom: 70px;
+      opacity: 1;
+      background: linear-gradient(
+        to top,
+        rgba(111, 82, 55, 1) 0%,
+        rgba(111, 82, 55, 0.8) 0%,
+        rgba(111, 82, 55, 0) 100%
+      );
+    }
+  }
+
+  &.mid-bottom-gradient {
+    &::after {
+      bottom: 140px;
       opacity: 1;
       background: linear-gradient(
         to top,

@@ -11,6 +11,7 @@ import { LanguageDirectionDirective } from '../../directives/language-direction.
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { LanguageDirection } from '../../services/lang.service';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +28,7 @@ export class LoginComponent {
   signInForm: FormGroup;
   loading = false;
   showPassword = false;
+  stickyLeft = false;
 
   constructor(
     private authService: AuthService,
@@ -70,5 +72,9 @@ export class LoginComponent {
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  languageChanged(languageDirection: LanguageDirection): void {
+    this.stickyLeft = languageDirection === 'rtl';
   }
 }

@@ -11,9 +11,33 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+  align-items: center;
 
   mat-form-field {
     min-width: 200px;
+  }
+}
+
+.global-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+
+  button {
+    white-space: nowrap;
+
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+
+  .save-all-button {
+    min-width: 120px;
+  }
+
+  .revert-all-button {
+    min-width: 100px;
   }
 }
 
@@ -41,6 +65,11 @@
   .mat-column-sunday,
   .mat-column-allDays {
     width: 60px;
+    text-align: center;
+  }
+
+  .mat-column-actions {
+    width: 120px;
     text-align: center;
   }
 
@@ -96,17 +125,16 @@ td.mat-cell mat-spinner {
   .filters {
     flex-direction: column;
 
-    mat-form-field {
+    mat-form-field,
+    .global-actions {
       width: 100%;
+      margin-left: 0;
     }
-  }
 
-  .schedule-table {
-    display: block;
-    overflow-x: auto;
-
-    .mat-column-name {
-      min-width: 150px;
+    .global-actions {
+      button {
+        flex: 1;
+      }
     }
   }
 }
