@@ -1,0 +1,86 @@
+<div
+  class="add-on-form-container"
+  appLanguageDirection
+  (languageChanged)="languageChanged($event)"
+>
+  <ng-container *ngIf="data.addOn; else newForm">
+    <h2 mat-dialog-title>
+      {{ "addOnForm.edit" | translate }}
+    </h2>
+  </ng-container>
+  <ng-template #newForm>
+    <h2 mat-dialog-title>
+      {{ "addOnForm.create" | translate }}
+    </h2>
+  </ng-template>
+
+  <form [formGroup]="addOnForm" (ngSubmit)="onSubmit()">
+    <div mat-dialog-content>
+      <div class="form-fields">
+        <mat-form-field appearance="outline" class="full-width" [dir]="dir">
+          <mat-label>{{ "addOnForm.enName" | translate }}</mat-label>
+          <input matInput formControlName="enName" required />
+          <mat-error
+            appLanguageDirection
+            *ngIf="
+              addOnForm.get('enName')?.invalid &&
+              addOnForm.get('enName')?.touched
+            "
+          >
+            {{ "addOnForm.enError" | translate }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" [dir]="dir">
+          <mat-label>{{ "addOnForm.heName" | translate }}</mat-label>
+          <input matInput formControlName="heName" required />
+          <mat-error
+            appLanguageDirection
+            *ngIf="
+              addOnForm.get('heName')?.invalid &&
+              addOnForm.get('heName')?.touched
+            "
+          >
+            {{ "addOnForm.heError" | translate }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" [dir]="dir">
+          <mat-label>{{ "addOnForm.esName" | translate }}</mat-label>
+          <input matInput formControlName="esName" required />
+          <mat-error
+            appLanguageDirection
+            *ngIf="
+              addOnForm.get('esName')?.invalid &&
+              addOnForm.get('esName')?.touched
+            "
+          >
+            {{ "addOnForm.esError" | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-checkbox [disableRipple]="true" formControlName="inStock">
+          A
+        </mat-checkbox>
+      </div>
+    </div>
+
+    <div mat-dialog-actions align="center">
+      <button mat-button type="button" mat-dialog-close>
+        {{ "addOnForm.cancel" | translate }}
+      </button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="addOnForm.invalid"
+      >
+        <ng-container *ngIf="data.addOn; else createAction">
+          {{ "addOnForm.save" | translate }}
+        </ng-container>
+        <ng-template #createAction>
+          {{ "addOnForm.create" | translate }}
+        </ng-template>
+      </button>
+    </div>
+  </form>
+</div>

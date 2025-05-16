@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CartItem, CartService } from '../../services/cart.service';
 import { CommonModule } from '@angular/common';
 import {
@@ -7,26 +7,50 @@ import {
   ReceiptPrinterService,
 } from '../../services/printer.service';
 import { ItemsPreviewComponent } from '../items-preview/items-preview.component';
-import { combineLatest, filter, take } from 'rxjs';
+import { combineLatest, filter, Observable, take } from 'rxjs';
 import { ItemsService } from '../../services/items.service';
+import {
+  LanguageDirection,
+  LanguageService,
+  LanguageType,
+} from '../../services/lang.service';
+import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
+import { TranslateModule } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
+import { MaterialModule } from '../../material.module';
 
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule, ItemsPreviewComponent],
+  standalone: true,
+  imports: [
+    CommonModule,
+    ItemsPreviewComponent,
+    TranslateModule,
+    MaterialModule,
+    RouterModule,
+    LanguageDirectionDirective,
+  ],
   templateUrl: './cart.component.html',
-  styleUrl: './cart.component.scss',
+  styleUrls: ['./cart.component.scss'],
 })
-export class CartComponent {
+export class CartComponent implements OnInit {
   cartItems: CartItem[] = [];
   itemCount = 0;
   printerAvailable = false;
   printResult: boolean | null = null;
+  public lang$: Observable<LanguageType>;
+  dir: LanguageDirection = 'ltr';
 
   constructor(
     private cartService: CartService,
     private itemsService: ItemsService,
-    private printerService: ReceiptPrinterService
-  ) {}
+    private printerService: ReceiptPrinterService,
+    private languageService: LanguageService
+  ) {
+    this.lang$ = this.languageService.currentLanguage$;
+  }
 
   ngOnInit(): void {
     combineLatest([
@@ -49,6 +73,10 @@ export class CartComponent {
       .placeOrder({ name: 'Nati' })
       .pipe(take(1))
       .subscribe((a) => console.log(a));
+  }
+
+  clearCart(): void {
+    this.cartService.clearCart();
   }
 
   checkPrinter(): void {
@@ -101,5 +129,9 @@ export class CartComponent {
       this.printResult = result;
       console.log('Print completed with result:', result);
     });
+  }
+
+  languageChanged(languageDirection: LanguageDirection): void {
+    this.dir = languageDirection;
   }
 }

@@ -1,4 +1,8 @@
-<div class="login-container" appLanguageDirection>
+<div
+  class="login-container"
+  appLanguageDirection
+  (languageChanged)="languageChanged($event)"
+>
   <div class="login-card">
     <h1 class="login-title">
       {{ "login.title" | translate }}
@@ -31,6 +35,8 @@
             *ngIf="signInForm.controls['password'].value"
             type="button"
             class="password-toggle-btn"
+            [style.left]="stickyLeft ? '10px' : ''"
+            [style.right]="!stickyLeft ? '10px' : ''"
             (click)="togglePasswordVisibility()"
             [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
           >

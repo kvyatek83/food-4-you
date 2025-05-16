@@ -1,0 +1,204 @@
+.page-container {
+  padding: 20px;
+}
+
+.page-title {
+  margin-bottom: 30px;
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--mat-sys-primary);
+}
+
+.section-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .card-header {
+    padding: 16px;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e9ecef;
+
+    mat-icon {
+      margin-right: 10px;
+      color: var(--mat-sys-primary);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+    }
+  }
+
+  .card-content {
+    padding: 20px;
+    flex-grow: 1;
+  }
+}
+
+// System Info Card
+.info-row {
+  display: flex;
+  margin-bottom: 12px;
+  align-items: baseline;
+
+  .info-label {
+    min-width: 120px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  .info-value {
+    color: rgba(0, 0, 0, 0.87);
+  }
+}
+
+// Database Backup Card
+.backup-actions {
+  margin-bottom: 20px;
+}
+
+.backup-select {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.restore-button {
+  width: 100%;
+}
+
+.button-spinner {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.no-backups {
+  text-align: center;
+  color: rgba(0, 0, 0, 0.54);
+  padding: 20px 0;
+}
+
+// Configuration Section
+.config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.checkbox-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+// Statistics Card
+.stats-period {
+  margin-bottom: 20px;
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.87);
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 16px;
+}
+
+.stat-item {
+  text-align: center;
+
+  .stat-value {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--mat-sys-primary);
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+mat-divider {
+  margin: 20px 0;
+}
+
+// Responsive adjustments
+@media screen and (max-width: 600px) {
+  .section-container {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-container {
+    padding: 10px;
+  }
+
+  .info-row {
+    flex-direction: column;
+
+    .info-label {
+      margin-bottom: 4px;
+    }
+  }
+}
+
+// RTL Support
+[dir="rtl"] {
+  .card-header {
+    mat-icon {
+      margin-right: 0;
+      margin-left: 10px;
+    }
+  }
+
+  .info-row {
+    .info-label {
+      text-align: right;
+    }
+  }
+
+  .form-actions {
+    justify-content: flex-start;
+  }
+
+  .button-spinner {
+    margin-left: 0;
+    margin-right: 8px;
+  }
+}

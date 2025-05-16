@@ -43,6 +43,41 @@
     "cancel": "Cancelar",
     "submit": "Eliminar"
   },
+  "generalOverview": {
+    "title": "Visión General",
+    "systemInfo": {
+      "title": "Información del Sistema",
+      "appVersion": "Versión de la Aplicación",
+      "dbVersion": "Versión de la Base de Datos",
+      "lastUpdate": "Última Actualización"
+    },
+    "backups": {
+      "title": "Copias de Seguridad",
+      "createBackup": "Crear Nueva Copia",
+      "selectBackup": "Seleccionar Copia",
+      "restoreBackup": "Restaurar Copia Seleccionada",
+      "noBackups": "No hay copias disponibles. Crea tu primera copia."
+    },
+    "configuration": {
+      "title": "Configuración del Sistema",
+      "taxRate": "Tasa de Impuesto",
+      "defaultCurrency": "Moneda Predeterminada",
+      "maxItemsPerOrder": "Máximo de Artículos por Pedido",
+      "allowReservations": "Permitir Reservaciones",
+      "notifyAdmin": "Notificar al Administrador Nuevos Pedidos",
+      "save": "Guardar Configuración",
+      "reset": "Reiniciar"
+    },
+    "statistics": {
+      "title": "Estadísticas de Pedidos",
+      "today": "Hoy",
+      "thisWeek": "Esta Semana",
+      "thisMonth": "Este Mes",
+      "orders": "Pedidos",
+      "revenue": "Ingresos",
+      "average": "Promedio"
+    }
+  },
   "categoryOverview": {
     "gridView": "Vista de cuadrícula",
     "tableView": "Vista de tabla",
@@ -290,5 +325,11 @@
     "title": "No results found",
     "titleWithParams": "No results for {{value}}",
     "subTitle": "Try adjusting your search terms"
+  },
+  "cart": {
+    "emptyCart": "Tu carrito está vacío",
+    "backToMenu": "Volver al menú",
+    "clearCart": "Vaciar carrito",
+    "order": "Ordenar"
   }
 }

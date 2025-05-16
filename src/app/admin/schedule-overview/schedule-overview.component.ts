@@ -80,13 +80,13 @@ export class ScheduleOverviewComponent implements OnInit {
 
   dayOptions = [
     { value: 'all', viewValue: 'scheduleOverview.dayOptions.all' },
+    { value: 'sunday', viewValue: 'scheduleOverview.dayOptions.sunday' },
     { value: 'monday', viewValue: 'scheduleOverview.dayOptions.monday' },
     { value: 'tuesday', viewValue: 'scheduleOverview.dayOptions.tuesday' },
     { value: 'wednesday', viewValue: 'scheduleOverview.dayOptions.wednesday' },
     { value: 'thursday', viewValue: 'scheduleOverview.dayOptions.thursday' },
     { value: 'friday', viewValue: 'scheduleOverview.dayOptions.friday' },
     { value: 'saturday', viewValue: 'scheduleOverview.dayOptions.saturday' },
-    { value: 'sunday', viewValue: 'scheduleOverview.dayOptions.sunday' },
   ];
 
   public lang$: Observable<LanguageType>;
@@ -236,6 +236,101 @@ export class ScheduleOverviewComponent implements OnInit {
     }
   });
   */
+  }
+
+  // Add these methods to your component class
+
+  // Method to check if any row has been modified
+  hasAnyChanges(): boolean {
+    return this.modifiedRows.size > 0;
+  }
+
+  // Method to get count of modified rows
+  getModifiedRowCount(): number {
+    return this.modifiedRows.size;
+  }
+
+  // Method to save all changes
+  saveAllChanges(): void {
+    // Track if we're saving multiple items
+    const savingIds = Array.from(this.modifiedRows);
+    let savedCount = 0;
+
+    // Mark all modified rows as saving
+    savingIds.forEach((id) => {
+      this.savingRows[id] = true;
+    });
+
+    // For each modified item, perform save operation
+    savingIds.forEach((id) => {
+      const item = this.dataSource.data.find((item) => item.uuid === id);
+      if (!item) return;
+
+      // Simulate API call (replace with actual API call)
+      setTimeout(() => {
+        // Update original state after save
+        if (item.availability) {
+          this.originalItemsState[id] = { ...item.availability };
+        }
+
+        // Remove from modified list and saving status
+        this.modifiedRows.delete(id);
+        this.savingRows[id] = false;
+
+        // For visual feedback of completion of all operations
+        savedCount++;
+        if (savedCount === savingIds.length) {
+          // All saves complete - could show a snackbar here
+          console.log('All changes saved successfully');
+        }
+      }, 1000);
+
+      // If using actual API:
+      /*
+    this.itemsService.updateItem(item).subscribe({
+      next: () => {
+        // Update original state after successful save
+        if (item.availability) {
+          this.originalItemsState[id].availability = { ...item.availability };
+        }
+        // Remove from modified list and saving status
+        this.modifiedRows.delete(id);
+        this.savingRows[id] = false;
+        
+        // For visual feedback of completion of all operations
+        savedCount++;
+        if (savedCount === savingIds.length) {
+          // All saves complete - could show a snackbar here
+        }
+      },
+      error: (err) => {
+        console.error('Error updating item availability:', err);
+        this.savingRows[id] = false;
+      }
+    });
+    */
+    });
+  }
+
+  // Method to revert all changes
+  revertAllChanges(): void {
+    // Get all modified items
+    const modifiedIds = Array.from(this.modifiedRows);
+
+    // Revert each item to its original state
+    modifiedIds.forEach((id) => {
+      const item = this.dataSource.data.find((item) => item.uuid === id);
+      if (item && this.originalItemsState[id]) {
+        // Restore original availability
+        item.availability = { ...this.originalItemsState[id] };
+
+        // Update allDays status
+        this.updateAllDaysStatus(item);
+      }
+    });
+
+    // Clear the modified set
+    this.modifiedRows.clear();
   }
 
   updateAllDaysStatus(item: Item): void {
