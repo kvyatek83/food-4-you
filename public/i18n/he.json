@@ -288,5 +288,11 @@
     "title": "לא נמצאו תוצאות",
     "titleWithParams": "אין תוצאות עבור {{value}}",
     "subTitle": "נא לשנות את תנאי החיפוש"
+  },
+  "cart": {
+    "emptyCart": "העגלה שלך ריקה",
+    "backToMenu": "חזור לתפריט",
+    "clearCart": "נקה עגלה",
+    "order": "הזמן"
   }
 }

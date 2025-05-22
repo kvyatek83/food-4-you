@@ -1,10 +1,54 @@
-<div class="gradient top-gradient"></div>
+<div
+  *ngIf="lang$ | async; let lang"
+  appLanguageDirection
+  (languageChanged)="languageChanged($event)"
+  style="height: 100%; overflow: hidden"
+>
+  <div
+    class="cart-wrapper"
+    [dir]="dir"
+    [ngClass]="{
+      gradient: itemCount === 0,
+      'top-gradient': itemCount === 0,
+      'bottom-gradient': itemCount === 0
+    }"
+  >
+    <div *ngIf="itemCount === 0" class="empty-cart-container">
+      <img class="empty-cart" [src]="'/empty-cart.svg'" alt="Empty cart" />
+      <p class="empty-cart-text">{{ "cart.emptyCart" | translate }}</p>
+      <a routerLink="/menu" class="back-to-menu-link">
+        {{ "cart.backToMenu" | translate }}
+      </a>
+    </div>
 
-<div class="cart-wrapper">
-  <img *ngIf="itemCount === 0" class="empty-cart" [src]="'/empty-cart.svg'" />
-  <div *ngIf="itemCount !== 0" class="cart-items">
-    <app-items-preview [cartItems]="cartItems"></app-items-preview>
-    <button (click)="processOrder()">AAA</button>
+    <div
+      *ngIf="itemCount !== 0"
+      class="cart-items"
+      [ngClass]="{
+        gradient: true,
+        'top-gradient': true,
+        'bottom-gradient': true
+      }"
+    >
+      <div class="items-wrapper">
+        <div class="items">
+          <div #topCartItems></div>
+          <app-items-preview [cartItems]="cartItems"></app-items-preview>
+          <div #bottomCartItems></div>
+        </div>
+      </div>
+      <div class="cart-actions-wrapper">
+        <div class="cart-actions">
+          <button mat-flat-button color="warn" (click)="clearCart()">
+            <mat-icon>delete</mat-icon>
+            {{ "cart.clearCart" | translate }}
+          </button>
+          <button mat-flat-button color="primary" (click)="processOrder()">
+            <mat-icon>shopping_cart_checkout</mat-icon>
+            {{ "cart.order" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-<div class="gradient bottom-gradient"></div>

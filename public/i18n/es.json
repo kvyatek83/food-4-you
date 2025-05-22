@@ -290,5 +290,11 @@
     "title": "No results found",
     "titleWithParams": "No results for {{value}}",
     "subTitle": "Try adjusting your search terms"
+  },
+  "cart": {
+    "emptyCart": "Tu carrito está vacío",
+    "backToMenu": "Volver al menú",
+    "clearCart": "Vaciar carrito",
+    "order": "Ordenar"
   }
 }

@@ -288,5 +288,11 @@
     "title": "No results found",
     "titleWithParams": "No results for {{value}}",
     "subTitle": "Try adjusting your search terms"
+  },
+  "cart": {
+    "emptyCart": "Your cart is empty",
+    "backToMenu": "Go back to menu",
+    "clearCart": "Clear cart",
+    "order": "Order"
   }
 }
