@@ -3,9 +3,10 @@
   appLanguageDirection
   (languageChanged)="languageChanged($event)"
 >
-  <div class="schedule-container mat-elevation-z8">
+  <div class="schedule-container">
     <div class="filters-container" [dir]="dir">
       <div class="filters">
+        <!-- Search term filter -->
         <mat-form-field appearance="outline">
           <mat-label>{{
             "scheduleOverview.searchLabel" | translate
@@ -17,6 +18,7 @@
           />
         </mat-form-field>
 
+        <!-- Availability filter -->
         <mat-form-field appearance="outline">
           <mat-label>{{
             "scheduleOverview.filterByAvailability" | translate
@@ -31,6 +33,7 @@
           </mat-select>
         </mat-form-field>
 
+        <!-- Day filter -->
         <mat-form-field appearance="outline">
           <mat-label>{{
             "scheduleOverview.filterByDay" | translate
@@ -44,6 +47,35 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+
+        <div class="spacer"></div>
+
+        <!-- Global action buttons -->
+        <div class="global-actions" *ngIf="hasAnyChanges()">
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="saveAllChanges()"
+            class="save-all-button"
+          >
+            {{ "scheduleOverview.saveAllChanges" | translate }} ({{
+              getModifiedRowCount()
+            }})
+
+            <mat-icon>save</mat-icon>
+          </button>
+          <button
+            mat-stroked-button
+            color="warn"
+            (click)="revertAllChanges()"
+            class="revert-all-button"
+          >
+            {{ "scheduleOverview.revertAllChanges" | translate }} ({{
+              getModifiedRowCount()
+            }})
+            <mat-icon>undo</mat-icon>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -218,7 +250,7 @@
                 </ng-container>
 
                 <ng-template #savingTemplate>
-                  <mat-spinner diameter="24"></mat-spinner>
+                  <mat-spinner diameter="24" style="margin: auto"></mat-spinner>
                 </ng-template>
               </td>
             </ng-container>
