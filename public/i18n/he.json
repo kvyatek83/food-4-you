@@ -149,7 +149,8 @@
     "heName": "שם בעברית",
     "heError": "שם בעברית נדרש",
     "esName": "שם בספרדית",
-    "esError": "שם בספרדית נדרש"
+    "esError": "שם בספרדית נדרש",
+    "inStock": "במלאי"
   },
   "ordersOverview": {
     "searchLabel": "חיפוש הזמנות",
