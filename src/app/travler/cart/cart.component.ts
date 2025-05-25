@@ -16,8 +16,6 @@ import {
 } from '../../services/lang.service';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { MaterialModule } from '../../material.module';
 
@@ -64,7 +62,8 @@ export class CartComponent implements OnInit {
         this.itemCount = count;
       });
 
-    this.checkPrinter();
+      // TODO: optimize for Android
+    // this.checkPrinter();
   }
 
   processOrder(): void {

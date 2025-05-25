@@ -4,8 +4,6 @@
   (languageChanged)="languageChanged($event)"
   style="height: 100%; overflow: hidden"
 >
-  <!-- <div class="gradient top-gradient"></div> -->
-
   <div
     class="cart-wrapper"
     [dir]="dir"
@@ -15,7 +13,6 @@
       'bottom-gradient': itemCount === 0
     }"
   >
-    <!-- Empty Cart State -->
     <div *ngIf="itemCount === 0" class="empty-cart-container">
       <img class="empty-cart" [src]="'/empty-cart.svg'" alt="Empty cart" />
       <p class="empty-cart-text">{{ "cart.emptyCart" | translate }}</p>
@@ -24,7 +21,6 @@
       </a>
     </div>
 
-    <!-- Filled Cart State -->
     <div
       *ngIf="itemCount !== 0"
       class="cart-items"
@@ -55,6 +51,4 @@
       </div>
     </div>
   </div>
-
-  <!-- <div class="gradient bottom-gradient"></div> -->
 </div>
