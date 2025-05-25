@@ -261,6 +261,12 @@
       "fri": "ו'",
       "sat": "ש'",
       "sun": "א'"
+    },
+    "notifications": {
+      "itemSaved": "זמינות המנה עודכנה בהצלחה",
+      "itemSaveError": "שגיאה בעדכון זמינות המנה",
+      "allChangesSaved": "כל {{count}} השינויים נשמרו בהצלחה",
+      "partialSaveSuccess": "{{saved}} מתוך {{total}} שינויים נשמרו בהצלחה"
     }
   },
   "menu": {

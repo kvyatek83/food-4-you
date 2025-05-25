@@ -263,6 +263,12 @@
       "fri": "Vie",
       "sat": "Sáb",
       "sun": "Dom"
+    },
+    "notifications": {
+      "itemSaved": "Disponibilidad del artículo actualizada exitosamente",
+      "itemSaveError": "Error al actualizar la disponibilidad del artículo",
+      "allChangesSaved": "Todos los {{count}} cambios guardados exitosamente",
+      "partialSaveSuccess": "{{saved}} de {{total}} cambios guardados exitosamente"
     }
   },
   "menu": {

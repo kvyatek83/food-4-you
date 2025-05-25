@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { combineLatest, debounceTime, Observable, startWith } from 'rxjs';
+import { combineLatest, debounceTime, Observable, startWith, finalize } from 'rxjs';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { MaterialModule } from '../../material.module';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
@@ -13,6 +13,8 @@ import { DaysInWeek, Item } from '../../travler/travler.models';
 import { ItemsService } from '../../services/items.service';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { NoResultsComponent } from '../../components/no-results/no-results.component';
+import { NotificationsService } from '../../services/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
 import {
   LanguageDirection,
   LanguageService,
@@ -103,7 +105,9 @@ export class ScheduleOverviewComponent implements OnInit {
 
   constructor(
     private itemsService: ItemsService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private notificationsService: NotificationsService,
+    private translateService: TranslateService
   ) {
     this.lang$ = this.languageService.currentLanguage$;
   }
@@ -207,35 +211,162 @@ export class ScheduleOverviewComponent implements OnInit {
 
     this.savingRows[item.uuid] = true;
 
-    setTimeout(() => {
-      if (item.availability) {
-        this.originalItemsState[item.uuid] = { ...item.availability };
+    // Create the complete item update payload with all required fields
+    const itemUpdate: Partial<Item> = {
+      uuid: item.uuid,
+      enName: item.enName,
+      heName: item.heName,
+      esName: item.esName,
+      enDetails: item.enDetails,
+      heDetails: item.heDetails,
+      esDetails: item.esDetails,
+      price: item.price,
+      addOnPrice: item.addOnPrice,
+      freeAvailableAddOns: item.freeAvailableAddOns,
+      availableAddOnUuids: item.availableAddOnUuids,
+      imageUrl: item.imageUrl,
+      availability: item.availability
+    };
+
+    this.itemsService.editItem(itemUpdate).pipe(
+      finalize(() => {
+        this.savingRows[item.uuid] = false;
+      })
+    ).subscribe({
+      next: (categories) => {
+        // Update original state after successful save
+        if (item.availability) {
+          this.originalItemsState[item.uuid] = { ...item.availability };
+        }
+        // Remove from modified list
+        this.modifiedRows.delete(item.uuid);
+        
+        // Show success notification
+        this.notificationsService.setNotification({
+          type: 'SUCCESS',
+          message: this.translateService.instant('scheduleOverview.notifications.itemSaved')
+        });
+      },
+      error: (err) => {
+        console.error('Error updating item availability:', err);
+        this.notificationsService.setNotification({
+          type: 'ERROR',
+          message: this.translateService.instant('scheduleOverview.notifications.itemSaveError')
+        });
+      }
+    });
+  }
+
+  // Add these methods to your component class
+
+  // Method to check if any row has been modified
+  hasAnyChanges(): boolean {
+    return this.modifiedRows.size > 0;
+  }
+
+  // Method to get count of modified rows
+  getModifiedRowCount(): number {
+    return this.modifiedRows.size;
+  }
+
+  // Method to save all changes
+  saveAllChanges(): void {
+    // Track if we're saving multiple items
+    const savingIds = Array.from(this.modifiedRows);
+    let savedCount = 0;
+    let errorCount = 0;
+
+    if (savingIds.length === 0) return;
+
+    // Mark all modified rows as saving
+    savingIds.forEach((id) => {
+      this.savingRows[id] = true;
+    });
+
+    // For each modified item, perform save operation
+    savingIds.forEach((id) => {
+      const item = this.dataSource.data.find((item) => item.uuid === id);
+      if (!item) {
+        this.savingRows[id] = false;
+        return;
       }
 
-      this.modifiedRows.delete(item.uuid);
-      this.savingRows[item.uuid] = false;
-    }, 1000);
+      // Create the complete item update payload with all required fields
+      const itemUpdate: Partial<Item> = {
+        uuid: item.uuid,
+        enName: item.enName,
+        heName: item.heName,
+        esName: item.esName,
+        enDetails: item.enDetails,
+        heDetails: item.heDetails,
+        esDetails: item.esDetails,
+        price: item.price,
+        addOnPrice: item.addOnPrice,
+        freeAvailableAddOns: item.freeAvailableAddOns,
+        availableAddOnUuids: item.availableAddOnUuids,
+        imageUrl: item.imageUrl,
+        availability: item.availability
+      };
 
-    // If using actual API:
-    /*
-  this.itemsService.updateItem(item).pipe(
-    finalize(() => {
-      this.savingRows[item.uuid] = false;
-    })
-  ).subscribe({
-    next: () => {
-      // Update original state after successful save
-      if (item.availability) {
-        this.originalItemsState[item.uuid].availability = { ...item.availability };
+      this.itemsService.editItem(itemUpdate).pipe(
+        finalize(() => {
+          this.savingRows[id] = false;
+          savedCount++;
+          
+          // Check if all operations are complete
+          if (savedCount === savingIds.length) {
+            if (errorCount === 0) {
+              this.notificationsService.setNotification({
+                type: 'SUCCESS',
+                message: this.translateService.instant('scheduleOverview.notifications.allChangesSaved', { count: savedCount })
+              });
+            } else {
+              this.notificationsService.setNotification({
+                type: 'WARNING',
+                message: this.translateService.instant('scheduleOverview.notifications.partialSaveSuccess', { 
+                  saved: savedCount - errorCount, 
+                  total: savedCount 
+                })
+              });
+            }
+          }
+        })
+      ).subscribe({
+        next: (categories) => {
+          // Update original state after successful save
+          if (item.availability) {
+            this.originalItemsState[id] = { ...item.availability };
+          }
+          // Remove from modified list
+          this.modifiedRows.delete(id);
+        },
+        error: (err) => {
+          console.error('Error updating item availability:', err);
+          errorCount++;
+        }
+      });
+    });
+  }
+
+  // Method to revert all changes
+  revertAllChanges(): void {
+    // Get all modified items
+    const modifiedIds = Array.from(this.modifiedRows);
+
+    // Revert each item to its original state
+    modifiedIds.forEach((id) => {
+      const item = this.dataSource.data.find((item) => item.uuid === id);
+      if (item && this.originalItemsState[id]) {
+        // Restore original availability
+        item.availability = { ...this.originalItemsState[id] };
+
+        // Update allDays status
+        this.updateAllDaysStatus(item);
       }
-      // Remove from modified list
-      this.modifiedRows.delete(item.uuid);
-    },
-    error: (err) => {
-      console.error('Error updating item availability:', err);
-    }
-  });
-  */
+    });
+
+    // Clear the modified set
+    this.modifiedRows.clear();
   }
 
   // Add these methods to your component class

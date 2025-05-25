@@ -261,6 +261,12 @@
       "fri": "Fri",
       "sat": "Sat",
       "sun": "Sun"
+    },
+    "notifications": {
+      "itemSaved": "Item availability updated successfully",
+      "itemSaveError": "Failed to update item availability",
+      "allChangesSaved": "All {{count}} changes saved successfully",
+      "partialSaveSuccess": "{{saved}} of {{total}} changes saved successfully"
     }
   },
   "menu": {
