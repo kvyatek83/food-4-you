@@ -42,6 +42,41 @@
     "cancel": "ביטול",
     "submit": "מחיקה"
   },
+  "generalOverview": {
+    "title": "סקירה כללית",
+    "systemInfo": {
+      "title": "מידע מערכת",
+      "appVersion": "גרסת האפליקציה",
+      "dbVersion": "גרסת מסד הנתונים",
+      "lastUpdate": "עדכון אחרון"
+    },
+    "backups": {
+      "title": "גיבויי מסד נתונים",
+      "createBackup": "צור גיבוי חדש",
+      "selectBackup": "בחר גיבוי",
+      "restoreBackup": "שחזר גיבוי נבחר",
+      "noBackups": "אין גיבויים זמינים. צור את הגיבוי הראשון שלך."
+    },
+    "configuration": {
+      "title": "הגדרות מערכת",
+      "taxRate": "שיעור מס",
+      "defaultCurrency": "מטבע ברירת מחדל",
+      "maxItemsPerOrder": "מספר פריטים מקסימלי בהזמנה",
+      "allowReservations": "אפשר הזמנות",
+      "notifyAdmin": "הודע למנהל על הזמנות חדשות",
+      "save": "שמור הגדרות",
+      "reset": "אפס"
+    },
+    "statistics": {
+      "title": "סטטיסטיקת הזמנות",
+      "today": "היום",
+      "thisWeek": "השבוע",
+      "thisMonth": "החודש",
+      "orders": "הזמנות",
+      "revenue": "הכנסה",
+      "average": "ממוצע"
+    }
+  },
   "categoryOverview": {
     "gridView": "תצוגת קלפים",
     "tableView": "תצוגת טבלה",
