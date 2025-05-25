@@ -186,7 +186,8 @@
     "heName": "Nombre en hebreo",
     "heError": "El nombre en hebreo es obligatorio",
     "esName": "Nombre en español",
-    "esError": "El nombre en español es obligatorio"
+    "esError": "El nombre en español es obligatorio",
+    "inStock": "En stock"
   },
   "ordersOverview": {
     "searchLabel": "Buscar pedidos",

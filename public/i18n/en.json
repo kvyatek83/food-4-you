@@ -184,7 +184,8 @@
     "heName": "Hebrew Name",
     "heError": "Hebrew name is required",
     "esName": "Spanish Name",
-    "esError": "Spanish name is required"
+    "esError": "Spanish name is required",
+    "inStock": "In Stock"
   },
   "ordersOverview": {
     "searchLabel": "Search orders",

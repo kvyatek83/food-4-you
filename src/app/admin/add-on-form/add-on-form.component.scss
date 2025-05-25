@@ -1,18 +1,18 @@
 .add-on-form-container {
-  padding: 16px;
-
-  .full-width {
-    width: 100%;
-  }
-
-  .form-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .mat-mdc-dialog-actions {
-    gap: 20px;
-    margin-top: 16px;
-  }
+    padding: 16px;
+  
+    .full-width {
+      width: 100%;
+    }
+  
+    .form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+  
+    .mat-mdc-dialog-actions {
+      gap: 20px;
+      margin-top: 16px;
+    }
 }
