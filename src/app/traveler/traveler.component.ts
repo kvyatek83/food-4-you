@@ -6,7 +6,7 @@ import { LanguageDirectionDirective } from '../directives/language-direction.dir
 import { HeaderActionsComponent } from './header-actions/header-actions.component';
 
 @Component({
-  selector: 'app-travler',
+  selector: 'app-traveler',
   imports: [
     RouterOutlet,
     MaterialModule,
@@ -14,7 +14,7 @@ import { HeaderActionsComponent } from './header-actions/header-actions.componen
     LanguageDirectionDirective,
     LanguagePickerComponent,
   ],
-  templateUrl: './travler.component.html',
-  styleUrl: './travler.component.scss',
+  templateUrl: './traveler.component.html',
+  styleUrl: './traveler.component.scss',
 })
-export class TravlerComponent {}
+export class TravelerComponent {}

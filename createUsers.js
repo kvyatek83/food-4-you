@@ -24,12 +24,12 @@ async function createUser(name, password, role) {
     const adminRole = process.env.ADMIN_ROLE;
     await createUser(adminUsername, adminPassword, adminRole);
 
-    // Travler
-    const travlerUsername = process.env.TRAVLER_NAME;
-    const travlerPassword = process.env.TRAVLER_PASSWORD;
-    const travlerRole = process.env.TRAVLER_ROLE;
+    // Traveler
+    const travelerUsername = process.env.TRAVELER_NAME;
+    const travelerPassword = process.env.TRAVELER_PASSWORD;
+    const travelerRole = process.env.TRAVELER_ROLE;
 
-    await createUser(travlerUsername, travlerPassword, travlerRole);
+    await createUser(travelerUsername, travelerPassword, travelerRole);
   } else {
     console.log("Skip user DB task!");
   }

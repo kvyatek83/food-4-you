@@ -8,7 +8,7 @@ const { v4: uuidv4 } = require("uuid");
 router.get(
   "/categories",
   verifyToken,
-  checkRole("travler"),
+  checkRole("traveler"),
   async (req, res) => {
     try {
       const categories = await db.getCategoriesWithItems();
@@ -24,7 +24,7 @@ router.get(
 router.get(
   "/menu/:day?",
   verifyToken,
-  checkRole("travler"),
+  checkRole("traveler"),
   async (req, res) => {
     try {
       const day = req.params.day;
@@ -37,7 +37,7 @@ router.get(
   }
 );
 
-router.get("/add-ons", verifyToken, checkRole("travler"), async (req, res) => {
+router.get("/add-ons", verifyToken, checkRole("traveler"), async (req, res) => {
   try {
     const addOns = await db.getAddOns();
     res.json(addOns);
@@ -47,7 +47,7 @@ router.get("/add-ons", verifyToken, checkRole("travler"), async (req, res) => {
   }
 });
 
-router.post("/orders", verifyToken, checkRole("travler"), async (req, res) => {
+router.post("/orders", verifyToken, checkRole("traveler"), async (req, res) => {
   try {
     const { customerDetails, cartItems } = req.body;
 

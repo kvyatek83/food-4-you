@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../material.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { OrdersService } from '../../services/orders.service';
-import { Order } from '../../travler/travler.models';
+import { Order } from '../../traveler/traveler.models';
 import { Observable } from 'rxjs';
 import { LanguageService, LanguageType } from '../../services/lang.service';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';

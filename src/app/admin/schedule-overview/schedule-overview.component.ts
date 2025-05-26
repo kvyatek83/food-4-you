@@ -9,7 +9,7 @@ import { combineLatest, debounceTime, Observable, startWith, finalize } from 'rx
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { MaterialModule } from '../../material.module';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
-import { DaysInWeek, Item } from '../../travler/travler.models';
+import { DaysInWeek, Item } from '../../traveler/traveler.models';
 import { ItemsService } from '../../services/items.service';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { NoResultsComponent } from '../../components/no-results/no-results.component';

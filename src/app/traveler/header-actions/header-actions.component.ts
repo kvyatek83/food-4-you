@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../material.module';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, Observable, startWith } from 'rxjs';
-import { Category, Item } from '../travler.models';
+import { Category, Item } from '../traveler.models';
 import { SearchComponent } from '../search/search.component';
 
 @Component({
@@ -47,6 +47,6 @@ export class HeaderActionsComponent implements OnInit {
   }
 
   navigateTo(route: string) {
-    this._router.navigate([`/travler/${route}`]);
+    this._router.navigate([`/traveler/${route}`]);
   }
 }

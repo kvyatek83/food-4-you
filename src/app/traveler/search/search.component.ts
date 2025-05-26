@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { debounceTime, distinctUntilChanged, Observable } from 'rxjs';
-import { Category, Item } from '../travler.models';
+import { Category, Item } from '../traveler.models';
 import { ItemsService } from '../../services/items.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';

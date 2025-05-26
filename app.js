@@ -9,7 +9,7 @@ const { uploadDatabaseToS3 } = require("./server/backup-utils");
 
 const generalRoutes = require("./server/general-routes");
 const adminRoutes = require("./server/admin-routes");
-const travlerRoutes = require("./server/travler-routes");
+const travelerRoutes = require("./server/traveler-routes");
 
 const app = express();
 app.use(express.static(__dirname + "/dist/food-4-you/browser"));
@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 
 app.use("/api", generalRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/travler", travlerRoutes);
+app.use("/api/traveler", travelerRoutes);
 
 app.get("/*", (req, res) =>
   res.sendFile(path.join(__dirname + "/dist/food-4-you/browser/index.html"))

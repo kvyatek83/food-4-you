@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { CategoryComponent } from '../category/category.component';
-import { Category } from '../travler.models';
+import { Category } from '../traveler.models';
 import { CommonModule } from '@angular/common';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';

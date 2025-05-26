@@ -16,7 +16,7 @@ import {
   LanguageService,
   LanguageType,
 } from '../../services/lang.service';
-import { AddOn, Category, Item } from '../../travler/travler.models';
+import { AddOn, Category, Item } from '../../traveler/traveler.models';
 import { LoadFileComponent } from '../../components/load-file/load-file.component';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { TranslateModule } from '@ngx-translate/core';
