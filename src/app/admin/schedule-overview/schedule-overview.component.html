@@ -106,6 +106,7 @@
                 <mat-checkbox
                   color="primary"
                   [checked]="allDaysMap[item.uuid]"
+                  [indeterminate]="allDaysIndeterminateMap[item.uuid]"
                   (change)="toggleAllDays(item)"
                   aria-label="Toggle all days"
                 >

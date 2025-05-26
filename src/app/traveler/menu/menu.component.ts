@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { CategoryComponent } from '../category/category.component';
-import { Category } from '../traveler.models';
+import { Category, DaysInWeek } from '../traveler.models';
 import { CommonModule } from '@angular/common';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
@@ -37,7 +37,15 @@ export class MenuComponent implements AfterViewInit {
     private languageService: LanguageService
   ) {
     this.itemsService.allItems$.pipe().subscribe((categories) => {
-      this.categories = categories;
+      this.categories = categories.map(category => {
+        category.items = category.items.filter(item => {
+          const dayName = new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(new Date()).toLocaleLowerCase();
+          const dayKey = dayName as (keyof DaysInWeek);
+          return !!item.availability  && item.availability[dayKey];
+        });
+
+        return category;
+      }).filter(category => category.items.length > 0);
     });
   }
 
