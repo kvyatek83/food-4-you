@@ -121,6 +121,22 @@
           <form [formGroup]="configForm" class="config-form">
             <mat-form-field appearance="outline">
               <mat-label>{{
+                "generalOverview.configuration.printerIp" | translate
+              }}</mat-label>
+              <input matInput type="text" formControlName="printerIp" placeholder="192.168.1.100" />
+              <mat-hint>{{ "generalOverview.configuration.printerIpHint" | translate }}</mat-hint>
+            </mat-form-field>
+
+            <div class="checkbox-options">
+              <mat-checkbox color="primary" formControlName="printerEnabled">
+                {{
+                  "generalOverview.configuration.printerEnabled" | translate
+                }}
+              </mat-checkbox>
+            </div>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{
                 "generalOverview.configuration.taxRate" | translate
               }}</mat-label>
               <input matInput type="number" formControlName="taxRate" />

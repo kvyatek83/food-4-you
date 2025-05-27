@@ -59,6 +59,9 @@
     },
     "configuration": {
       "title": "System Configuration",
+      "printerIp": "Printer IP Address",
+      "printerIpHint": "Enter the IP address of your network printer",
+      "printerEnabled": "Enable Printer",
       "taxRate": "Tax Rate",
       "defaultCurrency": "Default Currency",
       "maxItemsPerOrder": "Maximum Items Per Order",

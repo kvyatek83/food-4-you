@@ -60,6 +60,9 @@
     },
     "configuration": {
       "title": "Configuración del Sistema",
+      "printerIp": "Dirección IP de la Impresora",
+      "printerIpHint": "Ingrese la dirección IP de su impresora de red",
+      "printerEnabled": "Habilitar Impresora",
       "taxRate": "Tasa de Impuesto",
       "defaultCurrency": "Moneda Predeterminada",
       "maxItemsPerOrder": "Máximo de Artículos por Pedido",

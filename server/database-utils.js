@@ -287,6 +287,27 @@ const OrderItem = sequelize.define("OrderItem", {
   },
 });
 
+const Configuration = sequelize.define("Configuration", {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  printerIp: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  printerEnabled: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
+  // Add more configuration fields as needed
+}, {
+  // Ensure only one configuration record exists
+  tableName: 'configurations'
+});
+
 Order.hasMany(OrderItem, { foreignKey: "orderUuid", as: "items" });
 OrderItem.belongsTo(Order, { foreignKey: "orderUuid", as: "order" });
 
@@ -679,6 +700,33 @@ async function updateOrderPrintStatus(orderId, printed) {
   await Order.update({ printed }, { where: { uuid: orderId } });
 }
 
+// Configuration functions
+async function getConfiguration() {
+  let config = await Configuration.findOne();
+  if (!config) {
+    // Create default configuration if none exists
+    config = await Configuration.create({
+      printerIp: process.env.PRINTER_IP || null,
+      printerEnabled: true,
+    });
+  } else if(!config.printerIp) {
+    config.printerIp = process.env.PRINTER_IP;
+  }
+  return config.get({ plain: true });
+}
+
+async function updateConfiguration(configData) {
+  let config = await Configuration.findOne();
+  if (!config) {
+    // Create new configuration if none exists
+    config = await Configuration.create(configData);
+  } else {
+    // Update existing configuration
+    await config.update(configData);
+  }
+  return config.get({ plain: true });
+}
+
 module.exports = {
   syncModels,
   User,
@@ -687,6 +735,7 @@ module.exports = {
   AddOn,
   Order,
   OrderItem,
+  Configuration,
   readUsersFromDatabase,
   findUser,
   addUser,
@@ -713,6 +762,8 @@ module.exports = {
   getOrderStats,
   updateOrderPrintStatus,
   clearDatabase,
-  closeConnections, // Add this
-  initializeDatabase, // Add this
+  closeConnections,
+  initializeDatabase,
+  getConfiguration,
+  updateConfiguration,
 };

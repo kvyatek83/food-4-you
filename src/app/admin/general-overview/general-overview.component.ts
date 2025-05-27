@@ -10,6 +10,7 @@ import {
   LanguageType,
 } from '../../services/lang.service';
 import { BackupService } from '../../services/backup.service';
+import { ConfigurationService } from '../../services/configuration.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
 
@@ -69,12 +70,15 @@ export class GeneralOverviewComponent implements OnInit {
   constructor(
     private backupService: BackupService,
     private languageService: LanguageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private configurationService: ConfigurationService
   ) {
     this.lang$ = this.languageService.currentLanguage$;
 
     // Initialize form
     this.configForm = this.fb.group({
+      printerIp: [''],
+      printerEnabled: [true],
       taxRate: [18],
       defaultCurrency: ['GTQ'],
       allowReservations: [true],
@@ -86,6 +90,9 @@ export class GeneralOverviewComponent implements OnInit {
   ngOnInit() {
     // Load backups
     this.loadBackups();
+    
+    // Load current configuration
+    this.loadConfiguration();
   }
 
   loadBackups() {
@@ -129,12 +136,24 @@ export class GeneralOverviewComponent implements OnInit {
   }
 
   saveConfig() {
-    console.log('Saving config:', this.configForm.value);
-    // Implement your save logic here
+    const formValue = this.configForm.value;
+    const configToSave = {
+      printerIp: formValue.printerIp || null,
+      printerEnabled: formValue.printerEnabled,
+    };
+    
+    this.configurationService.setVariables(configToSave).pipe(take(1)).subscribe((success) => {
+      if (success) {
+        console.log('Configuration saved successfully');
+        // You can add a success notification here if needed
+      }
+    });
   }
 
   resetConfig() {
     this.configForm.reset({
+      printerIp: '',
+      printerEnabled: true,
       taxRate: 18,
       defaultCurrency: 'GTQ',
       allowReservations: true,
@@ -145,5 +164,17 @@ export class GeneralOverviewComponent implements OnInit {
 
   languageChanged(languageDirection: LanguageDirection): void {
     this.dir = languageDirection;
+  }
+
+  loadConfiguration() {
+    this.configurationService.getVariables().pipe(take(1)).subscribe(() => {
+      const config = this.configurationService.configurations;
+      if (config) {
+        this.configForm.patchValue({
+          printerIp: config.printerIp || '',
+          printerEnabled: config.printerEnabled,
+        });
+      }
+    });
   }
 }

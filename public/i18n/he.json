@@ -59,6 +59,9 @@
     },
     "configuration": {
       "title": "הגדרות מערכת",
+      "printerIp": "כתובת IP של המדפסת",
+      "printerIpHint": "הזן את כתובת ה-IP של המדפסת הרשתית",
+      "printerEnabled": "הפעל מדפסת",
       "taxRate": "שיעור מס",
       "defaultCurrency": "מטבע ברירת מחדל",
       "maxItemsPerOrder": "מספר פריטים מקסימלי בהזמנה",
