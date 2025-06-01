@@ -18,6 +18,13 @@ import { LanguageDirectionDirective } from '../../directives/language-direction.
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { MaterialModule } from '../../material.module';
+import { MatDialog } from '@angular/material/dialog';
+import { OrderDialogComponent, OrderDialogData, OrderDialogResult } from './order-dialog.component';
+import { KitchenReceiptService, KitchenReceiptData } from '../../services/kitchen-receipt.service';
+import { AndroidPrinterService } from '../../services/android-printer.service';
+import { NotificationsService } from '../../services/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
+import { CustomerDetails } from '../traveler.models';
 
 @Component({
   selector: 'app-cart',
@@ -40,12 +47,18 @@ export class CartComponent implements OnInit {
   printResult: boolean | null = null;
   public lang$: Observable<LanguageType>;
   dir: LanguageDirection = 'ltr';
+  isProcessingOrder = false;
 
   constructor(
     private cartService: CartService,
     private itemsService: ItemsService,
     private printerService: ReceiptPrinterService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private dialog: MatDialog,
+    private kitchenReceiptService: KitchenReceiptService,
+    private androidPrinterService: AndroidPrinterService,
+    private notificationsService: NotificationsService,
+    private translate: TranslateService
   ) {
     this.lang$ = this.languageService.currentLanguage$;
   }
@@ -67,11 +80,181 @@ export class CartComponent implements OnInit {
   }
 
   processOrder(): void {
-    // TODO: take name from user
-    this.cartService
-      .placeOrder({ name: 'Nati' })
-      .pipe(take(1))
-      .subscribe((a) => console.log(a));
+    if (this.cartItems.length === 0) {
+      this.notificationsService.setNotification({
+        type: 'ERROR',
+        message: this.translate.instant('cart.errors.emptyCart')
+      });
+      return;
+    }
+
+    const totalAmount = this.calculateTotalAmount();
+
+    // Create simplified items for dialog display
+    const dialogItems = this.createDialogItems();
+
+    // Open order dialog
+    const dialogData: OrderDialogData = {
+      totalAmount: totalAmount,
+      items: dialogItems
+    };
+
+    const dialogRef = this.dialog.open(OrderDialogComponent, {
+      width: '500px',
+      data: dialogData,
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe((result: OrderDialogResult) => {
+      if (result && result.confirmed) {
+        this.createAndProcessOrder(result, totalAmount);
+      }
+    });
+  }
+
+  private createDialogItems(): any[] {
+    return this.cartItems.map(cartItem => ({
+      itemName: cartItem.item.enName, // Use English name for dialog
+      quantity: cartItem.items.size,
+      price: cartItem.item.price,
+      itemTotalPrice: this.calculateCartItemTotal(cartItem)
+    }));
+  }
+
+  private calculateCartItemTotal(cartItem: CartItem): number {
+    const costString = this.cartService.calcCartItemCost(cartItem);
+    // Extract number from "XX.XX GTQ" format
+    return parseFloat(costString.replace(' GTQ', ''));
+  }
+
+  private calculateTotalAmount(): number {
+    return this.cartItems.reduce((sum, cartItem) => {
+      return sum + this.calculateCartItemTotal(cartItem);
+    }, 0);
+  }
+
+  private createAndProcessOrder(orderDetails: OrderDialogResult, totalAmount: number): void {
+    this.isProcessingOrder = true;
+
+    // Generate order number
+    const orderNumber = this.kitchenReceiptService.generateOrderNumber();
+
+    // Create kitchen receipt data with proper format
+    const kitchenReceiptData: KitchenReceiptData = {
+      customerName: orderDetails.customerName,
+      orderType: orderDetails.orderType,
+      items: this.createKitchenItems(),
+      totalAmount: totalAmount,
+      orderNumber: orderNumber,
+      isPaid: false // Assuming not paid yet
+    };
+
+    // Format receipt for kitchen (in Spanish)
+    const formattedReceipt = this.kitchenReceiptService.formatForKitchen(kitchenReceiptData);
+
+    // Print to kitchen if Android environment
+    if (this.androidPrinterService.isAndroidEnvironment) {
+      this.printKitchenReceipt(formattedReceipt, orderDetails, orderNumber);
+    } else {
+      // For browser testing, just save the order
+      this.saveOrderToDatabase(orderDetails, orderNumber, totalAmount);
+    }
+  }
+
+  private createKitchenItems(): any[] {
+    return this.cartItems.flatMap(cartItem => {
+      const items: any[] = [];
+      cartItem.items.forEach((addOns, cartItemId) => {
+        items.push({
+          uuid: cartItemId,
+          itemName: cartItem.item.enName, // English name for fallback
+          esName: cartItem.item.esName, // Spanish name for kitchen
+          quantity: 1, // Each variant is quantity 1
+          price: cartItem.item.price,
+          selectedAddOns: addOns, // Add-ons selected for this item
+          itemTotalPrice: this.calculateSingleItemCost(cartItem, addOns)
+        });
+      });
+      return items;
+    });
+  }
+
+  private calculateSingleItemCost(cartItem: CartItem, addOns: string[]): number {
+    const basePrice = cartItem.item.price;
+    const freeAddons = cartItem.item.freeAvailableAddOns || 0;
+    const pricePerAddOn = cartItem.item.addOnPrice || 0;
+    
+    let totalPrice = basePrice;
+    if (addOns.length > 0) {
+      const addOnsNeedsPay = Math.max(0, addOns.length - freeAddons);
+      totalPrice += addOnsNeedsPay * pricePerAddOn;
+    }
+    
+    return totalPrice;
+  }
+
+  private printKitchenReceipt(receiptData: any, orderDetails: OrderDialogResult, orderNumber: string): void {
+    this.androidPrinterService.printReceipt(receiptData).subscribe({
+      next: (printResult) => {
+        if (printResult.success) {
+          console.log('Kitchen receipt printed successfully');
+          this.saveOrderToDatabase(orderDetails, orderNumber, this.calculateTotalAmount());
+          
+          this.notificationsService.setNotification({
+            type: 'SUCCESS',
+            message: this.translate.instant('cart.success.orderPrinted', { orderNumber })
+          });
+        } else {
+          console.error('Failed to print kitchen receipt:', printResult.message);
+          this.notificationsService.setNotification({
+            type: 'ERROR',
+            message: this.translate.instant('cart.errors.printFailed', { error: printResult.message })
+          });
+        }
+        this.isProcessingOrder = false;
+      },
+      error: (error) => {
+        console.error('Error printing kitchen receipt:', error);
+        this.notificationsService.setNotification({
+          type: 'ERROR',
+          message: this.translate.instant('cart.errors.printError')
+        });
+        this.isProcessingOrder = false;
+      }
+    });
+  }
+
+  private saveOrderToDatabase(orderDetails: OrderDialogResult, orderNumber: string, totalAmount: number): void {
+    // Prepare order data for database using CustomerDetails interface
+    const customerDetails: CustomerDetails = {
+      name: orderDetails.customerName,
+      phone: '' // We don't collect phone in this flow
+    };
+
+    // Save order to database
+    this.cartService.placeOrder(customerDetails).pipe(take(1)).subscribe({
+      next: (response) => {
+        console.log('Order saved to database:', response);
+        
+        // Clear cart after successful order
+        this.cartService.clearCart();
+        
+        this.notificationsService.setNotification({
+          type: 'SUCCESS',
+          message: this.translate.instant('cart.success.orderPlaced', { orderNumber })
+        });
+        
+        this.isProcessingOrder = false;
+      },
+      error: (error) => {
+        console.error('Error saving order to database:', error);
+        this.notificationsService.setNotification({
+          type: 'ERROR',
+          message: this.translate.instant('cart.errors.orderSaveFailed')
+        });
+        this.isProcessingOrder = false;
+      }
+    });
   }
 
   clearCart(): void {
@@ -132,5 +315,15 @@ export class CartComponent implements OnInit {
 
   languageChanged(languageDirection: LanguageDirection): void {
     this.dir = languageDirection;
+  }
+
+  // Helper method to get total amount
+  getTotalAmount(): number {
+    return this.calculateTotalAmount();
+  }
+
+  // Helper method to check if order can be processed
+  canProcessOrder(): boolean {
+    return this.cartItems.length > 0 && !this.isProcessingOrder;
   }
 }

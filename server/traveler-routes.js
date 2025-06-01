@@ -49,94 +49,111 @@ router.get("/add-ons", verifyToken, checkRole("traveler"), async (req, res) => {
 
 router.post("/orders", verifyToken, checkRole("traveler"), async (req, res) => {
   try {
-    const { customerDetails, cartItems } = req.body;
-
-    // Prepare order data structure
-    const orderData = {
-      uuid: uuidv4(),
-      customerName: customerDetails?.name || "",
-      customerPhone: customerDetails?.phone || "",
-      totalAmount: 0,
-      printed: false,
-      orderDate: new Date(),
-      items: [],
-    };
-
-    console.log(JSON.stringify(cartItems));
-
-    // Process each item in the cart
-    let totalAmount = 0;
-
-    for (const cartItem of cartItems) {
-      const item = cartItem.item;
-
-      // Process each variant/permutation of this item
-      cartItem.items.forEach((selectedAddOnIds) => {
-        // Calculate price for this item
-        const basePrice = item.price;
-        const freeAddOns = item.freeAvailableAddOns || 0;
-        const pricePerAddOn = item.addOnPrice || 0;
-
-        // Calculate add-on costs beyond free limit
-        const paidAddOns = Math.max(0, selectedAddOnIds.length - freeAddOns);
-        const addOnCost = paidAddOns * pricePerAddOn;
-
-        // Calculate total for this item
-        const itemTotalPrice = basePrice + addOnCost;
-        totalAmount += itemTotalPrice;
-
-        // Add item to order
-        orderData.items.push({
-          uuid: uuidv4(),
-          itemUuid: item.uuid,
-          itemName: item.enName,
-          price: basePrice,
-          quantity: 1,
-          selectedAddOns: selectedAddOnIds,
-          itemTotalPrice: itemTotalPrice,
-        });
-      });
-    }
-
-    // Set total order amount
-    orderData.totalAmount = totalAmount;
-
-    // Save order to database
+    const orderData = req.body;
     const order = await db.createOrder(orderData);
-
-    res.status(201).json({
-      success: true,
-      message: "Order placed successfully",
-      order: order,
-    });
+    res.status(201).json(order);
   } catch (error) {
     console.error("Error creating order:", error);
     res.status(500).json({ error: "Failed to create order" });
   }
 });
 
-// TODO: change role
+// Update order print status
 router.put(
   "/orders/:id/printed",
   verifyToken,
-  checkRole("admin"),
+  checkRole("traveler"),
   async (req, res) => {
     try {
       const { printed } = req.body;
-
-      if (typeof printed !== "boolean") {
-        return res.status(400).json({ error: "Invalid printed status" });
-      }
-
       await db.updateOrderPrintStatus(req.params.id, printed);
-
-      const updatedOrder = await db.getOrderById(req.params.id);
-      res.json(updatedOrder);
+      res.json({ success: true });
     } catch (error) {
       console.error("Error updating order print status:", error);
-      res.status(500).json({ error: "Failed to update order print status" });
+      res.status(500).json({ error: "Failed to update print status" });
     }
   }
 );
+
+// ------------- ANDROID PRINTER ENDPOINTS -------------
+// Endpoint for Android to get basic configuration (non-sensitive only)
+router.get("/printer-config", verifyToken, checkRole("traveler"), async (req, res) => {
+  try {
+    const config = await db.getConfiguration();
+    
+    // Only return non-sensitive printer configuration
+    const safeConfig = {
+      printerIp: config.printerIp,
+      printerEnabled: config.printerEnabled
+    };
+    
+    res.json(safeConfig);
+  } catch (error) {
+    console.error("Error fetching printer config:", error);
+    res.status(500).json({ error: "Failed to fetch printer config" });
+  }
+});
+
+// Endpoint for Android to report printer status
+router.post("/printer-status", verifyToken, checkRole("traveler"), async (req, res) => {
+  try {
+    const { printerAvailable, printerEnabled, printerIp, lastError, timestamp } = req.body;
+    
+    // Update configuration with printer status and error
+    const statusUpdate = {
+      printerAvailable: printerAvailable,
+      lastPrinterError: lastError,
+      lastStatusCheck: new Date(timestamp)
+    };
+    
+    await db.updateConfiguration(statusUpdate);
+    
+    console.log(`Printer status updated: available=${printerAvailable}, error=${lastError}`);
+    res.status(200).json({ success: true, message: "Status updated" });
+  } catch (error) {
+    console.error("Error updating printer status:", error);
+    res.status(500).json({ error: "Failed to update printer status" });
+  }
+});
+
+// Endpoint for Android to report print results
+router.post("/print-result", verifyToken, checkRole("traveler"), async (req, res) => {
+  try {
+    const { success, message, errorCode, isTest, timestamp } = req.body;
+    
+    // Log print result
+    console.log(`Print result: success=${success}, message=${message}, isTest=${isTest}, errorCode=${errorCode}`);
+    
+    // Update last print attempt in configuration
+    const printUpdate = {
+      lastPrintAttempt: new Date(timestamp),
+      lastPrintSuccess: success,
+      lastPrintError: success ? null : message
+    };
+    
+    await db.updateConfiguration(printUpdate);
+    
+    res.status(200).json({ success: true, message: "Print result logged" });
+  } catch (error) {
+    console.error("Error logging print result:", error);
+    res.status(500).json({ error: "Failed to log print result" });
+  }
+});
+
+// Endpoint for Android to get environment variables (non-sensitive only)
+router.get("/env", verifyToken, checkRole("traveler"), async (req, res) => {
+  try {
+    const envVars = {
+      webViewUrl: process.env.WEBVIEW_URL || process.env.BASE_URL || `http://192.168.68.59:${process.env.PORT || 3000}`,
+      appVersion: process.env.APP_VERSION || "1.0.0"
+      // Note: Not exposing serverUrl or other sensitive environment variables
+    };    
+    
+    res.json(envVars);
+  } catch (error) {
+    console.error("Error fetching environment variables:", error);
+    res.status(500).json({ error: "Failed to fetch environment variables" });
+  }
+});
 
 module.exports = router;

@@ -91,6 +91,44 @@
     padding: 20px 0;
   }
   
+  // Printer Status Section
+  .printer-status-section {
+    margin-top: 20px;
+    
+    h3 {
+      margin: 15px 0 10px 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.87);
+    }
+  }
+  
+  .printer-status {
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      
+      .status-text {
+        flex: 1;
+        font-weight: 500;
+      }
+    }
+    
+    .status-details {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-left: 34px;
+      
+      small {
+        color: rgba(0, 0, 0, 0.6);
+        font-size: 12px;
+      }
+    }
+  }
+  
   // Configuration Section
   .config-form {
     display: flex;

@@ -51,6 +51,13 @@
       "dbVersion": "Versión de la Base de Datos",
       "lastUpdate": "Última Actualización"
     },
+    "printerStatus": {
+      "title": "Estado de la Impresora",
+      "refresh": "Actualizar Estado",
+      "enabled": "Habilitado",
+      "yes": "Sí",
+      "no": "No"
+    },
     "backups": {
       "title": "Copias de Seguridad",
       "createBackup": "Crear Nueva Copia",
@@ -63,6 +70,7 @@
       "printerIp": "Dirección IP de la Impresora",
       "printerIpHint": "Ingrese la dirección IP de su impresora de red",
       "printerEnabled": "Habilitar Impresora",
+      "testPrinter": "Probar Impresora",
       "taxRate": "Tasa de Impuesto",
       "defaultCurrency": "Moneda Predeterminada",
       "maxItemsPerOrder": "Máximo de Artículos por Pedido",
@@ -340,6 +348,28 @@
     "emptyCart": "Tu carrito está vacío",
     "backToMenu": "Volver al menú",
     "clearCart": "Vaciar carrito",
-    "order": "Ordenar"
+    "order": "Ordenar",
+    "orderDialog": {
+      "title": "Completar tu Pedido",
+      "orderType": "Tipo de Pedido",
+      "takeaway": "Para Llevar",
+      "sitdown": "Comer Aquí",
+      "customerName": "Nombre del Cliente",
+      "customerNamePlaceholder": "Ingresa tu nombre",
+      "orderSummary": "Resumen del Pedido",
+      "total": "Total",
+      "cancel": "Cancelar",
+      "finishOrder": "Finalizar Pedido"
+    },
+    "errors": {
+      "emptyCart": "Tu carrito está vacío. Por favor agrega artículos antes de ordenar.",
+      "printFailed": "Error al imprimir recibo de cocina: {{error}}",
+      "printError": "Error al imprimir. Por favor intenta de nuevo.",
+      "orderSaveFailed": "Error al guardar el pedido. Por favor intenta de nuevo."
+    },
+    "success": {
+      "orderPrinted": "¡Pedido #{{orderNumber}} impreso exitosamente en la cocina!",
+      "orderPlaced": "¡Pedido #{{orderNumber}} realizado exitosamente!"
+    }
   }
 }

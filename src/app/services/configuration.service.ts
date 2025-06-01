@@ -8,6 +8,13 @@ interface Configuration {
   id?: number;
   printerIp: string | null;
   printerEnabled: boolean;
+  // Printer status fields
+  printerAvailable?: boolean | null;
+  lastPrinterError?: string | null;
+  lastStatusCheck?: string | null;
+  lastPrintAttempt?: string | null;
+  lastPrintSuccess?: boolean | null;
+  lastPrintError?: string | null;
 }
 
 @Injectable({

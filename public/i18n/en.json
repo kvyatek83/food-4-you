@@ -50,6 +50,13 @@
       "dbVersion": "Database Version",
       "lastUpdate": "Last Updated"
     },
+    "printerStatus": {
+      "title": "Printer Status",
+      "refresh": "Refresh Status",
+      "enabled": "Enabled",
+      "yes": "Yes",
+      "no": "No"
+    },
     "backups": {
       "title": "Database Backups",
       "createBackup": "Create New Backup",
@@ -62,6 +69,7 @@
       "printerIp": "Printer IP Address",
       "printerIpHint": "Enter the IP address of your network printer",
       "printerEnabled": "Enable Printer",
+      "testPrinter": "Test Printer",
       "taxRate": "Tax Rate",
       "defaultCurrency": "Default Currency",
       "maxItemsPerOrder": "Maximum Items Per Order",
@@ -338,6 +346,28 @@
     "emptyCart": "Your cart is empty",
     "backToMenu": "Go back to menu",
     "clearCart": "Clear cart",
-    "order": "Order"
+    "order": "Order",
+    "orderDialog": {
+      "title": "Complete Your Order",
+      "orderType": "Order Type",
+      "takeaway": "Take Away",
+      "sitdown": "Sit Down",
+      "customerName": "Customer Name",
+      "customerNamePlaceholder": "Enter your name",
+      "orderSummary": "Order Summary",
+      "total": "Total",
+      "cancel": "Cancel",
+      "finishOrder": "Finish Order"
+    },
+    "errors": {
+      "emptyCart": "Your cart is empty. Please add items before ordering.",
+      "printFailed": "Failed to print kitchen receipt: {{error}}",
+      "printError": "Error occurred while printing. Please try again.",
+      "orderSaveFailed": "Failed to save order to database. Please try again."
+    },
+    "success": {
+      "orderPrinted": "Order #{{orderNumber}} printed successfully to kitchen!",
+      "orderPlaced": "Order #{{orderNumber}} placed successfully!"
+    }
   }
 }

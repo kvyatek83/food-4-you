@@ -302,6 +302,32 @@ const Configuration = sequelize.define("Configuration", {
     allowNull: false,
     defaultValue: true,
   },
+  // Printer status fields
+  printerAvailable: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+    defaultValue: null,
+  },
+  lastPrinterError: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  lastStatusCheck: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  lastPrintAttempt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  lastPrintSuccess: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+  },
+  lastPrintError: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
   // Add more configuration fields as needed
 }, {
   // Ensure only one configuration record exists

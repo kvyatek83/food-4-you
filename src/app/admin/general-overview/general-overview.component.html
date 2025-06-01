@@ -10,7 +10,7 @@
       <!-- System Information Section -->
       <div class="card system-info">
         <div class="card-header">
-          <mat-icon>print</mat-icon>
+          <mat-icon>info</mat-icon>
           <!-- print_error
           print_connect -->
           <h2>{{ "generalOverview.systemInfo.title" | translate }}</h2>
@@ -36,6 +36,55 @@
               >{{ "generalOverview.systemInfo.lastUpdate" | translate }}:</span
             >
             <span class="info-value">{{ systemInfo.lastUpdated | date }}</span>
+          </div>
+
+          <!-- Printer Status Section -->
+          <div class="printer-status-section">
+            <mat-divider></mat-divider>
+            <h3>{{ "generalOverview.printerStatus.title" | translate }}</h3>
+            
+            <div *ngIf="printerStatusFromDb" class="printer-status">
+              <div class="status-row">
+                <mat-icon [color]="getPrinterStatusColor(printerStatusFromDb)">
+                  {{ getPrinterStatusIcon(printerStatusFromDb) }}
+                </mat-icon>
+                <span class="status-text">{{ getPrinterStatusMessage(printerStatusFromDb) }}</span>
+                <button mat-icon-button (click)="refreshPrinterStatus()" 
+                        matTooltip="{{ 'generalOverview.printerStatus.refresh' | translate }}">
+                  <mat-icon>refresh</mat-icon>
+                </button>
+              </div>
+              
+              <div class="status-details">
+                <small>IP: {{ printerStatusFromDb.ip || 'Not configured' }}</small>
+                <small>{{ "generalOverview.printerStatus.enabled" | translate }}: 
+                  {{ printerStatusFromDb.enabled ? ('generalOverview.printerStatus.yes' | translate) : ('generalOverview.printerStatus.no' | translate) }}
+                </small>
+                <small *ngIf="printerStatusFromDb.lastStatusCheck">
+                  Last check: {{ printerStatusFromDb.lastStatusCheck | date:'short' }}
+                </small>
+                <small *ngIf="printerStatusFromDb.lastPrintAttempt">
+                  Last print: {{ printerStatusFromDb.lastPrintAttempt | date:'short' }}
+                  <span [style.color]="printerStatusFromDb.lastPrintSuccess ? 'green' : 'red'">
+                    ({{ printerStatusFromDb.lastPrintSuccess ? 'Success' : 'Failed' }})
+                  </span>
+                </small>
+                <small *ngIf="printerStatusFromDb.lastPrintError" style="color: red;">
+                  Print error: {{ printerStatusFromDb.lastPrintError }}
+                </small>
+              </div>
+            </div>
+            
+            <div *ngIf="!printerStatusFromDb" class="printer-status">
+              <div class="status-row">
+                <mat-icon color="accent">help_outline</mat-icon>
+                <span class="status-text">No printer status available</span>
+                <button mat-icon-button (click)="refreshPrinterStatus()" 
+                        matTooltip="{{ 'generalOverview.printerStatus.refresh' | translate }}">
+                  <mat-icon>refresh</mat-icon>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

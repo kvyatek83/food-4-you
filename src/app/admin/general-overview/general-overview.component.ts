@@ -43,6 +43,9 @@ export class GeneralOverviewComponent implements OnInit {
   // Configuration
   configForm: FormGroup;
 
+  // Printer status from database
+  printerStatusFromDb: any = null;
+
   // Statistics
   orderStats = {
     today: {
@@ -145,7 +148,7 @@ export class GeneralOverviewComponent implements OnInit {
     this.configurationService.setVariables(configToSave).pipe(take(1)).subscribe((success) => {
       if (success) {
         console.log('Configuration saved successfully');
-        // You can add a success notification here if needed
+        // Configuration will be picked up by Android automatically
       }
     });
   }
@@ -162,6 +165,11 @@ export class GeneralOverviewComponent implements OnInit {
     });
   }
 
+  refreshPrinterStatus() {
+    // Refresh configuration to get latest printer status from database
+    this.loadConfiguration();
+  }
+
   languageChanged(languageDirection: LanguageDirection): void {
     this.dir = languageDirection;
   }
@@ -174,7 +182,44 @@ export class GeneralOverviewComponent implements OnInit {
           printerIp: config.printerIp || '',
           printerEnabled: config.printerEnabled,
         });
+        
+        // Store printer status from database
+        this.printerStatusFromDb = {
+          available: config.printerAvailable,
+          enabled: config.printerEnabled,
+          ip: config.printerIp,
+          lastError: config.lastPrinterError,
+          lastStatusCheck: config.lastStatusCheck,
+          lastPrintAttempt: config.lastPrintAttempt,
+          lastPrintSuccess: config.lastPrintSuccess,
+          lastPrintError: config.lastPrintError
+        };
       }
     });
+  }
+
+  // TODO: need to test this
+  getPrinterStatusIcon(status: any): string {
+    if (!status) return 'print_disabled';
+    if (!status.enabled) return 'print_disabled';
+    if (status.available === true) return 'print';
+    if (status.available === false) return 'print_error';
+    return 'help_outline'; // Unknown status
+  }
+
+  getPrinterStatusColor(status: any): string {
+    if (!status) return 'warn';
+    if (!status.enabled) return 'warn';
+    if (status.available === true) return 'primary';
+    if (status.available === false) return 'warn';
+    return 'accent'; // Unknown status
+  }
+
+  getPrinterStatusMessage(status: any): string {
+    if (!status) return 'No status available';
+    if (!status.enabled) return 'Printer disabled';
+    if (status.available === true) return 'Printer ready';
+    if (status.available === false) return status.lastError || 'Printer not available';
+    return 'Status unknown';
   }
 }

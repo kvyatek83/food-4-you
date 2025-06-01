@@ -39,12 +39,26 @@
       </div>
       <div class="cart-actions-wrapper">
         <div class="cart-actions">
-          <button mat-flat-button color="warn" (click)="clearCart()">
+          <button 
+            mat-flat-button 
+            color="warn" 
+            (click)="clearCart()"
+            [disabled]="isProcessingOrder">
             <mat-icon>delete</mat-icon>
             {{ "cart.clearCart" | translate }}
           </button>
-          <button mat-flat-button color="primary" (click)="processOrder()">
-            <mat-icon>shopping_cart_checkout</mat-icon>
+          <!-- TODO: need to put total price here -->
+          <button 
+            mat-flat-button 
+            color="primary" 
+            (click)="processOrder()"
+            [disabled]="!canProcessOrder()">
+            <mat-spinner 
+              *ngIf="isProcessingOrder" 
+              diameter="20" 
+              class="button-spinner">
+            </mat-spinner>
+            <mat-icon *ngIf="!isProcessingOrder">shopping_cart_checkout</mat-icon>
             {{ "cart.order" | translate }}
           </button>
         </div>
