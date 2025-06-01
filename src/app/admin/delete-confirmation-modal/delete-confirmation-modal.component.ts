@@ -7,7 +7,7 @@ import { MaterialModule } from '../../material.module';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { CommonModule } from '@angular/common';
-import { AddOn, Category, Item } from '../../travler/travler.models';
+import { AddOn, Category, Item } from '../../traveler/traveler.models';
 
 type DeleteTyep = 'category' | 'item' | 'add-on';
 

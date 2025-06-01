@@ -2035,7 +2035,7 @@
         {
             "name": "TravlerComponent",
             "id": "component-TravlerComponent-da1ea80e17dd484bdb57a5c3da6efafbea4ffe2905339faae377ec6a6f69d2639c2f06162b65c564dbf687c4e3a60327367b49d391208ef312b276feb86e9558",
-            "file": "src/app/travler/travler.component.ts",
+            "file": "src/app/traveler/traveler.component.ts",
             "encapsulation": [],
             "entryComponents": [],
             "inputs": [],
@@ -2158,7 +2158,7 @@
             "description": "",
             "deprecationMessage": "",
             "deprecated": false,
-            "file": "src/app/travler/travler.module.ts",
+            "file": "src/app/traveler/traveler.module.ts",
             "methods": [],
             "sourceCode": "import { NgModule } from '@angular/core';\nimport { RouterModule, Routes } from '@angular/router';\nimport { CommonModule } from '@angular/common';\nimport { MenuComponent } from './menu/menu.component';\nimport { TravlerComponent } from './travler.component';\n\nconst routes: Routes = [\n  {\n    path: '',\n    component: TravlerComponent,\n    children: [{ path: '', component: MenuComponent }],\n  },\n];\n\n@NgModule({\n  imports: [CommonModule, RouterModule.forChild(routes)],\n})\nexport class TravlerModule {}\n",
             "children": [
@@ -2721,7 +2721,7 @@
                 "status": "low"
             },
             {
-                "filePath": "src/app/travler/travler.component.ts",
+                "filePath": "src/app/traveler/traveler.component.ts",
                 "type": "component",
                 "linktype": "component",
                 "name": "TravlerComponent",

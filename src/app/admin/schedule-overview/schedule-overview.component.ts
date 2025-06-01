@@ -9,7 +9,7 @@ import { combineLatest, debounceTime, Observable, startWith, finalize } from 'rx
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { MaterialModule } from '../../material.module';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
-import { DaysInWeek, Item } from '../../travler/travler.models';
+import { DaysInWeek, Item } from '../../traveler/traveler.models';
 import { ItemsService } from '../../services/items.service';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { NoResultsComponent } from '../../components/no-results/no-results.component';
@@ -96,6 +96,7 @@ export class ScheduleOverviewComponent implements OnInit {
   loadingData = false;
   filteredItems: Item[] = [];
   allDaysMap: { [key: string]: boolean } = {};
+  allDaysIndeterminateMap: { [key: string]: boolean } = {};
 
   originalItemsState: { [key: string]: DaysInWeek } = {};
   modifiedRows: Set<string> = new Set();
@@ -156,15 +157,29 @@ export class ScheduleOverviewComponent implements OnInit {
   toggleAllDays(item: Item): void {
     if (!item.availability || !item.uuid) return;
 
-    const currentStatus = this.allDaysMap[item.uuid] || false;
-    const newStatus = !currentStatus;
+    // If currently indeterminate or some days are checked, check all days
+    // If all days are checked, uncheck all days
+    const isIndeterminate = this.allDaysIndeterminateMap[item.uuid];
+    const allChecked = this.allDaysMap[item.uuid];
+    
+    let newStatus: boolean;
+    
+    if (isIndeterminate) {
+      // If indeterminate, check all days
+      newStatus = true;
+    } else if (allChecked) {
+      // If all checked, uncheck all days
+      newStatus = false;
+    } else {
+      // If none checked, check all days
+      newStatus = true;
+    }
 
     this.days.forEach((day) => {
       item.availability![day as keyof typeof item.availability] = newStatus;
     });
 
-    this.allDaysMap[item.uuid] = newStatus;
-
+    this.updateAllDaysStatus(item);
     this.checkForChanges(item);
   }
 
@@ -233,7 +248,7 @@ export class ScheduleOverviewComponent implements OnInit {
         this.savingRows[item.uuid] = false;
       })
     ).subscribe({
-      next: (categories) => {
+      next: (_) => {
         // Update original state after successful save
         if (item.availability) {
           this.originalItemsState[item.uuid] = { ...item.availability };
@@ -332,7 +347,7 @@ export class ScheduleOverviewComponent implements OnInit {
           }
         })
       ).subscribe({
-        next: (categories) => {
+        next: (_) => {
           // Update original state after successful save
           if (item.availability) {
             this.originalItemsState[id] = { ...item.availability };
@@ -372,11 +387,19 @@ export class ScheduleOverviewComponent implements OnInit {
   updateAllDaysStatus(item: Item): void {
     if (!item.availability || !item.uuid) return;
 
-    const allEnabled = this.days.every(
+    const checkedDays = this.days.filter(
       (day) => item.availability![day as keyof typeof item.availability]
     );
 
+    const allEnabled = checkedDays.length === this.days.length;
+    const someEnabled = checkedDays.length > 0;
+    const noneEnabled = checkedDays.length === 0;
+
+    // Set checked state: true if all days are enabled
     this.allDaysMap[item.uuid] = allEnabled;
+
+    // Set indeterminate state: true if some but not all days are enabled
+    this.allDaysIndeterminateMap[item.uuid] = someEnabled && !allEnabled;
   }
 
   applyFilters(): void {
@@ -431,6 +454,10 @@ export class ScheduleOverviewComponent implements OnInit {
 
   isRowSaving(uuid: string): boolean {
     return this.savingRows[uuid] === true;
+  }
+
+  isAllDaysIndeterminate(uuid: string): boolean {
+    return this.allDaysIndeterminateMap[uuid] === true;
   }
 
   languageChanged(languageDirection: LanguageDirection): void {

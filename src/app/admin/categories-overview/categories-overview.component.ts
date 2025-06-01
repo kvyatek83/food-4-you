@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { delay, filter, Observable, take } from 'rxjs';
 import { ItemsService } from '../../services/items.service';
-import { Category } from '../../travler/travler.models';
+import { Category } from '../../traveler/traveler.models';
 import { MaterialModule } from '../../material.module';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';

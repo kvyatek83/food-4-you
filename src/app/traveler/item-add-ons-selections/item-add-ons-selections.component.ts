@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MaterialModule } from '../../material.module';
-import { AddOn, Item } from '../travler.models';
+import { AddOn, Item } from '../traveler.models';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ItemsService } from '../../services/items.service';
 import { FormsModule } from '@angular/forms';

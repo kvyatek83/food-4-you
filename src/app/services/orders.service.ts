@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Order } from '../travler/travler.models';
+import { Order } from '../traveler/traveler.models';
 
 @Injectable({
   providedIn: 'root',
@@ -53,6 +53,6 @@ export class OrdersService {
 
   // TODO: move to cart service
   updateOrderPrintStatus(orderId: string, printed: boolean): Observable<any> {
-    return this.http.put(`/api/travler/orders/${orderId}/printed`, { printed });
+    return this.http.put(`/api/traveler/orders/${orderId}/printed`, { printed });
   }
 }

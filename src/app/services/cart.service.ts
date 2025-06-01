@@ -4,7 +4,7 @@ import {
   CustomerDetails,
   Item,
   OrderResponse,
-} from '../travler/travler.models';
+} from '../traveler/traveler.models';
 import { HttpClient } from '@angular/common/http';
 
 export interface CartItem {
@@ -240,6 +240,6 @@ export class CartService {
     };
 
     // Send order to server
-    return this.http.post<OrderResponse>(`/api/travler/orders`, orderPayload);
+    return this.http.post<OrderResponse>(`/api/traveler/orders`, orderPayload);
   }
 }

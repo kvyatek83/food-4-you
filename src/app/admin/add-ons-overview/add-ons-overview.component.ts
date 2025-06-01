@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { combineLatest, delay, Observable, startWith, take } from 'rxjs';
 import { ItemsService } from '../../services/items.service';
-import { AddOn, Item } from '../../travler/travler.models';
+import { AddOn, Item } from '../../traveler/traveler.models';
 import { MaterialModule } from '../../material.module';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';

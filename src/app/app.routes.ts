@@ -5,9 +5,9 @@ import { AuthGuard } from './auth.guard';
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
-    path: 'travler',
+    path: 'traveler',
     loadChildren: () =>
-      import('./travler/travler.module').then((m) => m.TravlerModule),
+      import('./traveler/traveler.module').then((m) => m.TravelerModule),
     canActivate: [AuthGuard],
   },
   {
@@ -16,6 +16,6 @@ export const routes: Routes = [
       import('./admin/admin.module').then((m) => m.AdminModule),
     canActivate: [AuthGuard],
   },
-  { path: '', redirectTo: 'travler', pathMatch: 'full' },
-  { path: '**', redirectTo: 'travler' },
+  { path: '', redirectTo: 'traveler', pathMatch: 'full' },
+  { path: '**', redirectTo: 'traveler' },
 ];

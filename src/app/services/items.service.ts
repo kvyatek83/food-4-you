@@ -8,7 +8,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { AddOn, Category, Item } from '../travler/travler.models';
+import { AddOn, Category, Item } from '../traveler/traveler.models';
 import { HttpClient } from '@angular/common/http';
 import { NotificationsService } from './notifications.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -93,11 +93,11 @@ export class ItemsService {
   }
 
   fetchAllItems(): Observable<Category[]> {
-    return this.http.get<Category[]>('/api/travler/categories');
+    return this.http.get<Category[]>('/api/traveler/categories');
   }
 
   fetchAddOns(): Observable<AddOn[]> {
-    return this.http.get<AddOn[]>('/api/travler/add-ons');
+    return this.http.get<AddOn[]>('/api/traveler/add-ons');
   }
 
   getAddOnByUuid(addOnUuid: string): AddOn | undefined {

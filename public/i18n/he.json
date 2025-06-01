@@ -42,6 +42,52 @@
     "cancel": "ביטול",
     "submit": "מחיקה"
   },
+  "generalOverview": {
+    "title": "סקירה כללית",
+    "systemInfo": {
+      "title": "מידע מערכת",
+      "appVersion": "גרסת האפליקציה",
+      "dbVersion": "גרסת מסד הנתונים",
+      "lastUpdate": "עדכון אחרון"
+    },
+    "printerStatus": {
+      "title": "מצב המדפסת",
+      "refresh": "רענן מצב",
+      "enabled": "מופעל",
+      "yes": "כן",
+      "no": "לא"
+    },
+    "backups": {
+      "title": "גיבויי מסד נתונים",
+      "createBackup": "צור גיבוי חדש",
+      "selectBackup": "בחר גיבוי",
+      "restoreBackup": "שחזר גיבוי נבחר",
+      "noBackups": "אין גיבויים זמינים. צור את הגיבוי הראשון שלך."
+    },
+    "configuration": {
+      "title": "הגדרות מערכת",
+      "printerIp": "כתובת IP של המדפסת",
+      "printerIpHint": "הזן את כתובת ה-IP של המדפסת הרשתית",
+      "printerEnabled": "הפעל מדפסת",
+      "testPrinter": "בדוק מדפסת",
+      "taxRate": "שיעור מס",
+      "defaultCurrency": "מטבע ברירת מחדל",
+      "maxItemsPerOrder": "מספר פריטים מקסימלי בהזמנה",
+      "allowReservations": "אפשר הזמנות",
+      "notifyAdmin": "הודע למנהל על הזמנות חדשות",
+      "save": "שמור הגדרות",
+      "reset": "אפס"
+    },
+    "statistics": {
+      "title": "סטטיסטיקת הזמנות",
+      "today": "היום",
+      "thisWeek": "השבוע",
+      "thisMonth": "החודש",
+      "orders": "הזמנות",
+      "revenue": "הכנסה",
+      "average": "ממוצע"
+    }
+  },
   "categoryOverview": {
     "gridView": "תצוגת קלפים",
     "tableView": "תצוגת טבלה",
@@ -300,6 +346,28 @@
     "emptyCart": "העגלה שלך ריקה",
     "backToMenu": "חזור לתפריט",
     "clearCart": "נקה עגלה",
-    "order": "הזמן"
+    "order": "הזמן",
+    "orderDialog": {
+      "title": "השלם את ההזמנה",
+      "orderType": "סוג הזמנה",
+      "takeaway": "לקחת",
+      "sitdown": "לאכול כאן",
+      "customerName": "שם הלקוח",
+      "customerNamePlaceholder": "הזן את שמך",
+      "orderSummary": "סיכום הזמנה",
+      "total": "סה״כ",
+      "cancel": "ביטול",
+      "finishOrder": "סיים הזמנה"
+    },
+    "errors": {
+      "emptyCart": "העגלה שלך ריקה. אנא הוסף פריטים לפני ההזמנה.",
+      "printFailed": "נכשל בהדפסת קבלה למטבח: {{error}}",
+      "printError": "שגיאה בהדפסה. אנא נסה שוב.",
+      "orderSaveFailed": "נכשל בשמירת ההזמנה. אנא נסה שוב."
+    },
+    "success": {
+      "orderPrinted": "הזמנה מס' {{orderNumber}} הודפסה בהצלחה למטבח!",
+      "orderPlaced": "הזמנה מס' {{orderNumber}} בוצעה בהצלחה!"
+    }
   }
 }

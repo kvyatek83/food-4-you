@@ -14,7 +14,7 @@ import {
 } from '../../services/lang.service';
 import { NoDataComponent } from '../../components/no-data/no-data.component';
 import { NoResultsComponent } from '../../components/no-results/no-results.component';
-import { Order } from '../../travler/travler.models';
+import { Order } from '../../traveler/traveler.models';
 import { OrdersService } from '../../services/orders.service';
 import { OrderDetailsComponent } from '../order-details/order-details.component';
 

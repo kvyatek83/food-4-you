@@ -15,7 +15,8 @@ const {
 // ------------- CONFIG ENDPOINTS -------------
 router.post("/config", verifyToken, checkRole("admin"), async (req, res) => {
   try {
-    // res.status(201).json(categories);
+    const updatedConfig = await db.updateConfiguration(req.body);
+    res.status(200).json(updatedConfig);
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -24,11 +25,8 @@ router.post("/config", verifyToken, checkRole("admin"), async (req, res) => {
 
 router.get("/config", verifyToken, checkRole("admin"), async (req, res) => {
   try {
-    const envs = {
-      printerIp: process.env.PRINTER_IP,
-    };
-
-    res.json(envs);
+    const config = await db.getConfiguration();
+    res.json(config);
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");

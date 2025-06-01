@@ -5,7 +5,7 @@ import {
   Input,
   OnInit,
 } from '@angular/core';
-import { Item } from '../travler.models';
+import { Item } from '../traveler.models';
 import { Observable } from 'rxjs';
 import { LanguageService, LanguageType } from '../../services/lang.service';
 import { CommonModule } from '@angular/common';

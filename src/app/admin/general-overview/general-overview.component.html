@@ -1,1 +1,355 @@
-<p>general-overview works!</p>
+<div
+  *ngIf="lang$ | async; let lang"
+  appLanguageDirection
+  (languageChanged)="languageChanged($event)"
+>
+  <div class="page-container" [dir]="dir">
+    <h1 class="page-title">{{ "generalOverview.title" | translate }}</h1>
+
+    <div class="section-container">
+      <!-- System Information Section -->
+      <div class="card system-info">
+        <div class="card-header">
+          <mat-icon>info</mat-icon>
+          <!-- print_error
+          print_connect -->
+          <h2>{{ "generalOverview.systemInfo.title" | translate }}</h2>
+        </div>
+
+        <div class="card-content">
+          <div class="info-row">
+            <span class="info-label"
+              >{{ "generalOverview.systemInfo.appVersion" | translate }}:</span
+            >
+            <span class="info-value">{{ systemInfo.version }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label"
+              >{{ "generalOverview.systemInfo.dbVersion" | translate }}:</span
+            >
+            <span class="info-value">{{ systemInfo.dbVersion }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label"
+              >{{ "generalOverview.systemInfo.lastUpdate" | translate }}:</span
+            >
+            <span class="info-value">{{ systemInfo.lastUpdated | date }}</span>
+          </div>
+
+          <!-- Printer Status Section -->
+          <div class="printer-status-section">
+            <mat-divider></mat-divider>
+            <h3>{{ "generalOverview.printerStatus.title" | translate }}</h3>
+            
+            <div *ngIf="printerStatusFromDb" class="printer-status">
+              <div class="status-row">
+                <mat-icon [color]="getPrinterStatusColor(printerStatusFromDb)">
+                  {{ getPrinterStatusIcon(printerStatusFromDb) }}
+                </mat-icon>
+                <span class="status-text">{{ getPrinterStatusMessage(printerStatusFromDb) }}</span>
+                <button mat-icon-button (click)="refreshPrinterStatus()" 
+                        matTooltip="{{ 'generalOverview.printerStatus.refresh' | translate }}">
+                  <mat-icon>refresh</mat-icon>
+                </button>
+              </div>
+              
+              <div class="status-details">
+                <small>IP: {{ printerStatusFromDb.ip || 'Not configured' }}</small>
+                <small>{{ "generalOverview.printerStatus.enabled" | translate }}: 
+                  {{ printerStatusFromDb.enabled ? ('generalOverview.printerStatus.yes' | translate) : ('generalOverview.printerStatus.no' | translate) }}
+                </small>
+                <small *ngIf="printerStatusFromDb.lastStatusCheck">
+                  Last check: {{ printerStatusFromDb.lastStatusCheck | date:'short' }}
+                </small>
+                <small *ngIf="printerStatusFromDb.lastPrintAttempt">
+                  Last print: {{ printerStatusFromDb.lastPrintAttempt | date:'short' }}
+                  <span [style.color]="printerStatusFromDb.lastPrintSuccess ? 'green' : 'red'">
+                    ({{ printerStatusFromDb.lastPrintSuccess ? 'Success' : 'Failed' }})
+                  </span>
+                </small>
+                <small *ngIf="printerStatusFromDb.lastPrintError" style="color: red;">
+                  Print error: {{ printerStatusFromDb.lastPrintError }}
+                </small>
+              </div>
+            </div>
+            
+            <div *ngIf="!printerStatusFromDb" class="printer-status">
+              <div class="status-row">
+                <mat-icon color="accent">help_outline</mat-icon>
+                <span class="status-text">No printer status available</span>
+                <button mat-icon-button (click)="refreshPrinterStatus()" 
+                        matTooltip="{{ 'generalOverview.printerStatus.refresh' | translate }}">
+                  <mat-icon>refresh</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Database Backup Section -->
+      <div class="card database-backup">
+        <div class="card-header">
+          <mat-icon>backup</mat-icon>
+          <h2>{{ "generalOverview.backups.title" | translate }}</h2>
+        </div>
+
+        <div class="card-content">
+          <div class="backup-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="isCreatingBackup"
+              (click)="createBackup()"
+            >
+              <mat-icon>save</mat-icon>
+              <span>{{
+                "generalOverview.backups.createBackup" | translate
+              }}</span>
+              <mat-spinner
+                *ngIf="isCreatingBackup"
+                diameter="20"
+                class="button-spinner"
+              ></mat-spinner>
+            </button>
+          </div>
+
+          <mat-form-field
+            appearance="outline"
+            *ngIf="backupList.size > 0"
+            class="backup-select"
+          >
+            <mat-label>{{
+              "generalOverview.backups.selectBackup" | translate
+            }}</mat-label>
+            <mat-select [(value)]="selectedBackup">
+              <mat-option
+                *ngFor="let backup of backupList | keyvalue"
+                [value]="backup.key"
+              >
+                {{ backup.value }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button
+            mat-button
+            color="accent"
+            [disabled]="!selectedBackup || isRestoringBackup"
+            (click)="restoreBackup()"
+            *ngIf="backupList.size > 0"
+            class="restore-button"
+          >
+            <mat-icon>restore</mat-icon>
+            <span>{{
+              "generalOverview.backups.restoreBackup" | translate
+            }}</span>
+            <mat-spinner
+              *ngIf="isRestoringBackup"
+              diameter="20"
+              class="button-spinner"
+            ></mat-spinner>
+          </button>
+
+          <div class="no-backups" *ngIf="backupList.size === 0">
+            <p>{{ "generalOverview.backups.noBackups" | translate }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Configuration Section -->
+      <div class="card configuration">
+        <div class="card-header">
+          <mat-icon>settings</mat-icon>
+          <h2>{{ "generalOverview.configuration.title" | translate }}</h2>
+        </div>
+
+        <div class="card-content">
+          <form [formGroup]="configForm" class="config-form">
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                "generalOverview.configuration.printerIp" | translate
+              }}</mat-label>
+              <input matInput type="text" formControlName="printerIp" placeholder="192.168.1.100" />
+              <mat-hint>{{ "generalOverview.configuration.printerIpHint" | translate }}</mat-hint>
+            </mat-form-field>
+
+            <div class="checkbox-options">
+              <mat-checkbox color="primary" formControlName="printerEnabled">
+                {{
+                  "generalOverview.configuration.printerEnabled" | translate
+                }}
+              </mat-checkbox>
+            </div>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                "generalOverview.configuration.taxRate" | translate
+              }}</mat-label>
+              <input matInput type="number" formControlName="taxRate" />
+              <span matSuffix>%</span>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                "generalOverview.configuration.defaultCurrency" | translate
+              }}</mat-label>
+              <mat-select formControlName="defaultCurrency">
+                <mat-option value="GTQ">GTQ (Quetzal)</mat-option>
+                <mat-option value="USD">USD (US Dollar)</mat-option>
+                <mat-option value="EUR">EUR (Euro)</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                "generalOverview.configuration.maxItemsPerOrder" | translate
+              }}</mat-label>
+              <input
+                matInput
+                type="number"
+                formControlName="maxItemsPerOrder"
+              />
+            </mat-form-field>
+
+            <div class="checkbox-options">
+              <mat-checkbox color="primary" formControlName="allowReservations">
+                {{
+                  "generalOverview.configuration.allowReservations" | translate
+                }}
+              </mat-checkbox>
+
+              <mat-checkbox
+                color="primary"
+                formControlName="notifyAdminOnNewOrder"
+              >
+                {{ "generalOverview.configuration.notifyAdmin" | translate }}
+              </mat-checkbox>
+            </div>
+
+            <div class="form-actions">
+              <button mat-button (click)="resetConfig()">
+                {{ "generalOverview.configuration.reset" | translate }}
+              </button>
+              <button mat-raised-button color="primary" (click)="saveConfig()">
+                {{ "generalOverview.configuration.save" | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Order Statistics Section -->
+      <div class="card order-statistics">
+        <div class="card-header">
+          <mat-icon>assessment</mat-icon>
+          <h2>{{ "generalOverview.statistics.title" | translate }}</h2>
+        </div>
+
+        <div class="card-content">
+          <div class="stats-period">
+            <h3>{{ "generalOverview.statistics.today" | translate }}</h3>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value">{{ orderStats.today.count }}</div>
+                <div class="stat-label">
+                  {{ "generalOverview.statistics.orders" | translate }}
+                </div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">
+                  {{ orderStats.today.revenue | currency : "GTQ" : "symbol" }}
+                </div>
+                <div class="stat-label">
+                  {{ "generalOverview.statistics.revenue" | translate }}
+                </div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">
+                  {{
+                    orderStats.today.averageValue | currency : "GTQ" : "symbol"
+                  }}
+                </div>
+                <div class="stat-label">
+                  {{ "generalOverview.statistics.average" | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="stats-period">
+            <h3>{{ "generalOverview.statistics.thisWeek" | translate }}</h3>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value">{{ orderStats.thisWeek.count }}</div>
+                <div class="stat-label">
+                  {{ "generalOverview.statistics.orders" | translate }}
+                </div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">
+                  {{
+                    orderStats.thisWeek.revenue | currency : "GTQ" : "symbol"
+                  }}
+                </div>
+                <div class="stat-label">
+                  {{ "generalOverview.statistics.revenue" | translate }}
+                </div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">
+                  {{
+                    orderStats.thisWeek.averageValue
+                      | currency : "GTQ" : "symbol"
+                  }}
+                </div>
+                <div class="stat-label">
+                  {{ "generalOverview.statistics.average" | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <div class="stats-period">
+            <h3>{{ "generalOverview.statistics.thisMonth" | translate }}</h3>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value">{{ orderStats.thisMonth.count }}</div>
+                <div class="stat-label">
+                  {{ "generalOverview.statistics.orders" | translate }}
+                </div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">
+                  {{
+                    orderStats.thisMonth.revenue | currency : "GTQ" : "symbol"
+                  }}
+                </div>
+                <div class="stat-label">
+                  {{ "generalOverview.statistics.revenue" | translate }}
+                </div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">
+                  {{
+                    orderStats.thisMonth.averageValue
+                      | currency : "GTQ" : "symbol"
+                  }}
+                </div>
+                <div class="stat-label">
+                  {{ "generalOverview.statistics.average" | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -34,7 +34,7 @@
   background: rgba(111, 82, 55, 0.8);
 }
 
-.travler-app {
+.traveler-app {
   overflow: auto;
 }
 
@@ -74,5 +74,62 @@
   }
   100% {
     transform: translateX(-200%);
+  }
+}
+
+// Test printer easter egg styles
+.test-printer-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.test-printer-content {
+  background: white;
+  color: black;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 300px;
+  width: 90%;
+  
+  h3 {
+    margin-top: 0;
+    color: #333;
+  }
+  
+  p {
+    margin-bottom: 20px;
+    color: #666;
+  }
+  
+  button {
+    margin: 5px;
+  }
+}
+
+.test-result {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  
+  &.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  &.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
   }
 }

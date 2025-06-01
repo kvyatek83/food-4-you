@@ -14,7 +14,7 @@ export class JwtInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (!req.url.includes('admin') && !req.url.includes('travler')) {
+    if (!req.url.includes('admin') && !req.url.includes('traveler')) {
       return next.handle(req);
     }
 
