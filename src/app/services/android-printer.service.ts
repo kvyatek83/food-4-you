@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ConfigurationService } from './configuration.service';
-import { KitchenReceiptService, FormattedReceiptData } from './kitchen-receipt.service';
+import { FormattedReceiptData } from './kitchen-receipt.service';
 
 // Extend Window interface for TypeScript
 declare global {
@@ -47,10 +46,7 @@ export class AndroidPrinterService {
   private _printerStatus$ = new BehaviorSubject<PrinterStatus | null>(null);
   private _authStatus$ = new BehaviorSubject<AuthStatus | null>(null);
 
-  constructor(
-    private configurationService: ConfigurationService,
-    private kitchenReceiptService: KitchenReceiptService
-  ) {
+  constructor() {
     this.detectEnvironment();
     this.setupTokenExpirationListener();
   }

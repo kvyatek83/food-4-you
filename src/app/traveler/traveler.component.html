@@ -23,6 +23,7 @@
     <img class="candle" [src]="'/candle.svg'" (click)="onCandleClick()" />
     
     <!-- Hidden test printer easter egg -->
+     <!-- TODO: i18n -->
     <div *ngIf="showTestPrinter" class="test-printer-modal" (click)="hideTestPrinter()">
       <div class="test-printer-content" (click)="$event.stopPropagation()">
         <h3>🖨️ Printer Test</h3>
