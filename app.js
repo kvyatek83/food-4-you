@@ -32,7 +32,6 @@ app.get("/*", (req, res) =>
   res.sendFile(path.join(__dirname + "/dist/food-4-you/browser/index.html"))
 );
 
-// Log environment and configuration
 logger.info("Application starting", {
   environment: process.env.NODE_ENV || 'development',
   port: process.env.PORT || 3311,
