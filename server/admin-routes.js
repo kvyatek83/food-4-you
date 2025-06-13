@@ -80,6 +80,38 @@ router.post("/restore", verifyToken, checkRole("admin"), async (req, res) => {
   }
 });
 
+// ------------- DATABASE DOWNLOAD ENDPOINTS -------------
+router.get("/download/database", verifyToken, checkRole("admin"), async (req, res) => {
+  try {
+    const dbPath = path.join(__dirname, process.env.DB_PATH || "app.db");
+    
+    if (!fs.existsSync(dbPath)) {
+      return res.status(404).json({ error: "Database file not found" });
+    }
+
+    const timestamp = new Date().toISOString().split('T')[0]; 
+    const filename = `app-${timestamp}.db`;
+    
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Length', fs.statSync(dbPath).size);
+    
+    const fileStream = fs.createReadStream(dbPath);
+    fileStream.pipe(res);
+    
+    fileStream.on('error', (error) => {
+      console.error("Error downloading database:", error);
+      if (!res.headersSent) {
+        res.status(500).json({ error: "Failed to download database" });
+      }
+    });
+
+  } catch (error) {
+    console.error("Error downloading database:", error);
+    res.status(500).json({ error: "Failed to download database" });
+  }
+});
+
 // ------------- CATEGORY ENDPOINTS -------------
 
 router.post(

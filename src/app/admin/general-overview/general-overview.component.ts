@@ -13,6 +13,8 @@ import { BackupService } from '../../services/backup.service';
 import { ConfigurationService } from '../../services/configuration.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-general-overview',
@@ -68,13 +70,16 @@ export class GeneralOverviewComponent implements OnInit {
   // For backup operations
   isCreatingBackup = false;
   isRestoringBackup = false;
+  isDownloadingDatabase = false;
   selectedBackup: string | null = null;
 
   constructor(
     private backupService: BackupService,
     private languageService: LanguageService,
     private fb: FormBuilder,
-    private configurationService: ConfigurationService
+    private configurationService: ConfigurationService,
+    private http: HttpClient,
+    private authService: AuthService
   ) {
     this.lang$ = this.languageService.currentLanguage$;
 
@@ -221,5 +226,46 @@ export class GeneralOverviewComponent implements OnInit {
     if (status.available === true) return 'Printer ready';
     if (status.available === false) return status.lastError || 'Printer not available';
     return 'Status unknown';
+  }
+
+  downloadDatabase() {
+    this.isDownloadingDatabase = true;
+    
+    const token = this.authService.getToken();
+    
+    if (!token) {
+      console.error('No authentication token found');
+      this.isDownloadingDatabase = false;
+      return;
+    }
+    
+    this.http.get('/api/admin/download/database', {
+      headers: {
+        'Authorization': token
+      },
+      responseType: 'blob'
+    }).pipe(take(1)).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        
+        const today = new Date().toISOString().split('T')[0];
+        a.download = `app-${today}.db`;
+        
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        this.isDownloadingDatabase = false;
+        console.log('Database downloaded successfully');
+      },
+      error: (error) => {
+        console.error('Error downloading database:', error);
+        this.isDownloadingDatabase = false;
+        // You might want to show a toast/snackbar error message here
+      }
+    });
   }
 }

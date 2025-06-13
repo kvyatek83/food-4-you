@@ -39,6 +39,7 @@
           </div>
 
           <!-- Printer Status Section -->
+           <!-- TODO: i18n -->
           <div class="printer-status-section">
             <mat-divider></mat-divider>
             <h3>{{ "generalOverview.printerStatus.title" | translate }}</h3>
@@ -110,6 +111,23 @@
               }}</span>
               <mat-spinner
                 *ngIf="isCreatingBackup"
+                diameter="20"
+                class="button-spinner"
+              ></mat-spinner>
+            </button>
+
+            <!-- TODO: i18n -->
+            <button
+              mat-raised-button
+              color="accent"
+              [disabled]="isDownloadingDatabase"
+              (click)="downloadDatabase()"
+              style="margin-left: 10px;"
+            >
+              <mat-icon>download</mat-icon>
+              <span>Download Database</span>
+              <mat-spinner
+                *ngIf="isDownloadingDatabase"
                 diameter="20"
                 class="button-spinner"
               ></mat-spinner>
