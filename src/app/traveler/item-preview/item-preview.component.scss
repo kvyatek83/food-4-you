@@ -69,3 +69,10 @@
   width: 30px;
   font-size: 30px;
 }
+
+.mat-expansion-panel-header,
+.mat-expansion-panel-header:hover,
+.mat-expansion-panel-header:focus {
+    background: transparent !important;
+    outline: none !important; /* if you want to remove focus outline */
+}

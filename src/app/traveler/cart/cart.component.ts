@@ -112,6 +112,12 @@ export class CartComponent implements OnInit {
     });
   }
 
+  calculateTotalAmount(): number {
+    return this.cartItems.reduce((sum, cartItem) => {
+      return sum + this.calculateCartItemTotal(cartItem);
+    }, 0);
+  }
+
   private createDialogItems(): any[] {
     return this.cartItems.map(cartItem => ({
       itemName: cartItem.item.enName, // Use English name for dialog
@@ -127,11 +133,6 @@ export class CartComponent implements OnInit {
     return parseFloat(costString.replace(' GTQ', ''));
   }
 
-  private calculateTotalAmount(): number {
-    return this.cartItems.reduce((sum, cartItem) => {
-      return sum + this.calculateCartItemTotal(cartItem);
-    }, 0);
-  }
 
   private createAndProcessOrder(orderDetails: OrderDialogResult, totalAmount: number): void {
     this.isProcessingOrder = true;
