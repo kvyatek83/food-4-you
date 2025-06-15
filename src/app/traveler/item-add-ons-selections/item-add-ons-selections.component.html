@@ -6,14 +6,17 @@
   <div class="title">
     <h1>{{ "addOns.title" | translate }}</h1>
     <h3 class="sub-title">
-      {{
-        "addOns.subTitle" | translate : { amountOfAddOns: freeAvailableAddOns }
-      }}
+      <ng-container *ngIf="freeAvailableAddOns === 0; else freeAddOnsMsg">
+        {{ 'addOns.noFree' | translate }}
+      </ng-container>
+      <ng-template #freeAddOnsMsg>
+        {{ "addOns.subTitle" | translate : { amountOfAddOns: freeAvailableAddOns } }}
+      </ng-template>
     </h3>
   </div>
   <div mat-dialog-content>
     <mat-list>
-      <mat-list-item *ngFor="let addOn of availableAddOns">
+      <mat-list-item *ngFor="let addOn of availableAddOns; let i = index">
         <mat-checkbox
           [disableRipple]="true"
           [(ngModel)]="addOn.selected"
@@ -23,17 +26,9 @@
             <span class="add-on-name">{{
               addOn | propertiesTranslation : lang : "Name"
             }}</span>
-            <span
-              *ngIf="
-                freeAvailableAddOns &&
-                pricePerAddOn &&
-                !addOn.selected &&
-                selectedAddOnUuids.length >= freeAvailableAddOns
-              "
-              class="add-on-name"
-            >
-              - {{ pricePerAddOn }} GTQ</span
-            >
+            <span *ngIf="shouldShowPrice(addOn, i)" class="add-on-name">
+              - {{ pricePerAddOn }} GTQ
+            </span>
           </div>
         </mat-checkbox>
       </mat-list-item>
