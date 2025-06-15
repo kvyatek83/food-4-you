@@ -8,23 +8,29 @@ Secret Access Key: ${aws_iam_access_key.f2u_user_access_key.secret}
 EOF
 }
 
+# TODO: update traveler env vars with tf-generated 
 resource "local_sensitive_file" "env_file" {
   filename        = "../.env"
   file_permission = "0600"
   content         = <<EOF
-JWT_SECRET=nesRUIpghw37459tgwjU95o4
-EXPIRES_IN=24h
-PORT=3311
 ADMIN_NAME=${var.server_admin_name}
 ADMIN_PASSWORD=${var.server_admin_password}
 ADMIN_ROLE=${var.server_admin_role}
-RESET_DB=${var.reset_db}
-DB_PATH=app.db
-AWS_REGION=${var.aws_region}
+ADMIN_EXPIRE_IN=24h
 AWS_ACCESS_KEY_ID=${aws_iam_access_key.f2u_user_access_key.id}
-AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.f2u_user_access_key.secret}
+AWS_REGION=${var.aws_region}
 AWS_S3_BUCKET="${aws_s3_bucket.f4u_bucket.arn}"
+AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.f2u_user_access_key.secret}
+DB_PATH=app.db
+JWT_SECRET=nesRUIpghw37459tgwjU95o4
+PORT=3311
 PUBLIC_ADDRESS=${var.website_address}
+PRINTER_IP=${var.printer_ip}
+RESET_DB=${var.reset_db}
+TRAVELER_EXPIRES_IN=7d
+TRAVELER_NAME=traveler
+TRAVELER_PASSWORD=12345
+TRAVELER_ROLE=traveler
 EOF
 }
 
