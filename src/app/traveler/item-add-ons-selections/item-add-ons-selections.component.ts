@@ -58,22 +58,32 @@ export class ItemAddOnsSelectionsComponent {
       }));
   }
 
-  onCheckboxChange(addOn: ModalAddOn) {
-    if (addOn.selected) {
-      this.selectedAddOnUuids.push(addOn.uuid);
-      // TODO: display current cost
-      // if (
-      //   this.selectedFreeAddOnUuids.length !== this.freeAvailableAddOns &&
-      //   !this.selectedFreeAddOnUuids.includes(addOn.uuid)
-      // ) {
-      //   this.selectedFreeAddOnUuids.push(addOn.uuid);
-      // }
-    } else {
-      const index = this.selectedAddOnUuids.indexOf(addOn.uuid);
-      if (index >= 0) {
-        this.selectedAddOnUuids.splice(index, 1);
-      }
+  shouldShowPrice(addOn: ModalAddOn, index: number): boolean {
+    // Show price if pricePerAddOn is defined (even if 0)
+    if (this.pricePerAddOn == null) return false;
+    // If no free add-ons, always show price
+    if (this.freeAvailableAddOns === 0) return true;
+    if (this.freeAvailableAddOns == null) return false;
+    // Get all selected add-ons
+    const selected = this.availableAddOns.filter(addOn => addOn.selected);
+    // If there are more selected than free, show price for the ones above the free limit
+    if (selected.length > this.freeAvailableAddOns) {
+      // Show price for this add-on if it's selected and its index is after the free ones
+      const selectedIndexes = this.availableAddOns
+        .map((addOn, index) => addOn.selected ? index : -1)
+        .filter(i => i !== -1);
+      const paidIndexes = selectedIndexes.slice(this.freeAvailableAddOns);
+      if (paidIndexes.includes(index)) return true;
     }
+    // If not selected, and all free are taken, show price
+    if (!addOn.selected && selected.length >= this.freeAvailableAddOns) {
+      return true;
+    }
+    return false;
+  }
+
+  onCheckboxChange(addOn: ModalAddOn) {
+    this.selectedAddOnUuids = this.availableAddOns.filter(a => a.selected).map(a => a.uuid);
   }
 
   onSave() {

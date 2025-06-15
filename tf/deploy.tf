@@ -3,7 +3,7 @@ locals {
 }
 
 resource "null_resource" "compress_and_upload" {
-  depends_on = [aws_instance.f4u_app_server, local_file.caddy_reverse_proxy_file, local_file.caddy_service_file, local_file.nodejs_service_file]
+  depends_on = [aws_instance.f4u_app_server, local_file.caddy_reverse_proxy_file, local_file.caddy_service_file, local_file.nodejs_service_file, local_file.env_file]
 
   # compresses the local source directory while ignoring specified directories.
   provisioner "local-exec" {
@@ -35,10 +35,24 @@ resource "null_resource" "compress_and_upload" {
     }
   }
 
+  # Upload production environment file
+  provisioner "file" {
+    source      = ".env.production"
+    destination = "/home/${var.instance_user}/.env"
+
+    connection {
+      type        = "ssh"
+      host        = aws_instance.f4u_app_server.public_ip
+      user        = var.instance_user
+      private_key = tls_private_key.ec2_key.private_key_pem
+    }
+  }
+
   # Extract
   provisioner "remote-exec" {
     inline = [
       "mkdir -p /home/${var.instance_user}/app && tar -xzf /home/${var.instance_user}/${local.src_archive} -C /home/${var.instance_user}/app",
+      "cp /home/${var.instance_user}/.env /home/${var.instance_user}/app/.env"
     ]
 
     connection {

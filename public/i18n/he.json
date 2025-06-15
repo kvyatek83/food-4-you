@@ -288,6 +288,7 @@
   "addOns": {
     "title": "בבקשה לסמן תוספות רצויות",
     "subTitle": "באפשרותך לבחור {{amountOfAddOns}} בחינם",
+    "noFree": "לא ניתן לבחור תוספות בחינם",
     "add": "שמירה",
     "close": "סגור"
   },
@@ -369,5 +370,14 @@
       "orderPrinted": "הזמנה מס' {{orderNumber}} הודפסה בהצלחה למטבח!",
       "orderPlaced": "הזמנה מס' {{orderNumber}} בוצעה בהצלחה!"
     }
+  },
+  "printerTest": {
+    "title": "בדיקת מדפסת",
+    "description": "לחץ כדי לבדוק את חיבור המדפסת",
+    "testButton": "בדוק מדפסת",
+    "close": "סגור",
+    "notAndroid": "לא ניתן לבדוק מדפסת, נסה בטאבלט",
+    "notAuthenticated": "לא מחובר - יש להתחבר קודם",
+    "testFailed": "הבדיקה נכשלה: {{error}}"
   }
 }

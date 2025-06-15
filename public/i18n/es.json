@@ -290,6 +290,7 @@
   "addOns": {
     "title": "Por favor, verifica lo que deseas",
     "subTitle": "Puedes elegir {{amountOfAddOns}} gratis",
+    "noFree": "No puedes elegir ninguna gratis",
     "add": "Guardar y cerrar",
     "close": "Cerrar"
   },
@@ -371,5 +372,14 @@
       "orderPrinted": "¡Pedido #{{orderNumber}} impreso exitosamente en la cocina!",
       "orderPlaced": "¡Pedido #{{orderNumber}} realizado exitosamente!"
     }
+  },
+  "printerTest": {
+    "title": "Prueba de impresora",
+    "description": "Haz clic para probar la conexión de la impresora",
+    "testButton": "Probar impresora",
+    "close": "Cerrar",
+    "notAndroid": "No se puede probar la impresora, por favor intenta en la tablet",
+    "notAuthenticated": "No autenticado - por favor inicia sesión primero",
+    "testFailed": "Prueba fallida: {{error}}"
   }
 }

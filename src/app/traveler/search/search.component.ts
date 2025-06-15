@@ -114,8 +114,13 @@ export class SearchComponent implements OnInit {
   scrollToResult(uuid: string) {
     setTimeout(() => {
       const element = document.getElementById(uuid);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+      const container = document.querySelector('.menu-wrapper');
+      if (element && container) {
+        const yOffset = -70; // Adjust this value as needed for your header/category label height
+        const elementTop = element.getBoundingClientRect().top;
+        const containerTop = (container as HTMLElement).getBoundingClientRect().top;
+        const scrollPosition = (container as HTMLElement).scrollTop + (elementTop - containerTop) + yOffset;
+        (container as HTMLElement).scrollTo({ top: scrollPosition, behavior: 'smooth' });
 
         element.classList.add('heartbeat');
         setTimeout(() => {
