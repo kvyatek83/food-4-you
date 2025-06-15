@@ -1,0 +1,49 @@
+.printer-test-dialog-content {
+  background: white;
+  color: black;
+  padding: 32px 28px 24px 28px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 350px;
+  width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+
+  h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+  p {
+    margin-bottom: 24px;
+    color: #666;
+    font-size: 1.1rem;
+  }
+  button {
+    margin: 8px 4px;
+    min-width: 120px;
+  }
+  .test-result {
+    margin-top: 24px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: 2px solid transparent;
+    background: #f8f9fa;
+    display: inline-block;
+    &.success {
+      color: #155724;
+      background: #d4edda;
+      border-color: #28a745;
+      box-shadow: 0 0 0 2px #28a74533;
+    }
+    &.error {
+      color: #721c24;
+      background: #f8d7da;
+      border-color: #dc3545;
+      box-shadow: 0 0 0 2px #dc354533;
+    }
+  }
+} 

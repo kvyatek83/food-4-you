@@ -1,0 +1,13 @@
+<div class="printer-test-dialog-content">
+  <h3>🖨️ {{ 'printerTest.title' | translate }}</h3>
+  <p>{{ 'printerTest.description' | translate }}</p>
+  <button mat-raised-button color="primary" (click)="testPrinter()" [disabled]="isTestingPrinter">
+    <mat-icon>print</mat-icon>
+    {{ 'printerTest.testButton' | translate }}
+    <mat-spinner *ngIf="isTestingPrinter" diameter="20" style="margin-left: 8px;"></mat-spinner>
+  </button>
+  <button mat-button (click)="close()">{{ 'printerTest.close' | translate }}</button>
+  <div *ngIf="testResult" class="test-result" [ngClass]="{'success': testResult.success, 'error': !testResult.success}">
+    {{ testResult.message }}
+  </div>
+</div> 
