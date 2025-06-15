@@ -21,23 +21,5 @@
       </span>
     </div>
     <img class="candle" [src]="'/candle.svg'" (click)="onCandleClick()" />
-    
-    <!-- Hidden test printer easter egg -->
-     <!-- TODO: i18n -->
-    <div *ngIf="showTestPrinter" class="test-printer-modal" (click)="hideTestPrinter()">
-      <div class="test-printer-content" (click)="$event.stopPropagation()">
-        <h3>🖨️ Printer Test</h3>
-        <p>Click to test the printer connection</p>
-        <button mat-raised-button color="primary" (click)="testPrinter()" [disabled]="isTestingPrinter">
-          <mat-icon>print</mat-icon>
-          Test Printer
-          <mat-spinner *ngIf="isTestingPrinter" diameter="20" style="margin-left: 8px;"></mat-spinner>
-        </button>
-        <button mat-button (click)="hideTestPrinter()">Close</button>
-        <div *ngIf="testResult" class="test-result" [ngClass]="{'success': testResult.success, 'error': !testResult.success}">
-          {{ testResult.message }}
-        </div>
-      </div>
-    </div>
   </div>
 </div>

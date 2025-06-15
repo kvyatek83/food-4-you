@@ -369,5 +369,14 @@
       "orderPrinted": "Order #{{orderNumber}} printed successfully to kitchen!",
       "orderPlaced": "Order #{{orderNumber}} placed successfully!"
     }
+  },
+  "printerTest": {
+    "title": "Printer Test",
+    "description": "Click to test the printer connection",
+    "testButton": "Test Printer",
+    "close": "Close",
+    "notAndroid": "Can't test printer, please try on the tablet",
+    "notAuthenticated": "Not authenticated - please log in first",
+    "testFailed": "Test failed: {{error}}"
   }
 }

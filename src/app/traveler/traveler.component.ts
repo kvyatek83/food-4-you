@@ -6,6 +6,8 @@ import { LanguageDirectionDirective } from '../directives/language-direction.dir
 import { HeaderActionsComponent } from './header-actions/header-actions.component';
 import { CommonModule } from '@angular/common';
 import { AndroidPrinterService } from '../services/android-printer.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PrinterTestDialogComponent } from './printer-test-dialog/printer-test-dialog.component';
 
 // TODO: need to test
 @Component({
@@ -29,22 +31,27 @@ export class TravelerComponent {
   isTestingPrinter = false;
   testResult: { success: boolean; message: string } | null = null;
 
-  constructor(private androidPrinterService: AndroidPrinterService) {}
+  constructor(private androidPrinterService: AndroidPrinterService, private dialog: MatDialog) {}
 
   onCandleClick() {
     this.candleClickCount++;
-    
     if (this.candleClickCount >= this.CLICKS_TO_ACTIVATE) {
-      this.showTestPrinter = true;
-      this.candleClickCount = 0; // Reset counter
+      this.openPrinterTestDialog();
+      this.candleClickCount = 0;
     }
-    
-    // Reset counter after 3 seconds if not enough clicks
     setTimeout(() => {
       if (this.candleClickCount < this.CLICKS_TO_ACTIVATE) {
         this.candleClickCount = 0;
       }
     }, 3000);
+  }
+
+  openPrinterTestDialog() {
+    this.dialog.open(PrinterTestDialogComponent, {
+      width: '350px',
+      panelClass: 'printer-test-dialog',
+      disableClose: false
+    });
   }
 
   hideTestPrinter() {
@@ -56,7 +63,7 @@ export class TravelerComponent {
     if (!this.androidPrinterService.isAndroidEnvironment) {
       this.testResult = {
         success: false,
-        message: 'Not running in Android environment'
+        message: "Can't test printer, please try on the tablet"
       };
       return;
     }
