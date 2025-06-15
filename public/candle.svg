@@ -1,14 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240">
-  <!-- Animated Flame -->
-  <path d="M100 40 Q85 25 100 10 Q115 25 100 40">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 150">
+  <!-- Outer rim ellipse (3D effect) -->
+  <ellipse cx="100" cy="55" rx="40" ry="13" fill="none" stroke="white" stroke-width="4"/>
+  <!-- Inner wax ellipse -->
+  <ellipse cx="100" cy="55" rx="34" ry="9" fill="white" fill-opacity="0.7" stroke="none"/>
+
+  <!-- Wick -->
+  <rect x="97" y="30" width="6" height="25" rx="2" fill="#333"/>
+
+  <!-- Animated Flame (moved down by 15 units) -->
+  <path d="M100 45 Q85 30 100 15 Q115 30 100 45">
     <animate
       attributeName="d"
       dur="1.5s"
       repeatCount="indefinite"
       values="
-        M100 40 Q85 25 100 10 Q115 25 100 40;
-        M100 40 Q80 20 100 5 Q120 20 100 40;
-        M100 40 Q85 25 100 10 Q115 25 100 40"
+        M100 45 Q85 30 100 15 Q115 30 100 45;
+        M100 45 Q80 25 100 10 Q120 25 100 45;
+        M100 45 Q85 30 100 15 Q115 30 100 45"
     />
     <animate
       attributeName="fill"
@@ -17,19 +25,18 @@
       values="#ff9933;#ffcc00;#ff9933"
     />
   </path>
-  
-  <!-- Candle Body (now with curved path for cylindrical look) -->
-  <path d="M60,40 
-           A40,10 0 0,1 140,40 
-           L140,200 
-           A40,10 0 0,1 60,200 
-           Z" 
+
+  <!-- Candle Body (with 3D top) -->
+  <path d="M60,55 
+           L60,125 
+           A40,10 0 0,0 140,125 
+           L140,55" 
         fill="transparent" 
         stroke="white" 
         stroke-width="4"/>
   
-  <!-- Star of David (adjusted position and size) -->
-  <g transform="translate(100,120) scale(1.2)">
+  <!-- Star of David (centered vertically in candle body) -->
+  <g transform="translate(100,100) scale(1.2)">
     <!-- First triangle -->
     <path d="M0,-20 L17,10 L-17,10 Z" 
           fill="none" 
