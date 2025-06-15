@@ -289,7 +289,8 @@
     "title": "Please check what you wish",
     "subTitle": "You can choose {{amountOfAddOns}} for free",
     "add": "Save and close",
-    "close": "close"
+    "close": "close",
+    "noFree": "You can't choose any for free"
   },
   "itemPreview": {
     "title": "Preview {{itemName}} summary",

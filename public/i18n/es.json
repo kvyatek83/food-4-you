@@ -290,6 +290,7 @@
   "addOns": {
     "title": "Por favor, verifica lo que deseas",
     "subTitle": "Puedes elegir {{amountOfAddOns}} gratis",
+    "noFree": "No puedes elegir ninguna gratis",
     "add": "Guardar y cerrar",
     "close": "Cerrar"
   },
