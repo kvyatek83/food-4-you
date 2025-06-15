@@ -1,4 +1,3 @@
-
 # Outputing SSH key and S3 User AWS Credentials into local files
 resource "local_sensitive_file" "f2u_user_credentials" {
   filename = "s3-user-cred"
@@ -8,24 +7,38 @@ Secret Access Key: ${aws_iam_access_key.f2u_user_access_key.secret}
 EOF
 }
 
-resource "local_sensitive_file" "env_file" {
-  filename        = "../.env"
-  file_permission = "0600"
-  content         = <<EOF
-JWT_SECRET=nesRUIpghw37459tgwjU95o4
-EXPIRES_IN=24h
-PORT=3311
-ADMIN_NAME=${var.server_admin_name}
-ADMIN_PASSWORD=${var.server_admin_password}
-ADMIN_ROLE=${var.server_admin_role}
-RESET_DB=${var.reset_db}
-DB_PATH=app.db
-AWS_REGION=${var.aws_region}
-AWS_ACCESS_KEY_ID=${aws_iam_access_key.f2u_user_access_key.id}
-AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.f2u_user_access_key.secret}
-AWS_S3_BUCKET="${aws_s3_bucket.f4u_bucket.arn}"
-PUBLIC_ADDRESS=${var.website_address}
-EOF
+# Environment variables for the Node.js application
+locals {
+  env_vars = {
+    NODE_ENV = "production"
+    PORT = var.api_port
+    AWS_REGION = var.aws_region
+    AWS_ACCESS_KEY_ID = aws_iam_access_key.f2u_user_access_key.id
+    AWS_SECRET_ACCESS_KEY = aws_iam_access_key.f2u_user_access_key.secret
+    AWS_S3_BUCKET = aws_s3_bucket.f4u_bucket.arn
+    JWT_SECRET = "nesRUIpghw37459tgwjU95o4"
+    EXPIRES_IN = "24h"
+    ADMIN_NAME = var.server_admin_name
+    ADMIN_USERNAME = var.server_admin_name
+    ADMIN_PASSWORD = var.server_admin_password
+    ADMIN_ROLE = var.server_admin_role
+    RESET_DB = var.reset_db
+    DB_PATH = "app.db"
+    PUBLIC_ADDRESS = var.website_address
+    WEBVIEW_URL = "https://${var.website_address}"
+    BASE_URL = "https://${var.website_address}"
+    PRINTER_IP = "192.168.68.51"
+    BACKUP_TIME = "0 0 * * *"
+    BACKUP_TIMEZONE = "America/New_York"
+  }
+}
+
+# Create environment file for the application
+resource "local_file" "env_file" {
+  content = join("\n", [
+    for key, value in local.env_vars : "${key}=${value}"
+  ])
+  filename = "${path.module}/.env.production"
 }
 
 resource "local_sensitive_file" "ec2_user_ssh_key" {
