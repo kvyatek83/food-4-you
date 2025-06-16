@@ -7,7 +7,8 @@ resource "null_resource" "compress_and_upload" {
 
   # compresses the local source directory while ignoring specified directories.
   provisioner "local-exec" {
-    command = "tar -zcf ${local.src_archive} --exclude='tf' --exclude='.git' --exclude='.angular' --exclude='.vscode' --exclude='node_modules' -C ../ ."
+    # command = "tar -zcf ${local.src_archive} --exclude='tf' --exclude='.git' --exclude='.angular' --exclude='.vscode' --exclude='node_modules' -C ../ ."
+    command = "tar -zcf ${local.src_archive} --exclude='tf' --exclude='.angular' --exclude='.vscode' --exclude='node_modules' -C ../ ."
   }
 
   # uploads the tar.gz file to the EC2 instance.
