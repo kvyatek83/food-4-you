@@ -1,4 +1,3 @@
-
 # Outputing SSH key and S3 User AWS Credentials into local files
 resource "local_sensitive_file" "f2u_user_credentials" {
   filename = "s3-user-cred"
@@ -19,7 +18,7 @@ ADMIN_ROLE=${var.server_admin_role}
 ADMIN_EXPIRE_IN=24h
 AWS_ACCESS_KEY_ID=${aws_iam_access_key.f2u_user_access_key.id}
 AWS_REGION=${var.aws_region}
-AWS_S3_BUCKET="${aws_s3_bucket.f4u_bucket.arn}"
+AWS_S3_BUCKET="${aws_s3_bucket.f4u_bucket.bucket}"
 AWS_SECRET_ACCESS_KEY=${aws_iam_access_key.f2u_user_access_key.secret}
 DB_PATH=app.db
 JWT_SECRET=nesRUIpghw37459tgwjU95o4
@@ -31,6 +30,8 @@ TRAVELER_EXPIRES_IN=7d
 TRAVELER_NAME=traveler
 TRAVELER_PASSWORD=12345
 TRAVELER_ROLE=traveler
+BACKUP_TIME=0 0 * * *
+BACKUP_TIMEZONE=America/Sao_Paulo
 EOF
 }
 

@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "start": "node createUsers.js && node createTables.js && node app.js",
+    "start": "node createUsers.js && node app.js",
+    "start:dev": "node createUsers.js && node createTables.js && node app.js",
     "start:front": "ng serve --host 0.0.0.0 --port 12345 --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
