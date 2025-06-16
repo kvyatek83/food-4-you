@@ -15,7 +15,7 @@ variable "instance_ami" {
 variable "instance_name" {
   description = "The name for the EC2 instance"
   type        = string
-  default     = "amsalem-food-4-you-ec2" # change this 
+  default     = "chabad-food-4-you-ec2" # change this 
 }
 
 variable "instance_user" {
@@ -27,13 +27,13 @@ variable "instance_user" {
 variable "bucket_name" {
   description = "The name for the S3 bucket"
   type        = string
-  default     = "amsalem-food-4-you-bucket" # change this 
+  default     = "food-4-u-bucket" # change this 
 }
 
 variable "billing_alert_email" {
   description = "The e-mail address for receiving billing alerts"
   type        = string
-  default     = "theamsalem@gmail.com" # change this 
+  default     = "kvyatek83@gmail.com" # change this 
 }
 
 ######### App Server ###########
@@ -69,6 +69,14 @@ variable "reset_db" {
   type        = bool
   default     = true 
 }
+
+variable "printer_ip" {
+  description = "The IP of the printer"
+  type        = string
+  sensitive   = true
+  default     = "192.168.68.51" # change this 
+}
+
 
 ######### Proxy ###########
 
