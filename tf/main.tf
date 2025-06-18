@@ -63,22 +63,22 @@ resource "aws_security_group" "f4u_instance_sg" {
 }
 
 # Create IAM role for EC2 instance
-resource "aws_iam_role" "ec2_role" {
-  name = "food-4-you-ec2-role"
+# resource "aws_iam_role" "ec2_role" {
+#   name = "food-4-you-ec2-role"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Action = "sts:AssumeRole"
+#         Effect = "Allow"
+#         Principal = {
+#           Service = "ec2.amazonaws.com"
+#         }
+#       }
+#     ]
+#   })
+# }
 
 # Create CloudWatch Log Group with retention
 resource "aws_cloudwatch_log_group" "app_logs" {
@@ -91,41 +91,41 @@ resource "aws_cloudwatch_log_group" "app_logs" {
   }
 }
 
-# Create IAM policy for CloudWatch Logs
-resource "aws_iam_policy" "cloudwatch_policy" {
-  name        = "food-4-you-cloudwatch-policy"
-  description = "Policy for CloudWatch Logs access"
+# # Create IAM policy for CloudWatch Logs
+# resource "aws_iam_policy" "cloudwatch_policy" {
+#   name        = "food-4-you-cloudwatch-policy"
+#   description = "Policy for CloudWatch Logs access"
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "logs:DescribeLogStreams"
-        ]
-        Resource = [
-          "${aws_cloudwatch_log_group.app_logs.arn}:*"
-        ]
-      }
-    ]
-  })
-}
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "logs:CreateLogGroup",
+#           "logs:CreateLogStream",
+#           "logs:PutLogEvents",
+#           "logs:DescribeLogStreams"
+#         ]
+#         Resource = [
+#           "${aws_cloudwatch_log_group.app_logs.arn}:*"
+#         ]
+#       }
+#     ]
+#   })
+# }
 
 # Attach CloudWatch policy to EC2 role
-resource "aws_iam_role_policy_attachment" "cloudwatch_attachment" {
-  role       = aws_iam_role.ec2_role.name
-  policy_arn = aws_iam_policy.cloudwatch_policy.arn
-}
+# resource "aws_iam_role_policy_attachment" "cloudwatch_attachment" {
+#   role       = aws_iam_role.ec2_role.name
+#   policy_arn = aws_iam_policy.cloudwatch_policy.arn
+# }
 
-# Create instance profile
-resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "food-4-you-ec2-profile"
-  role = aws_iam_role.ec2_role.name
-}
+# # Create instance profile
+# resource "aws_iam_instance_profile" "ec2_profile" {
+#   name = "food-4-you-ec2-profile"
+#   role = aws_iam_role.ec2_role.name
+# }
 
 # Creating EC2 instance with 30GB disk (maximum size for free-tier)
 resource "aws_instance" "f4u_app_server" {
@@ -133,7 +133,7 @@ resource "aws_instance" "f4u_app_server" {
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.f4u_ssh_key.key_name
   vpc_security_group_ids = [aws_security_group.f4u_instance_sg.id]
-  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
+  # iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
 
   root_block_device {
     delete_on_termination = true
@@ -189,11 +189,11 @@ resource "aws_s3_bucket_acl" "f4u_bucket_acl" {
 
 
 # Creating a user for the S3 bucket with minimal R/W permissions
-resource "aws_iam_user" "f4u_s3_user" {
-  name = "f4u_s3_user"
+resource "aws_iam_user" "f4u_user" {
+  name = "f4u_user"
 }
 
-data "aws_iam_policy_document" "s3_policy_doc" {
+data "aws_iam_policy_document" "user_profile_policy_doc" {
   statement {
     sid    = "ListBucket"
     effect = "Allow"
@@ -210,51 +210,66 @@ data "aws_iam_policy_document" "s3_policy_doc" {
     effect = "Allow"
     actions = [
       "s3:PutObject",
-      "s3:DeleteObject"
+      "s3:DeleteObject",
+      "s3:GetObject"
     ]
     resources = [
       "${aws_s3_bucket.f4u_bucket.arn}/*"
     ]
   }
+
+  statement {
+    sid    = "f4uAppLogWriter"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:DescribeLogStreams"
+    ]
+    resources = [
+      "${aws_cloudwatch_log_group.app_logs.arn}:*"
+    ]
+  }
 }
 
-resource "aws_iam_policy" "f4u_s3_policy" {
-  name   = "f4u_s3_policy"
-  policy = data.aws_iam_policy_document.s3_policy_doc.json
+resource "aws_iam_policy" "f4u_profile_policy" {
+  name   = "f4u_profile_policy"
+  policy = data.aws_iam_policy_document.user_profile_policy_doc.json
 }
 
 resource "aws_iam_user_policy_attachment" "attach_policy" {
-  user       = aws_iam_user.f4u_s3_user.name
-  policy_arn = aws_iam_policy.f4u_s3_policy.arn
+  user       = aws_iam_user.f4u_user.name
+  policy_arn = aws_iam_policy.f4u_profile_policy.arn
 }
 
 resource "aws_iam_access_key" "f2u_user_access_key" {
-  user = aws_iam_user.f4u_s3_user.name
+  user = aws_iam_user.f4u_user.name
 }
 
-resource "aws_s3_bucket_policy" "public_read" {
-  bucket = aws_s3_bucket.f4u_bucket.id
+# resource "aws_s3_bucket_policy" "public_read" {
+#   bucket = aws_s3_bucket.f4u_bucket.id
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "AllowPublicRead"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource  = "${aws_s3_bucket.f4u_bucket.arn}/*"
-      }
-    ]
-  })
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Sid       = "AllowPublicRead"
+#         Effect    = "Allow"
+#         Principal = "*"
+#         Action    = "s3:GetObject"
+#         Resource  = "${aws_s3_bucket.f4u_bucket.arn}/*"
+#       }
+#     ]
+#   })
 
-  depends_on = [aws_s3_bucket_public_access_block.allow_public_policy]
-}
+#   depends_on = [aws_s3_bucket_public_access_block.allow_public_policy]
+# }
 
-resource "aws_s3_bucket_public_access_block" "allow_public_policy" {
-  bucket                  = aws_s3_bucket.f4u_bucket.id
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
+# resource "aws_s3_bucket_public_access_block" "allow_public_policy" {
+#   bucket                  = aws_s3_bucket.f4u_bucket.id
+#   block_public_acls       = false
+#   block_public_policy     = false
+#   ignore_public_acls      = false
+#   restrict_public_buckets = false
+# }

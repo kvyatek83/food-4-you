@@ -5,16 +5,10 @@ locals {
 resource "null_resource" "compress_and_upload" {
   depends_on = [aws_instance.f4u_app_server, local_file.caddy_reverse_proxy_file, local_file.caddy_service_file, local_file.nodejs_service_file]
 
-
-  # 1. Build the Angular frontend locally
-  provisioner "local-exec" {
-    command = "cd ../ && npm install && npm run build"
-  }
-
-  # 2. compresses the local source directory while ignoring specified directories.
+  # compresses the local source directory while ignoring specified directories.
   provisioner "local-exec" {
     # command = "tar -zcf ${local.src_archive} --exclude='tf' --exclude='.git' --exclude='.angular' --exclude='.vscode' --exclude='node_modules' -C ../ ."
-    command = "tar -zcf ${local.src_archive} --exclude='tf' --exclude='server/app.db' --exclude='.angular' --exclude='.vscode' --exclude='node_modules' -C ../ ."
+    command = "tar -zcf ${local.src_archive} --exclude='tf' --exclude='.angular' --exclude='.vscode' --exclude='node_modules' -C ../ ."
   }
 
   # uploads the tar.gz file to the EC2 instance.
