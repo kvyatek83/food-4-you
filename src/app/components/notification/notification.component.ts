@@ -128,7 +128,7 @@ export class NotificationComponent implements OnDestroy {
             this.showNotification = 'hide';
             this.notificationsService.setNotification(null);
             setTimeout(() => (this.show = false), 1000);
-          }, 500000);
+          }, 5000);
         }
       });
   }

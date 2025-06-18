@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Observable, take } from 'rxjs';
+import { catchError, Observable, of, take } from 'rxjs';
 import { MaterialModule } from '../../material.module';
 import {
   LanguageDirection,
@@ -19,6 +19,7 @@ import { Category } from '../../traveler/traveler.models';
 import { LoadFileComponent } from '../../components/load-file/load-file.component';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { TranslateModule } from '@ngx-translate/core';
+import { NotificationsService } from '../../services/notifications.service';
 
 @Component({
   selector: 'app-category-form',
@@ -49,7 +50,8 @@ export class CategoryFormComponent {
     },
     private dialogRef: MatDialogRef<CategoryFormComponent>,
     private languageService: LanguageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private notificationsService: NotificationsService
   ) {
     this.lang$ = this.languageService.currentLanguage$;
     this.initForm();
@@ -81,7 +83,17 @@ export class CategoryFormComponent {
 
       this.data
         .cb(formData)
-        .pipe(take(1))
+        .pipe(take(1), 
+        // catchError((err) => {
+        //   this.cbPennding = false;
+        //   this.dialogRef.disableClose = false;
+        //   this.notificationsService.setNotification({
+        //     type: 'ERROR',
+        //     message: err.message,
+        //   });
+        //   return of(null);
+        // })
+      )
         .subscribe(() => {
           this.dialogRef.close(true);
         });

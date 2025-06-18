@@ -17,10 +17,6 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
-        path: '',
-        component: GeneralOverviewComponent,
-      },
-      {
         path: 'general-overview',
         component: GeneralOverviewComponent,
       },
@@ -44,6 +40,7 @@ const routes: Routes = [
         path: 'schedule-overview',
         component: ScheduleOverviewComponent,
       },
+      { path: '', redirectTo: 'general-overview', pathMatch: 'full' },
     ],
   },
 ];
