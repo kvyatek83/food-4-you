@@ -61,7 +61,7 @@ variable "server_admin_password" {
   description = "admin password for the server application auth"
   type        = string
   sensitive   = true
-  default     = "admin123!" # change this 
+  default     = "12345" # change this 
 }
 
 variable "reset_db" {
