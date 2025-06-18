@@ -43,6 +43,7 @@ Thumbs.db
 
 *storybook.log
 .env
+.env.local
 database.sqlite
 app.db
 

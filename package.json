@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "node createUsers.js && node app.js",
-    "start:dev": "node createUsers.js && node createTables.js && node app.js",
+    "start:dev": "dotenv -e .env.local -- node createUsers.js && dotenv -e .env.local -- node createTables.js && dotenv -e .env.local -- node app.js",
     "start:front": "ng serve --host 0.0.0.0 --port 12345 --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
@@ -41,9 +41,9 @@
     "sqlite3": "^5.1.6",
     "tslib": "^2.3.0",
     "uuid": "^9.0.1",
-    "zone.js": "~0.15.0",
     "winston": "^3.11.0",
-    "winston-cloudwatch": "^6.2.0"
+    "winston-cloudwatch": "^6.2.0",
+    "zone.js": "~0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.0.6",
@@ -61,6 +61,7 @@
     "@storybook/blocks": "^8.4.7",
     "@storybook/test": "^8.4.7",
     "@types/jasmine": "~5.1.0",
+    "dotenv-cli": "^8.0.0",
     "jasmine-core": "~5.4.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
