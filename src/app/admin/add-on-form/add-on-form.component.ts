@@ -17,7 +17,7 @@ import {
 } from '../../services/lang.service';
 import { AddOn } from '../../traveler/traveler.models';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NotificationsService } from '../../services/notifications.service';
 
 @Component({
@@ -48,7 +48,8 @@ export class AddOnFormComponent {
     private dialogRef: MatDialogRef<AddOnFormComponent>,
     private languageService: LanguageService,
     private fb: FormBuilder,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private translate: TranslateService
   ) {
     this.lang$ = this.languageService.currentLanguage$;
     this.initForm();
@@ -81,10 +82,23 @@ export class AddOnFormComponent {
           error: (err) => {
             this.cbPennding = false;
             this.dialogRef.disableClose = false;
-            this.notificationsService.setNotification({
-              type: 'ERROR',
-              message: err.message,
-            });
+            
+            // Handle structured error response from backend
+            if (err.error && err.error.message) {
+              this.notificationsService.setNotification({
+                type: 'ERROR',
+                message: this.translate.instant(
+                  `notifications.errors.${err.error.message}`,
+                  err.error.params || {}
+                ),
+              });
+            } else {
+              // Fallback for generic errors
+              this.notificationsService.setNotification({
+                type: 'ERROR',
+                message: this.translate.instant('notifications.errors.general'),
+              });
+            }
           }
         });
     }

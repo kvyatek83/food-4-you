@@ -309,15 +309,33 @@
     "errors": {
       "userNotFound": "No se encontró el usuario {{user}}",
       "useraUthorized": "¡El usuario {{user}} no está autorizado!",
-      "missingGuestId": "El enlace de la boda está roto",
-      "wrongGuestId": "No se encontró el usuario {{user}}",
+      "missingGuestId": "El enlace de boda está roto",
+      "wrongGuestId": "No se encontró usuario para {{user}}",
       "sentEmptyGuestList": "La lista se envió vacía.",
       "recivedEmptyGuestList": "La lista está vacía, puedes llenarla",
-      "fileFormat": "Formato de archivo no válido. Por favor, selecciona un archivo CSV o JSON.",
+      "fileFormat": "Formato de archivo inválido. Por favor selecciona un archivo CSV o JSON.",
       "loginAgain": "Necesitas iniciar sesión nuevamente",
       "allMessageFailed": "Todos los mensajes fallaron",
-      "botIsNotInUse": "El bot de WhatsApp no está en uso",
-      "general": "Error desconocido"
+      "botIsNotInUse": "El bot de whatsapp no está en uso",
+      "general": "Ocurrió un error. Por favor, inténtelo de nuevo más tarde.",
+      "CATEGORY_NOT_FOUND": "Categoría con ID '{{categoryId}}' no se encontró durante {{operation}}",
+      "ITEM_NOT_FOUND": "Artículo con ID '{{itemId}}' no se encontró durante {{operation}}",
+      "ADDON_NOT_FOUND": "Complemento con ID '{{addOnId}}' no se encontró durante {{operation}}",
+      "VALIDATION_ERROR": "Error de validación durante {{operation}} para {{entity}}",
+      "DUPLICATE_ENTRY": "Ya existe un {{entity}} con estos detalles",
+      "NOT_FOUND": "El recurso solicitado no fue encontrado",
+      "UNAUTHORIZED": "No estás autorizado para realizar esta acción",
+      "FORBIDDEN": "Acceso prohibido",
+      "UNKNOWN_ERROR": "Ocurrió un error inesperado durante {{operation}} para {{entity}}",
+      "categoryCreateFailed": "Error al crear categoría",
+      "categoryUpdateFailed": "Error al actualizar categoría",
+      "categoryDeleteFailed": "Error al eliminar categoría",
+      "itemCreateFailed": "Error al crear elemento",
+      "itemUpdateFailed": "Error al actualizar elemento",
+      "itemDeleteFailed": "Error al eliminar elemento",
+      "addonCreateFailed": "Error al crear complemento",
+      "addonUpdateFailed": "Error al actualizar complemento",
+      "addonDeleteFailed": "Error al eliminar complemento"
     },
     "warning": {
       "superAdmin": "¡Esta acción es arriesgada, por favor ten cuidado!"
@@ -329,7 +347,16 @@
     "success": {
       "saveTheDate": "Tu respuesta fue guardada, siempre puedes cambiar tu respuesta",
       "file": "El archivo se descargó con éxito",
-      "allMessageSent": "Todos los mensajes enviados"
+      "allMessageSent": "Todos los mensajes enviados",
+      "CATEGORY_CREATED": "Categoría creada exitosamente",
+      "CATEGORY_UPDATED": "Categoría actualizada exitosamente",
+      "CATEGORY_DELETED": "Categoría eliminada exitosamente",
+      "ITEM_CREATED": "Artículo creado exitosamente",
+      "ITEM_UPDATED": "Artículo actualizado exitosamente",
+      "ITEM_DELETED": "Artículo eliminado exitosamente",
+      "ADDON_CREATED": "Complemento creado exitosamente",
+      "ADDON_UPDATED": "Complemento actualizado exitosamente",
+      "ADDON_DELETED": "Complemento eliminado exitosamente"
     }
   },
   "noData": {
