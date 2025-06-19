@@ -83,7 +83,6 @@ export class AddOnFormComponent {
             this.cbPennding = false;
             this.dialogRef.disableClose = false;
             
-            // Handle structured error response from backend
             if (err.error && err.error.message) {
               this.notificationsService.setNotification({
                 type: 'ERROR',
@@ -93,7 +92,6 @@ export class AddOnFormComponent {
                 ),
               });
             } else {
-              // Fallback for generic errors
               this.notificationsService.setNotification({
                 type: 'ERROR',
                 message: this.translate.instant('notifications.errors.general'),
