@@ -315,7 +315,25 @@
       "loginAgain": "You need to login again",
       "allMessageFailed": "All messages failed",
       "botIsNotInUse": "The whatsapp bot is not in use",
-      "general": "Unknownen error"
+      "general": "Unknownen error",
+      "CATEGORY_NOT_FOUND": "Category with ID '{{categoryId}}' was not found during {{operation}}",
+      "ITEM_NOT_FOUND": "Item with ID '{{itemId}}' was not found during {{operation}}",
+      "ADDON_NOT_FOUND": "Add-on with ID '{{addOnId}}' was not found during {{operation}}",
+      "VALIDATION_ERROR": "Validation failed during {{operation}} for {{entity}}",
+      "DUPLICATE_ENTRY": "A {{entity}} with these details already exists",
+      "NOT_FOUND": "The requested resource was not found",
+      "UNAUTHORIZED": "You are not authorized to perform this action",
+      "FORBIDDEN": "Access forbidden",
+      "UNKNOWN_ERROR": "An unexpected error occurred during {{operation}} for {{entity}}",
+      "categoryCreateFailed": "Failed to create category",
+      "categoryUpdateFailed": "Failed to update category",
+      "categoryDeleteFailed": "Failed to delete category",
+      "itemCreateFailed": "Failed to create item",
+      "itemUpdateFailed": "Failed to update item",
+      "itemDeleteFailed": "Failed to delete item",
+      "addonCreateFailed": "Failed to create add-on",
+      "addonUpdateFailed": "Failed to update add-on",
+      "addonDeleteFailed": "Failed to delete add-on"
     },
     "warning": {
       "superAdmin": "This actions is risky, please be careful!"
@@ -327,7 +345,16 @@
     "success": {
       "saveTheDate": "You submit saved, you always can change you answer",
       "file": "The file was successfully download",
-      "allMessageSent": "All messages sent"
+      "allMessageSent": "All messages sent",
+      "CATEGORY_CREATED": "Category created successfully",
+      "CATEGORY_UPDATED": "Category updated successfully",
+      "CATEGORY_DELETED": "Category deleted successfully",
+      "ITEM_CREATED": "Item created successfully",
+      "ITEM_UPDATED": "Item updated successfully",
+      "ITEM_DELETED": "Item deleted successfully",
+      "ADDON_CREATED": "Add-on created successfully",
+      "ADDON_UPDATED": "Add-on updated successfully",
+      "ADDON_DELETED": "Add-on deleted successfully"
     }
   },
   "noData": {
