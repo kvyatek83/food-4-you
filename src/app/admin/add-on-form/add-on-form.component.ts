@@ -18,6 +18,7 @@ import {
 import { AddOn } from '../../traveler/traveler.models';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import { TranslateModule } from '@ngx-translate/core';
+import { NotificationsService } from '../../services/notifications.service';
 
 @Component({
   selector: 'app-add-on-form',
@@ -46,7 +47,8 @@ export class AddOnFormComponent {
     },
     private dialogRef: MatDialogRef<AddOnFormComponent>,
     private languageService: LanguageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private notificationsService: NotificationsService
   ) {
     this.lang$ = this.languageService.currentLanguage$;
     this.initForm();
@@ -72,8 +74,18 @@ export class AddOnFormComponent {
       this.data
         .cb(this.addOnForm.value)
         .pipe(take(1))
-        .subscribe(() => {
-          this.dialogRef.close(true);
+        .subscribe({
+          next: () => {
+            this.dialogRef.close(true);
+          },
+          error: (err) => {
+            this.cbPennding = false;
+            this.dialogRef.disableClose = false;
+            this.notificationsService.setNotification({
+              type: 'ERROR',
+              message: err.message,
+            });
+          }
         });
     }
   }

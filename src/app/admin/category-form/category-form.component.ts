@@ -83,19 +83,19 @@ export class CategoryFormComponent {
 
       this.data
         .cb(formData)
-        .pipe(take(1), 
-        // catchError((err) => {
-        //   this.cbPennding = false;
-        //   this.dialogRef.disableClose = false;
-        //   this.notificationsService.setNotification({
-        //     type: 'ERROR',
-        //     message: err.message,
-        //   });
-        //   return of(null);
-        // })
-      )
-        .subscribe(() => {
-          this.dialogRef.close(true);
+        .pipe(take(1))
+        .subscribe({
+          next: () => {
+            this.dialogRef.close(true);
+          },
+          error: (err) => {
+            this.cbPennding = false;
+            this.dialogRef.disableClose = false;
+            this.notificationsService.setNotification({
+              type: 'ERROR',
+              message: err.message,
+            });
+          }
         });
     }
   }
