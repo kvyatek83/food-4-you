@@ -12,7 +12,6 @@ import {
 import { BackupService } from '../../services/backup.service';
 import { ConfigurationService } from '../../services/configuration.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 
@@ -25,7 +24,6 @@ import { AuthService } from '../../services/auth.service';
     TranslateModule,
     ReactiveFormsModule,
     LanguageDirectionDirective,
-    PropertiesTranslationPipe,
   ],
   templateUrl: './general-overview.component.html',
   styleUrls: ['./general-overview.component.scss'],

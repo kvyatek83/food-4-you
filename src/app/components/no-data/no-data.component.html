@@ -209,7 +209,9 @@
           ? ("noData.titleICategories" | translate)
           : type === "item"
           ? ("noData.titleItems" | translate)
-          : ("noData.titleAddOns" | translate)
+          : type === "add-on"
+          ? ("noData.titleAddOns" | translate)
+          : ("noData.titleOrders" | translate)
       }}
     </text>
 
@@ -226,7 +228,9 @@
           ? ("noData.subTitleCategories" | translate)
           : type === "item"
           ? ("noData.subTitleItems" | translate)
-          : ("noData.subTitleAddOns" | translate)
+          : type === "add-on"
+          ? ("noData.subTitleAddOns" | translate)
+          : ("noData.subTitleOrders" | translate)
       }}
     </text>
   </g>

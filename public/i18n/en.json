@@ -334,9 +334,11 @@
     "titleICategories": "No Categories Found",
     "titleItems": "No Items Found",
     "titleAddOns": "No Add-Ons Found",
+    "titleOrders": "No Orders Found",
     "subTitleCategories": "Create your first category to get started",
     "subTitleItems": "Create your first item to get started",
-    "subTitleAddOns": "Create your first add-on to get started"
+    "subTitleAddOns": "Create your first add-on to get started",
+    "subTitleOrders": "Create your first order to get started"
   },
   "noResults": {
     "title": "No results found",

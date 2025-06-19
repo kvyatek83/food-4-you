@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageDirection } from '../../services/lang.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,8 @@ import { LanguageDirection } from '../../services/lang.service';
     ReactiveFormsModule,
     LanguageDirectionDirective,
     TranslateModule,
-  ],
+    MatProgressSpinnerModule
+],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -44,6 +46,7 @@ export class LoginComponent {
   onSubmit(): void {
     if (this.signInForm.valid) {
       this.loading = true;
+      this.signInForm.disable();
       this.authService
         .login(
           this.signInForm.get('username')?.value,
@@ -63,6 +66,9 @@ export class LoginComponent {
                 this.router.navigate([`/${tokenPayload.role}`]);
               }
             }
+          } else {
+            this.loading = false;
+            this.signInForm.enable();
           }
         });
     } else {

@@ -47,8 +47,13 @@
           </button>
         </div>
       </div>
-      <button type="submit" class="submit-btn" [disabled]="signInForm.invalid">
-        {{ "login.submit" | translate }}
+      <button type="submit" class="submit-btn" [disabled]="signInForm.invalid || loading">
+        <ng-container *ngIf="!loading; else spinner">
+          {{ "login.submit" | translate }}
+        </ng-container>
+        <ng-template #spinner>
+          <mat-spinner diameter="24" style="margin: auto"></mat-spinner>
+        </ng-template>
       </button>
     </form>
   </div>
