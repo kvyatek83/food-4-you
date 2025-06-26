@@ -19,7 +19,7 @@ import {
 import { AddOn, Category, Item } from '../../traveler/traveler.models';
 import { LoadFileComponent } from '../../components/load-file/load-file.component';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ItemsService } from '../../services/items.service';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -64,7 +64,8 @@ export class ItemFormComponent implements OnInit {
     private languageService: LanguageService,
     private itemsService: ItemsService,
     private fb: FormBuilder,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private translateService: TranslateService
   ) {
     this.lang$ = this.languageService.currentLanguage$;
 
@@ -153,10 +154,23 @@ export class ItemFormComponent implements OnInit {
           error: (err) => {
             this.cbPennding = false;
             this.dialogRef.disableClose = false;
-            this.notificationsService.setNotification({
-              type: 'ERROR',
-              message: err.message,
-            });
+            
+            // Handle structured error response from backend
+            if (err.error && err.error.message) {
+              this.notificationsService.setNotification({
+                type: 'ERROR',
+                message: this.translateService.instant(
+                  `notifications.errors.${err.error.message}`,
+                  err.error.params || {}
+                ),
+              });
+            } else {
+              // Fallback for generic errors
+              this.notificationsService.setNotification({
+                type: 'ERROR',
+                message: this.translateService.instant('notifications.errors.general'),
+              });
+            }
           }
         });
     }

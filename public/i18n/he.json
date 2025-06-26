@@ -305,17 +305,35 @@
       "error": "שגיאה"
     },
     "errors": {
-      "userNotFound": "{{user}} לא נמצא",
-      "useraUthorized": "{{user}} לא מאושר כניסה",
-      "missingGuestId": "קישור לא תקין - מזהה אורח חסר",
-      "wrongGuestId": "מזהה אורח <{{user}}> לא תקין",
-      "sentEmptyGuestList": "נשלחה רשימה ריקה",
-      "recivedEmptyGuestList": "התקבלה רשימה ריקה, באפשרותך למלא אותה",
-      "fileFormat": "קובץ לא חוקי. נא לבחור רק קובץ CSV או JSON.",
-      "loginAgain": "בבקשה להתחבר מחדש",
+      "userNotFound": "לא נמצא משתמש {{user}}",
+      "useraUthorized": "המשתמש {{user}} אינו מורשה!",
+      "missingGuestId": "קישור החתונה שבור",
+      "wrongGuestId": "לא נמצא משתמש עבור {{user}}",
+      "sentEmptyGuestList": "הרשימה נשלחה ריקה.",
+      "recivedEmptyGuestList": "הרשימה ריקה, אתה יכול למלא אותה",
+      "fileFormat": "פורמט קובץ לא חוקי. אנא בחר קובץ CSV או JSON.",
+      "loginAgain": "אתה צריך להתחבר שוב",
       "allMessageFailed": "כל ההודעות נכשלו",
-      "botIsNotInUse": "לא נבחר שימוש בבוט של וואטסאפ",
-      "general": "שגיאה לא מוכרת"
+      "botIsNotInUse": "בוט הווטסאפ לא בשימוש",
+      "general": "אירעה שגיאה. אנא נסה שוב מאוחר יותר.",
+      "CATEGORY_NOT_FOUND": "קטגוריה עם מזהה '{{categoryId}}' לא נמצאה במהלך {{operation}}",
+      "ITEM_NOT_FOUND": "פריט עם מזהה '{{itemId}}' לא נמצא במהלך {{operation}}",
+      "ADDON_NOT_FOUND": "תוספת עם מזהה '{{addOnId}}' לא נמצאה במהלך {{operation}}",
+      "VALIDATION_ERROR": "שגיאת אימות במהלך {{operation}} עבור {{entity}}",
+      "DUPLICATE_ENTRY": "{{entity}} עם פרטים אלה כבר קיים",
+      "NOT_FOUND": "המשאב המבוקש לא נמצא",
+      "UNAUTHORIZED": "אינך מורשה לבצע פעולה זו",
+      "FORBIDDEN": "גישה אסורה",
+      "UNKNOWN_ERROR": "אירעה שגיאה בלתי צפויה במהלך {{operation}} עבור {{entity}}",
+      "categoryCreateFailed": "שגיאה ביצירת קטגוריה",
+      "categoryUpdateFailed": "שגיאה בעדכון קטגוריה",
+      "categoryDeleteFailed": "שגיאה במחיקת קטגוריה",
+      "itemCreateFailed": "שגיאה ביצירת פריט",
+      "itemUpdateFailed": "שגיאה בעדכון פריט",
+      "itemDeleteFailed": "שגיאה במחיקת פריט",
+      "addonCreateFailed": "שגיאה ביצירת תוספת",
+      "addonUpdateFailed": "שגיאה בעדכון תוספת",
+      "addonDeleteFailed": "שגיאה במחיקת תוספת"
     },
     "warning": {
       "superAdmin": "הפעולה הבאה מסוכנת, לפעול בזהירות!"
@@ -327,7 +345,16 @@
     "success": {
       "saveTheDate": "הבחירה שלך נשמרה, אפשר תמיד לשנות את תשובתך",
       "file": "הקובץ ירד בהצלחה",
-      "allMessageSent": "כל ההודעות נשלחו"
+      "allMessageSent": "כל ההודעות נשלחו",
+      "CATEGORY_CREATED": "הקטגוריה נוצרה בהצלחה",
+      "CATEGORY_UPDATED": "הקטגוריה עודכנה בהצלחה",
+      "CATEGORY_DELETED": "הקטגוריה נמחקה בהצלחה",
+      "ITEM_CREATED": "הפריט נוצר בהצלחה",
+      "ITEM_UPDATED": "הפריט עודכן בהצלחה",
+      "ITEM_DELETED": "הפריט נמחק בהצלחה",
+      "ADDON_CREATED": "התוספת נוצרה בהצלחה",
+      "ADDON_UPDATED": "התוספת עודכנה בהצלחה",
+      "ADDON_DELETED": "התוספת נמחקה בהצלחה"
     }
   },
   "noData": {
