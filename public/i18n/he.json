@@ -319,7 +319,7 @@
       "CATEGORY_NOT_FOUND": "קטגוריה עם מזהה '{{categoryId}}' לא נמצאה במהלך {{operation}}",
       "ITEM_NOT_FOUND": "פריט עם מזהה '{{itemId}}' לא נמצא במהלך {{operation}}",
       "ADDON_NOT_FOUND": "תוספת עם מזהה '{{addOnId}}' לא נמצאה במהלך {{operation}}",
-      "VALIDATION_ERROR": "שגיאת אימות במהלך {{operation}} עבור {{entity}}",
+      "VALIDATION_ERROR": "שגיאת אימות במהלך {{operation}} עבור {{entity}}: {{details}}",
       "DUPLICATE_ENTRY": "{{entity}} עם פרטים אלה כבר קיים",
       "NOT_FOUND": "המשאב המבוקש לא נמצא",
       "UNAUTHORIZED": "אינך מורשה לבצע פעולה זו",
@@ -333,7 +333,9 @@
       "itemDeleteFailed": "שגיאה במחיקת פריט",
       "addonCreateFailed": "שגיאה ביצירת תוספת",
       "addonUpdateFailed": "שגיאה בעדכון תוספת",
-      "addonDeleteFailed": "שגיאה במחיקת תוספת"
+      "addonDeleteFailed": "שגיאה במחיקת תוספת",
+      "USER_NOT_FOUND": "משתמש '{{username}}' לא נמצא",
+      "INVALID_CREDENTIALS": "פרטי התחברות שגויים עבור משתמש '{{username}}'"
     },
     "warning": {
       "superAdmin": "הפעולה הבאה מסוכנת, לפעול בזהירות!"
@@ -354,7 +356,8 @@
       "ITEM_DELETED": "הפריט נמחק בהצלחה",
       "ADDON_CREATED": "התוספת נוצרה בהצלחה",
       "ADDON_UPDATED": "התוספת עודכנה בהצלחה",
-      "ADDON_DELETED": "התוספת נמחקה בהצלחה"
+      "ADDON_DELETED": "התוספת נמחקה בהצלחה",
+      "LOGIN_SUCCESS": "ברוך שובך, {{username}}!"
     }
   },
   "noData": {

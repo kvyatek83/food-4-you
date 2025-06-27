@@ -7,6 +7,7 @@ import {
   of,
   switchMap,
   tap,
+  throwError
 } from 'rxjs';
 import { AddOn, Category, Item } from '../traveler/traveler.models';
 import { HttpClient } from '@angular/common/http';
@@ -104,6 +105,32 @@ export class ItemsService {
     return this._addOns$.value.get(addOnUuid);
   }
 
+  private handleError(error: any) {
+    if (error.error && error.error.message) {
+      this.notificationsService.setNotification({
+        type: 'ERROR',
+        message: this.translate.instant(
+          `notifications.errors.${error.error.message}`,
+          error.error.params || {}
+        ),
+      });
+    } else {
+      this.notificationsService.setNotification({
+        type: 'ERROR',
+        message: this.translate.instant('notifications.errors.general'),
+      });
+    }
+    console.error('Operation failed:', error);
+    return throwError(() => error);
+  }
+
+  private handleSuccess(operation: string) {
+    this.notificationsService.setNotification({
+      type: 'SUCCESS',
+      message: this.translate.instant(`notifications.success.${operation}`),
+    });
+  }
+
   createCategory(
     category: Partial<Category>,
     imageFile: File
@@ -117,7 +144,13 @@ export class ItemsService {
 
     return this.http
       .post<Category[]>(`api/admin/category`, formData)
-      .pipe(tap((categories: Category[]) => this.setAllItems(categories)));
+      .pipe(
+        tap((categories: Category[]) => {
+          this.setAllItems(categories);
+          this.handleSuccess('CATEGORY_CREATED');
+        }),
+        catchError((error) => this.handleError(error))
+      );
   }
 
   editCategory(
@@ -133,13 +166,25 @@ export class ItemsService {
 
     return this.http
       .put<Category[]>(`api/admin/category`, formData)
-      .pipe(tap((categories: Category[]) => this.setAllItems(categories)));
+      .pipe(
+        tap((categories: Category[]) => {
+          this.setAllItems(categories);
+          this.handleSuccess('CATEGORY_UPDATED');
+        }),
+        catchError((error) => this.handleError(error))
+      );
   }
 
   deleteCategory(category: Category): Observable<Category[]> {
     return this.http
       .delete<Category[]>(`api/admin/category/${category.uuid}`)
-      .pipe(tap((categories: Category[]) => this.setAllItems(categories)));
+      .pipe(
+        tap((categories: Category[]) => {
+          this.setAllItems(categories);
+          this.handleSuccess('CATEGORY_DELETED');
+        }),
+        catchError((error) => this.handleError(error))
+      );
   }
 
   createItem(item: Partial<Item>, imageFile: File): Observable<Category[]> {
@@ -152,7 +197,13 @@ export class ItemsService {
 
     return this.http
       .post<Category[]>(`api/admin/item`, formData)
-      .pipe(tap((categories: Category[]) => this.setAllItems(categories)));
+      .pipe(
+        tap((categories: Category[]) => {
+          this.setAllItems(categories);
+          this.handleSuccess('ITEM_CREATED');
+        }),
+        catchError((error) => this.handleError(error))
+      );
   }
 
   editItem(item: Partial<Item>, imageFile?: File): Observable<Category[]> {
@@ -165,32 +216,60 @@ export class ItemsService {
 
     return this.http
       .put<Category[]>(`api/admin/item/${item.uuid}`, formData)
-      .pipe(tap((categories: Category[]) => this.setAllItems(categories)));
+      .pipe(
+        tap((categories: Category[]) => {
+          this.setAllItems(categories);
+          this.handleSuccess('ITEM_UPDATED');
+        }),
+        catchError((error) => this.handleError(error))
+      );
   }
 
   deleteItem(item: Item): Observable<Category[]> {
     return this.http
       .delete<Category[]>(`api/admin/item/${item.uuid}`)
-      .pipe(tap((categories: Category[]) => this.setAllItems(categories)));
+      .pipe(
+        tap((categories: Category[]) => {
+          this.setAllItems(categories);
+          this.handleSuccess('ITEM_DELETED');
+        }),
+        catchError((error) => this.handleError(error))
+      );
   }
 
   createAddOn(addOn: Partial<AddOn>): Observable<AddOn[]> {
     return this.http
       .post<AddOn[]>(`api/admin/add-on`, addOn)
-      .pipe(tap((adOns: AddOn[]) => this.setAllAddOns(adOns)));
+      .pipe(
+        tap((addOns: AddOn[]) => {
+          this.setAllAddOns(addOns);
+          this.handleSuccess('ADDON_CREATED');
+        }),
+        catchError((error) => this.handleError(error))
+      );
   }
 
   editAddOn(addOn: Partial<AddOn>): Observable<AddOn[]> {
     return this.http
       .put<AddOn[]>(`api/admin/add-on/${addOn.uuid}`, addOn)
-      .pipe(tap((adOns: AddOn[]) => this.setAllAddOns(adOns)));
+      .pipe(
+        tap((addOns: AddOn[]) => {
+          this.setAllAddOns(addOns);
+          this.handleSuccess('ADDON_UPDATED');
+        }),
+        catchError((error) => this.handleError(error))
+      );
   }
 
   deleteAddOn(addOn: Partial<AddOn>): Observable<Category[]> {
     return this.http.delete<AddOn[]>(`api/admin/add-on/${addOn.uuid}`).pipe(
-      tap((adOns: AddOn[]) => this.setAllAddOns(adOns)),
+      tap((addOns: AddOn[]) => {
+        this.setAllAddOns(addOns);
+        this.handleSuccess('ADDON_DELETED');
+      }),
       switchMap(() => this.fetchAllItems()),
-      tap((categories: Category[]) => this.setAllItems(categories))
+      tap((categories: Category[]) => this.setAllItems(categories)),
+      catchError((error) => this.handleError(error))
     );
   }
 }
