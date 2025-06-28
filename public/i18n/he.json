@@ -334,9 +334,11 @@
     "titleICategories": "לא נמצאו קטגוריות",
     "titleItems": "לא נמצאו מנות",
     "titleAddOns": "לא נמצאו תוספות",
+    "titleOrders": "לא נמצאו הזמנות",
     "subTitleCategories": "בבקשה ליצור את הקטגוריה הראשונה שלך",
     "subTitleItems": "בבקשה ליצור את המנה הראשונה שלך",
-    "subTitleAddOns": "בבקשה ליצור את התוספת הראשונה שלך"
+    "subTitleAddOns": "בבקשה ליצור את התוספת הראשונה שלך",
+    "subTitleOrders": "נא לנסות שוב מאוחר יותר"
   },
   "noResults": {
     "title": "לא נמצאו תוצאות",

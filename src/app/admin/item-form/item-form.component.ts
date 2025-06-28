@@ -24,6 +24,7 @@ import { ItemsService } from '../../services/items.service';
 import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { NotificationsService } from '../../services/notifications.service';
 
 @Component({
   selector: 'app-item-form',
@@ -62,7 +63,8 @@ export class ItemFormComponent implements OnInit {
     private dialogRef: MatDialogRef<ItemFormComponent>,
     private languageService: LanguageService,
     private itemsService: ItemsService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private notificationsService: NotificationsService
   ) {
     this.lang$ = this.languageService.currentLanguage$;
 
@@ -144,8 +146,18 @@ export class ItemFormComponent implements OnInit {
       this.data
         .cb(formData)
         .pipe(take(1))
-        .subscribe(() => {
-          this.dialogRef.close(true);
+        .subscribe({
+          next: () => {
+            this.dialogRef.close(true);
+          },
+          error: (err) => {
+            this.cbPennding = false;
+            this.dialogRef.disableClose = false;
+            this.notificationsService.setNotification({
+              type: 'ERROR',
+              message: err.message,
+            });
+          }
         });
     }
   }
