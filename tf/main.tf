@@ -195,25 +195,18 @@ resource "aws_iam_user" "f4u_user" {
 
 data "aws_iam_policy_document" "user_profile_policy_doc" {
   statement {
-    sid    = "ListBucket"
+    sid    = "BucketAccess"
     effect = "Allow"
     actions = [
-      "s3:ListBucket"
-    ]
-    resources = [
-      aws_s3_bucket.f4u_bucket.arn
-    ]
-  }
-
-  statement {
-    sid    = "MutateBucketContents"
-    effect = "Allow"
-    actions = [
+      "s3:ListBucket",
+      "s3:GetBucket",
+      "s3:GetBucketLocation",
       "s3:PutObject",
       "s3:DeleteObject",
       "s3:GetObject"
     ]
     resources = [
+      aws_s3_bucket.f4u_bucket.arn,
       "${aws_s3_bucket.f4u_bucket.arn}/*"
     ]
   }
