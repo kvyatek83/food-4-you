@@ -45,6 +45,7 @@ resource "aws_security_group" "f4u_instance_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Once the reverse proxy is set, remove these 2 ports from the security group. any comm should be through proxy
   ingress {
     description = "API"
     from_port   = 3311
@@ -166,6 +167,7 @@ resource "aws_instance" "f4u_app_server" {
 # Creating S3 bucket
 resource "aws_s3_bucket" "f4u_bucket" {
   bucket = var.bucket_name
+  force_destroy = true
 
   tags = {
     Name        = var.bucket_name
@@ -218,7 +220,8 @@ data "aws_iam_policy_document" "user_profile_policy_doc" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
-      "logs:DescribeLogStreams"
+      "logs:DescribeLogStreams",
+      "logs:PutRetentionPolicy"
     ]
     resources = [
       "${aws_cloudwatch_log_group.app_logs.arn}:*"
