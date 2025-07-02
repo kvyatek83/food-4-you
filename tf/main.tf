@@ -186,9 +186,36 @@ resource "aws_s3_bucket_acl" "f4u_bucket_acl" {
   depends_on = [aws_s3_bucket_ownership_controls.f4u_bucket_owner]
 
   bucket = aws_s3_bucket.f4u_bucket.id
-  acl    = "private"
+  acl    = "public-read"
 }
 
+# Allow public read access to S3 objects
+resource "aws_s3_bucket_policy" "public_read" {
+  bucket = aws_s3_bucket.f4u_bucket.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "AllowPublicRead"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = "s3:GetObject"
+        Resource  = "${aws_s3_bucket.f4u_bucket.arn}/*"
+      }
+    ]
+  })
+
+  depends_on = [aws_s3_bucket_public_access_block.allow_public_policy]
+}
+
+resource "aws_s3_bucket_public_access_block" "allow_public_policy" {
+  bucket                  = aws_s3_bucket.f4u_bucket.id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
 
 # Creating a user for the S3 bucket with minimal R/W permissions
 resource "aws_iam_user" "f4u_user" {
@@ -242,30 +269,3 @@ resource "aws_iam_user_policy_attachment" "attach_policy" {
 resource "aws_iam_access_key" "f2u_user_access_key" {
   user = aws_iam_user.f4u_user.name
 }
-
-# resource "aws_s3_bucket_policy" "public_read" {
-#   bucket = aws_s3_bucket.f4u_bucket.id
-
-#   policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Sid       = "AllowPublicRead"
-#         Effect    = "Allow"
-#         Principal = "*"
-#         Action    = "s3:GetObject"
-#         Resource  = "${aws_s3_bucket.f4u_bucket.arn}/*"
-#       }
-#     ]
-#   })
-
-#   depends_on = [aws_s3_bucket_public_access_block.allow_public_policy]
-# }
-
-# resource "aws_s3_bucket_public_access_block" "allow_public_policy" {
-#   bucket                  = aws_s3_bucket.f4u_bucket.id
-#   block_public_acls       = false
-#   block_public_policy     = false
-#   ignore_public_acls      = false
-#   restrict_public_buckets = false
-# }
