@@ -6,6 +6,7 @@ const db = require("./server/database-utils");
 
 const cron = require("node-cron");
 const { uploadDatabaseToS3 } = require("./server/backup-utils");
+const cleanupService = require("./server/cleanup-service");
 
 const { logger, requestLoggingMiddleware } = require("./server/logger-service");
 
@@ -36,9 +37,20 @@ logger.info("Application starting", {
   environment: process.env.NODE_ENV || 'development',
   port: process.env.PORT || 3311,
   backupTime: process.env.BACKUP_TIME || "0 0 * * *",
-  backupTimezone: process.env.BACKUP_TIMEZONE || "America/New_York"
+  backupTimezone: process.env.BACKUP_TIMEZONE || "America/New_York",
+  cleanupDaysOld: process.env.CLEANUP_DAYS_OLD || 40,
+  cleanupIntervalHours: process.env.CLEANUP_INTERVAL_HOURS || 24
 });
 
+// Start cleanup service
+const cleanupDaysOld = parseInt(process.env.CLEANUP_DAYS_OLD) || 40;
+const cleanupIntervalHours = parseInt(process.env.CLEANUP_INTERVAL_HOURS) || 24;
+
+cleanupService.start(cleanupDaysOld, cleanupIntervalHours);
+logger.info("Order cleanup service started", {
+  daysOld: cleanupDaysOld,
+  intervalHours: cleanupIntervalHours
+});
 
 cron.schedule(
   process.env.BACKUP_TIME || "0 0 * * *",

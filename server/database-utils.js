@@ -726,6 +726,58 @@ async function updateOrderPrintStatus(orderId, printed) {
   await Order.update({ printed }, { where: { uuid: orderId } });
 }
 
+// Delete orders older than specified days
+async function deleteOldOrders(daysOld = 40) {
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - daysOld);
+  
+  // First, get the count of orders that will be deleted for logging
+  const ordersToDelete = await Order.count({
+    where: {
+      orderDate: {
+        [Sequelize.Op.lt]: cutoffDate
+      }
+    }
+  });
+
+  if (ordersToDelete === 0) {
+    return {
+      deletedCount: 0,
+      message: `No orders older than ${daysOld} days found`
+    };
+  }
+
+  // Delete order items first (due to foreign key constraint)
+  const deletedOrderItems = await OrderItem.destroy({
+    where: {
+      orderUuid: {
+        [Sequelize.Op.in]: Sequelize.literal(`(
+          SELECT uuid FROM Orders 
+          WHERE orderDate < '${cutoffDate.toISOString()}'
+        )`)
+      }
+    }
+  });
+
+  // Then delete the orders
+  const deletedOrders = await Order.destroy({
+    where: {
+      orderDate: {
+        [Sequelize.Op.lt]: cutoffDate
+      }
+    }
+  });
+
+  console.log(`[${new Date().toISOString()}] Cleanup completed: ${deletedOrders} orders and ${deletedOrderItems} order items deleted (older than ${daysOld} days)`);
+
+  return {
+    deletedCount: deletedOrders,
+    deletedOrderItems: deletedOrderItems,
+    cutoffDate: cutoffDate.toISOString(),
+    message: `Successfully deleted ${deletedOrders} orders and ${deletedOrderItems} order items older than ${daysOld} days`
+  };
+}
+
 // Configuration functions
 async function getConfiguration() {
   let config = await Configuration.findOne();
@@ -787,6 +839,7 @@ module.exports = {
   getOrdersByDateRange,
   getOrderStats,
   updateOrderPrintStatus,
+  deleteOldOrders,
   clearDatabase,
   closeConnections,
   initializeDatabase,
