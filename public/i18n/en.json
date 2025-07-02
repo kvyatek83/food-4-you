@@ -315,7 +315,11 @@
       "loginAgain": "You need to login again",
       "allMessageFailed": "All messages failed",
       "botIsNotInUse": "The whatsapp bot is not in use",
-      "general": "Unknownen error"
+      "general": "Unknownen error",
+      "CONFIRMATION_REQUIRED": "Please confirm this action before proceeding",
+      "CLEANUP_FAILED": "Failed to clean up old orders",
+      "CLEANUP_SERVICE_START_FAILED": "Failed to start cleanup service",
+      "CLEANUP_SERVICE_STOP_FAILED": "Failed to stop cleanup service"
     },
     "warning": {
       "superAdmin": "This actions is risky, please be careful!"
@@ -327,7 +331,11 @@
     "success": {
       "saveTheDate": "You submit saved, you always can change you answer",
       "file": "The file was successfully download",
-      "allMessageSent": "All messages sent"
+      "allMessageSent": "All messages sent",
+      "CLEANUP_COMPLETED": "Successfully deleted {{deletedCount}} orders and {{deletedOrderItems}} order items older than {{daysOld}} days",
+      "CLEANUP_SERVICE_STARTED": "Cleanup service started successfully",
+      "CLEANUP_SERVICE_STOPPED": "Cleanup service stopped successfully",
+      "CLEANUP_NO_ORDERS": "No orders older than {{daysOld}} days found"
     }
   },
   "noData": {
@@ -381,5 +389,35 @@
     "notAndroid": "Can't test printer, please try on the tablet",
     "notAuthenticated": "Not authenticated - please log in first",
     "testFailed": "Test failed: {{error}}"
+  },
+  "orderCleanup": {
+    "title": "Order Cleanup",
+    "description": "Automatically delete orders older than a specified number of days on a daily schedule",
+    "stats": {
+      "title": "Cleanup Statistics",
+      "ordersToDelete": "Orders to delete",
+      "orderItemsToDelete": "Order items to delete",
+      "totalOrders": "Total orders in database",
+      "totalOrderItems": "Total order items in database",
+      "cutoffDate": "Cutoff date",
+      "daysOld": "Days old"
+    },
+    "service": {
+      "title": "Cleanup Service",
+      "status": "Service Status",
+      "running": "Running",
+      "stopped": "Stopped",
+      "lastRun": "Last run",
+      "nextRun": "Next run",
+      "startService": "Start Service",
+      "stopService": "Stop Service",
+      "daysOld": "Delete orders older than (days)",
+      "runInterval": "Run every (hours)"
+    },
+    "actions": {
+      "getStats": "Get Statistics",
+      "startService": "Start Service",
+      "stopService": "Stop Service"
+    }
   }
 }
