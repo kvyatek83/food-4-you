@@ -292,6 +292,13 @@ router.get("/item/:id", verifyToken, checkRole("admin"), async (req, res) => {
 
     const plainItem = item.get({ plain: true });
 
+    // Generate presigned URL for item
+    if (plainItem.imageUrl) {
+      console.log("Generating presigned URL for item");
+      const imageKey = plainItem.imageUrl.split("amazonaws.com/")[1];
+      plainItem.imageUrl = space.getPresignedUrl(imageKey);
+    }
+
     // Parse availableAddOnUuids
     plainItem.availableAddOnUuids = plainItem.availableAddOnUuids
       ? JSON.parse(plainItem.availableAddOnUuids)

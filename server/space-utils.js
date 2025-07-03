@@ -38,6 +38,24 @@ const upload = multer({
   }),
 });
 
+// NEW: Function to generate pre-signed URLs for reading images
+const getPresignedUrl = (imagePath, expireSeconds = 3600) => {
+  const params = {
+    Bucket: process.env.AWS_S3_BUCKET,
+    Key: imagePath,
+    Expires: expireSeconds, // URL expires in 1 hour by default
+  };
+  return s3.getSignedUrl('getObject', params);
+};
+
+// NEW: Function to get pre-signed URLs for multiple images
+const getPresignedUrls = (imagePaths, expireSeconds = 3600) => {
+  return imagePaths.map(key => ({
+    key: key,
+    url: getPresignedUrl(key, expireSeconds)
+  }));
+};
+
 const deleteImage = async (imagePath) => {
   const params = {
     Bucket: process.env.AWS_S3_BUCKET,
@@ -94,4 +112,6 @@ module.exports = {
   upload,
   deleteImage,
   deleteFolder,
+  getPresignedUrl,
+  getPresignedUrls,
 };
