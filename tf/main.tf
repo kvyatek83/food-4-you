@@ -14,7 +14,6 @@ resource "aws_key_pair" "f4u_ssh_key" {
   public_key = tls_private_key.ec2_key.public_key_openssh
 }
 
-
 # Create a security group with rules for SSH, HTTP, and HTTPS.
 resource "aws_security_group" "f4u_instance_sg" {
   name        = "food-4-you-security-group"
@@ -45,7 +44,7 @@ resource "aws_security_group" "f4u_instance_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Once the reverse proxy is set, remove these 2 ports from the security group. any comm should be through proxy
+  # Once the reverse proxy is set, remove this port from the security group. any comm should be through proxy
   ingress {
     description = "API"
     from_port   = 3311
@@ -63,24 +62,6 @@ resource "aws_security_group" "f4u_instance_sg" {
   }
 }
 
-# Create IAM role for EC2 instance
-# resource "aws_iam_role" "ec2_role" {
-#   name = "food-4-you-ec2-role"
-
-#   assume_role_policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Action = "sts:AssumeRole"
-#         Effect = "Allow"
-#         Principal = {
-#           Service = "ec2.amazonaws.com"
-#         }
-#       }
-#     ]
-#   })
-# }
-
 # Create CloudWatch Log Group with retention
 resource "aws_cloudwatch_log_group" "app_logs" {
   name              = "food-4-you-app"
@@ -91,42 +72,6 @@ resource "aws_cloudwatch_log_group" "app_logs" {
     Application = "food-4-you"
   }
 }
-
-# # Create IAM policy for CloudWatch Logs
-# resource "aws_iam_policy" "cloudwatch_policy" {
-#   name        = "food-4-you-cloudwatch-policy"
-#   description = "Policy for CloudWatch Logs access"
-
-#   policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Effect = "Allow"
-#         Action = [
-#           "logs:CreateLogGroup",
-#           "logs:CreateLogStream",
-#           "logs:PutLogEvents",
-#           "logs:DescribeLogStreams"
-#         ]
-#         Resource = [
-#           "${aws_cloudwatch_log_group.app_logs.arn}:*"
-#         ]
-#       }
-#     ]
-#   })
-# }
-
-# Attach CloudWatch policy to EC2 role
-# resource "aws_iam_role_policy_attachment" "cloudwatch_attachment" {
-#   role       = aws_iam_role.ec2_role.name
-#   policy_arn = aws_iam_policy.cloudwatch_policy.arn
-# }
-
-# # Create instance profile
-# resource "aws_iam_instance_profile" "ec2_profile" {
-#   name = "food-4-you-ec2-profile"
-#   role = aws_iam_role.ec2_role.name
-# }
 
 # Creating EC2 instance with 30GB disk (maximum size for free-tier)
 resource "aws_instance" "f4u_app_server" {
@@ -184,7 +129,6 @@ resource "aws_s3_bucket_ownership_controls" "f4u_bucket_owner" {
 
 resource "aws_s3_bucket_acl" "f4u_bucket_acl" {
   depends_on = [aws_s3_bucket_ownership_controls.f4u_bucket_owner]
-
   bucket = aws_s3_bucket.f4u_bucket.id
   acl    = "public-read"
 }
@@ -217,11 +161,12 @@ resource "aws_s3_bucket_public_access_block" "allow_public_policy" {
   restrict_public_buckets = false
 }
 
-# Creating a user for the S3 bucket with minimal R/W permissions
+# Creating a user for the app - f4u user
 resource "aws_iam_user" "f4u_user" {
   name = "f4u_user"
 }
 
+# adding permissions for the f4u user
 data "aws_iam_policy_document" "user_profile_policy_doc" {
   statement {
     sid    = "BucketAccess"
@@ -256,16 +201,18 @@ data "aws_iam_policy_document" "user_profile_policy_doc" {
   }
 }
 
+# f4u user permission policy
 resource "aws_iam_policy" "f4u_profile_policy" {
   name   = "f4u_profile_policy"
   policy = data.aws_iam_policy_document.user_profile_policy_doc.json
 }
 
-resource "aws_iam_user_policy_attachment" "attach_policy" {
+resource "aws_iam_user_policy_attachment" "attach_user_policy" {
   user       = aws_iam_user.f4u_user.name
   policy_arn = aws_iam_policy.f4u_profile_policy.arn
 }
 
+# generate new access key to be used by the f4u app
 resource "aws_iam_access_key" "f2u_user_access_key" {
   user = aws_iam_user.f4u_user.name
 }
