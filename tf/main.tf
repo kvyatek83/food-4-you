@@ -133,14 +133,6 @@ resource "aws_s3_bucket_acl" "f4u_bucket_acl" {
   acl    = "private"
 }
 
-resource "aws_s3_bucket_public_access_block" "allow_public_policy" {
-  bucket                  = aws_s3_bucket.f4u_bucket.id
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
-
 # Creating a user for the app - f4u user
 resource "aws_iam_user" "f4u_user" {
   name = "f4u_user"
