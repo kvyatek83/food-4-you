@@ -273,7 +273,26 @@ router.post(
 
       await db.addItem(item, item.categoryId);
 
-      const categories = await db.getCategoriesWithItems();
+      const tmpCategories = await db.getCategoriesWithItems();
+
+      const categories = tmpCategories.map(category => {
+        if (category.imageUrl && category.imageUrl.includes("amazonaws.com")) {
+          console.log(`Before: ${category.imageUrl}`);
+          const imageKey = category.imageUrl.split("amazonaws.com/")[1];
+          category.imageUrl = space.getPresignedUrl(imageKey);
+          console.log(`After: ${category.imageUrl}`);
+          
+        }
+        category.items.forEach(item => {
+          if (item.imageUrl && item.imageUrl.includes("amazonaws.com")) {
+            const imageKey = item.imageUrl.split("amazonaws.com/")[1];
+            item.imageUrl = space.getPresignedUrl(imageKey);
+          }
+        });
+        return category;
+      });
+      res.json(categories);
+      // 
       res.status(201).json(categories);
     } catch (error) {
       console.error(error);
