@@ -6,8 +6,8 @@ const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
 
 AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID || process.env.S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || process.env.S3_SECRET_ACCESS_KEY,
   region: process.env.AWS_REGION,
 });
 
@@ -37,6 +37,24 @@ const upload = multer({
     },
   }),
 });
+
+// NEW: Function to generate pre-signed URLs for reading images
+const getPresignedUrl = (imagePath, expireSeconds = 604800) => {
+  const params = {
+    Bucket: process.env.AWS_S3_BUCKET,
+    Key: imagePath,
+    Expires: expireSeconds, // URL expires in 1 week by default
+  };
+  return s3.getSignedUrl('getObject', params);
+};
+
+// NEW: Function to get pre-signed URLs for multiple images
+const getPresignedUrls = (imagePaths, expireSeconds = 604800) => {
+  return imagePaths.map(key => ({
+    key: key,
+    url: getPresignedUrl(key, expireSeconds)
+  }));
+};
 
 const deleteImage = async (imagePath) => {
   const params = {
@@ -94,4 +112,6 @@ module.exports = {
   upload,
   deleteImage,
   deleteFolder,
+  getPresignedUrl,
+  getPresignedUrls,
 };

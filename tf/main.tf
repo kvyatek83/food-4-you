@@ -14,7 +14,6 @@ resource "aws_key_pair" "f4u_ssh_key" {
   public_key = tls_private_key.ec2_key.public_key_openssh
 }
 
-
 # Create a security group with rules for SSH, HTTP, and HTTPS.
 resource "aws_security_group" "f4u_instance_sg" {
   name        = "food-4-you-security-group"
@@ -45,6 +44,7 @@ resource "aws_security_group" "f4u_instance_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Once the reverse proxy is set, remove this port from the security group. any comm should be through proxy
   ingress {
     description = "API"
     from_port   = 3311
@@ -62,12 +62,24 @@ resource "aws_security_group" "f4u_instance_sg" {
   }
 }
 
+# Create CloudWatch Log Group with retention
+resource "aws_cloudwatch_log_group" "app_logs" {
+  name              = "food-4-you-app"
+  retention_in_days = 30
+
+  tags = {
+    Environment = "Prod"
+    Application = "food-4-you"
+  }
+}
+
 # Creating EC2 instance with 30GB disk (maximum size for free-tier)
 resource "aws_instance" "f4u_app_server" {
-  ami           = var.instance_ami
+  ami                    = var.instance_ami
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.f4u_ssh_key.key_name
   vpc_security_group_ids = [aws_security_group.f4u_instance_sg.id]
+  # iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
 
   root_block_device {
     delete_on_termination = true
@@ -100,6 +112,7 @@ resource "aws_instance" "f4u_app_server" {
 # Creating S3 bucket
 resource "aws_s3_bucket" "f4u_bucket" {
   bucket = var.bucket_name
+  force_destroy = true
 
   tags = {
     Name        = var.bucket_name
@@ -116,52 +129,62 @@ resource "aws_s3_bucket_ownership_controls" "f4u_bucket_owner" {
 
 resource "aws_s3_bucket_acl" "f4u_bucket_acl" {
   depends_on = [aws_s3_bucket_ownership_controls.f4u_bucket_owner]
-
   bucket = aws_s3_bucket.f4u_bucket.id
   acl    = "private"
 }
 
-
-# Creating a user for the S3 bucket with minimal R/W permissions
-resource "aws_iam_user" "f4u_s3_user" {
-  name = "f4u_s3_user"
+# Creating a user for the app - f4u user
+resource "aws_iam_user" "f4u_user" {
+  name = "f4u_user"
 }
 
-data "aws_iam_policy_document" "s3_policy_doc" {
+# adding permissions for the f4u user
+data "aws_iam_policy_document" "user_profile_policy_doc" {
   statement {
-    sid    = "ListBucket"
+    sid    = "BucketAccess"
     effect = "Allow"
     actions = [
-      "s3:ListBucket"
-    ]
-    resources = [
-      aws_s3_bucket.f4u_bucket.arn
-    ]
-  }
-
-  statement {
-    sid    = "MutateBucketContents"
-    effect = "Allow"
-    actions = [
+      "s3:ListBucket",
+      "s3:GetBucket",
+      "s3:GetBucketLocation",
       "s3:PutObject",
-      "s3:DeleteObject"
+      "s3:DeleteObject",
+      "s3:GetObject"
     ]
     resources = [
+      aws_s3_bucket.f4u_bucket.arn,
       "${aws_s3_bucket.f4u_bucket.arn}/*"
     ]
   }
+
+  statement {
+    sid    = "f4uAppLogWriter"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:DescribeLogStreams",
+      "logs:PutRetentionPolicy"
+    ]
+    resources = [
+      "${aws_cloudwatch_log_group.app_logs.arn}:*"
+    ]
+  }
 }
 
-resource "aws_iam_policy" "f4u_s3_policy" {
-  name   = "f4u_s3_policy"
-  policy = data.aws_iam_policy_document.s3_policy_doc.json
+# f4u user permission policy
+resource "aws_iam_policy" "f4u_profile_policy" {
+  name   = "f4u_profile_policy"
+  policy = data.aws_iam_policy_document.user_profile_policy_doc.json
 }
 
-resource "aws_iam_user_policy_attachment" "attach_policy" {
-  user       = aws_iam_user.f4u_s3_user.name
-  policy_arn = aws_iam_policy.f4u_s3_policy.arn
+resource "aws_iam_user_policy_attachment" "attach_user_policy" {
+  user       = aws_iam_user.f4u_user.name
+  policy_arn = aws_iam_policy.f4u_profile_policy.arn
 }
 
+# generate new access key to be used by the f4u app
 resource "aws_iam_access_key" "f2u_user_access_key" {
-  user = aws_iam_user.f4u_s3_user.name
+  user = aws_iam_user.f4u_user.name
 }
