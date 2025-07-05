@@ -6,7 +6,7 @@ sudo yum install -y nodejs
 node -v
 npm -v
 
-cd ~/app && npm install # && npm run build
+# cd ~/app && npm install # && npm run build
 
 sudo mv ~/app-server.service /etc/systemd/system/app-server.service
 sudo systemctl daemon-reload
