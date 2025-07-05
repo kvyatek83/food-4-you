@@ -159,25 +159,29 @@ This will tear-down all the resources that were created with the apply command. 
 ### This section is relevant only if you want to use your own domain to serve the app behind HTTPS and a reverse proxy
 
 The Terraform files include resources and script that are used to automatically set Caddy as a reverse proxy for the server app.
-This is currently a WIP feature, and to make it work requires some manual steps.
 
 You will need your own domain, and you will need access to create/change a DNS entry to point to the VM public IP.
 Some DNS providers have API keys for integration with 3rd party tools like Terraform. With such API key, the creation/modification of the A record in the DNS provider registrar can be automated using Terraform.
-However, since this is a somewhat custom-made solution, it is not included in this project.
+This project's Terraform files are configured to work with Cloudflare as a DNS provider.
 
-But.. if you do have your own domain and able to add A records, then here's how to make this proxy work:
+If you do have your own domain and able to add A records, then here's how to make this proxy work:
 
 1. edit `./tf/scripts/proxy_setup.sh` - uncomment the `systemctl enable` line at the bottom.
 2. edit `./tf/variables.tf` and update the default value of *website_address* with your custom domain
+
+At this point, you can add an environment variable with the dns provider (Cloudflare in this case) API key. 
+This will allow Terraform to automatically configure Cloudflare DNS entry to point to the VM address, thus connecting your own domain address with the app.
+To do that, simply add an env-var called 'TF_VAR_dns_provider_api_key' with the API key as its value:
+`export TF_VAR_dns_provider_api_key='<your api key>'`
+The API key should NOT be included in the `variables.tf` file and should be treated as a secret!
+
 3. recreate the server by using terraform destroy and apply commands.
-4. in your DNS provider management console, add an A record pointing to the public IP of the EC2 instance created by Terraform (you can get it from the printed SSH info message at the end on the output).
+
+If you don't have an API key for your DNS provider, you will have to add a DNS entry manually in your DNS provider management console.
+log in and find the DNS entries management page. add an A record pointing to the public IP of the EC2 instance created by Terraform (you can get it from the printed SSH info message at the end on the output).
 
 If everything is set properly, here's how the rest of the proccess goes:
 DNS provider propagates the URL of your domain pointing to the VM public IP -> Caddy is configured to auto-generate a certificate for the given address set in the variables.tf file, it will try to do that repetedly every few minutes -> once successfull, you will be able to send API request over HTTPS to the server app via your domain address.
 
 To check if Caddy had successfully generated a valid certificate, you can SSH into the VM, and check the status of the caddy service: `sudo systemctl status caddy.service`.
 
-### TODO
-
-- [ ] Automate self-signed certificate creation for Caddy reverse proxy.
-- [ ] Automate DNS entry update with DNS provider API key

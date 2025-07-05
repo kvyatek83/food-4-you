@@ -45,13 +45,13 @@ resource "aws_security_group" "f4u_instance_sg" {
   }
 
   # Once the reverse proxy is set, remove this port from the security group. any comm should be through proxy
-  ingress {
-    description = "API"
-    from_port   = 3311
-    to_port     = 3311
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # ingress {
+  #   description = "API"
+  #   from_port   = 3311
+  #   to_port     = 3311
+  #   protocol    = "tcp"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   # Allow all outbound traffic.
   egress {
@@ -92,7 +92,7 @@ resource "aws_instance" "f4u_app_server" {
 
   private_dns_name_options {
     enable_resource_name_dns_a_record = true
-    hostname_type                     = "ip-name" #var.website_address # Update this in the 'variables.tf' file
+    hostname_type                     = "ip-name"
   }
 
   # Disable password authentication for SSH
@@ -111,7 +111,7 @@ resource "aws_instance" "f4u_app_server" {
 
 # Creating S3 bucket
 resource "aws_s3_bucket" "f4u_bucket" {
-  bucket = var.bucket_name
+  bucket        = var.bucket_name
   force_destroy = true
 
   tags = {
@@ -129,8 +129,8 @@ resource "aws_s3_bucket_ownership_controls" "f4u_bucket_owner" {
 
 resource "aws_s3_bucket_acl" "f4u_bucket_acl" {
   depends_on = [aws_s3_bucket_ownership_controls.f4u_bucket_owner]
-  bucket = aws_s3_bucket.f4u_bucket.id
-  acl    = "private"
+  bucket     = aws_s3_bucket.f4u_bucket.id
+  acl        = "private"
 }
 
 # Creating a user for the app - f4u user
