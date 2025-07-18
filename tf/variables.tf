@@ -3,7 +3,7 @@
 variable "aws_region" {
   description = "The region to deploy the EC2 insatnce to"
   type        = string
-  default     = "sa-east-1"  # Sau-Paulo
+  default     = "sa-east-1" # Sau-Paulo
 }
 
 variable "instance_ami" {
@@ -67,7 +67,7 @@ variable "server_admin_password" {
 variable "reset_db" {
   description = "Resets the DB and inserts mocks"
   type        = bool
-  default     = true 
+  default     = true
 }
 
 variable "printer_ip" {
@@ -83,12 +83,26 @@ variable "printer_ip" {
 variable "website_address" {
   description = "The DNS address for the server"
   type        = string
-  default     = "food4you.amsalemlab.net" # change this 
+  default     = "food-4-u-chabad-antigua.work"
 }
+
+########## DNS ############
 
 variable "dns_provider_api_key" {
   description = "API key used for automatic ACME challange authentication for HTTPS"
   type        = string
   sensitive   = true
-  default     = "" # change this 
+}
+
+# cloudflare 
+variable "cf_zone_id" {
+  default = "f619c289b53121fd39439857dada30e6" # food-4-u-chabad url
+}
+
+variable "cf_account_id" {
+  default = "d9468243b281f25ae5589f7d571ce864" # Nati's mail
+}
+
+variable "cf_domain" {
+  default = "<YOUR_DOMAIN>"
 }
