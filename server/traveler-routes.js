@@ -161,11 +161,14 @@ router.post("/print-result", verifyToken, checkRole("traveler"), async (req, res
 // Endpoint for Android to get environment variables (non-sensitive only)
 router.get("/env", verifyToken, checkRole("traveler"), async (req, res) => {
   try {
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    // TODO: add a new env variable for the webview url
     const envVars = {
-      webViewUrl: process.env.WEBVIEW_URL || process.env.BASE_URL || `http://192.168.68.59:${process.env.PORT || 3000}`,
-      appVersion: process.env.APP_VERSION || "1.0.0"
+      webViewUrl: isProduction ? 'http://food-4-u-chabad-antigua.work' : process.env.WEBVIEW_URL || process.env.BASE_URL || `http://192.168.68.59:${process.env.PORT || 3000}`,
+      appVersion: process.env.APP_VERSION || "1.0.0",
       // Note: Not exposing serverUrl or other sensitive environment variables
-    };    
+    };   
     
     res.json(envVars);
   } catch (error) {
