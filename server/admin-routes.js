@@ -553,8 +553,7 @@ router.get("/orders", verifyToken, checkRole("admin"), async (req, res) => {
 
     res.json(orders);
   } catch (error) {
-    console.error("Error fetching orders:", error);
-    res.status(500).json({ error: "Failed to fetch orders" });
+    handleError(error, res, "getOrders");
   }
 });
 
@@ -584,8 +583,7 @@ router.get(
         ...stats,
       });
     } catch (error) {
-      console.error("Error fetching order statistics:", error);
-      res.status(500).json({ error: "Failed to fetch order statistics" });
+      handleError(error, res, "getOrderStats");
     }
   }
 );
