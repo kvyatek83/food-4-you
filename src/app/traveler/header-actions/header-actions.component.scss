@@ -9,6 +9,17 @@
   display: inline-block;
 }
 
+.cart-badge-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 60px;
+}
+
 .cart-icon {
   font-size: 48px;
   height: 48px;
@@ -16,18 +27,12 @@
 }
 
 .cart-badge {
-  position: absolute;
-  top: 57%;
-  left: 51%;
-  transform: translate(-50%, -50%);
   background-color: transparent;
   color: white;
   font-size: 18px;
   font-weight: bold;
-  min-width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  
+  
   pointer-events: none;
+  text-align: center;
 }

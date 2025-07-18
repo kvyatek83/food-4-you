@@ -10,7 +10,9 @@
         >
           shopping_bag
         </mat-icon>
-        <span class="cart-badge" *ngIf="itemCount > 0">{{ itemCount }}</span>
+        <div class="cart-badge-container">
+          <span class="cart-badge" *ngIf="itemCount > 0">{{ itemCount }}</span>
+        </div>
       </div>
       <app-search></app-search>
     </div>
