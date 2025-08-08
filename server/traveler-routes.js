@@ -5,6 +5,48 @@ const { verifyToken, checkRole } = require("./auth-service");
 const space = require("./space-utils");
 
 
+// Helper function for consistent error handling and logging
+const handleError = (error, res, operation, entity = 'item') => {
+  const timestamp = new Date().toISOString();
+  const errorMessage = error.message || 'Unknown error';
+  
+  // Determine error code based on error type
+  let errorCode = 'UNKNOWN_ERROR';
+  let statusCode = 500;
+  
+  if (error.name === 'SequelizeValidationError') {
+    errorCode = 'VALIDATION_ERROR';
+    statusCode = 400;
+  } else if (error.name === 'SequelizeUniqueConstraintError') {
+    errorCode = 'DUPLICATE_ENTRY';
+    statusCode = 409;
+  } else if (error.message && error.message.includes('not found')) {
+    errorCode = 'NOT_FOUND';
+    statusCode = 404;
+  }
+  
+  // Log error for production monitoring
+  console.error(`[${timestamp}] ${operation} failed:`, {
+    error: errorMessage,
+    code: errorCode,
+    statusCode: statusCode,
+    stack: error.stack,
+    entity: entity,
+    operation: operation
+  });
+
+  // Return structured error response
+  res.status(statusCode).json({
+    message: errorCode,
+    params: {
+      operation: operation,
+      entity: entity,
+      timestamp: timestamp,
+      details: errorMessage
+    }
+  });
+};
+
 // Route to get all categories with their items
 router.get(
   "/categories",
@@ -32,8 +74,7 @@ router.get(
       });
       res.json(categories);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+      handleError(error, res, "getCategories", "category");
     }
   }
 );
@@ -60,8 +101,7 @@ router.get("/add-ons", verifyToken, checkRole("traveler"), async (req, res) => {
     const addOns = await db.getAddOns();
     res.json(addOns);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+    handleError(error, res, "getAddOns", "addon");
   }
 });
 
@@ -71,8 +111,7 @@ router.post("/orders", verifyToken, checkRole("traveler"), async (req, res) => {
     const order = await db.createOrder(orderData);
     res.status(201).json(order);
   } catch (error) {
-    console.error("Error creating order:", error);
-    res.status(500).json({ error: "Failed to create order" });
+    handleError(error, res, "createOrder", "order");
   }
 });
 
@@ -83,12 +122,24 @@ router.put(
   checkRole("traveler"),
   async (req, res) => {
     try {
+      const orderId = req.params.id;
       const { printed } = req.body;
-      await db.updateOrderPrintStatus(req.params.id, printed);
+      
+      const order = await db.findOrder(orderId);
+      if (!order) {
+        return res.status(404).json({
+          message: "ORDER_NOT_FOUND",
+          params: {
+            orderId: orderId,
+            operation: "updatePrintStatus"
+          }
+        });
+      }
+
+      await db.updateOrderPrintStatus(orderId, printed);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error updating order print status:", error);
-      res.status(500).json({ error: "Failed to update print status" });
+      handleError(error, res, "updateOrderPrintStatus", "order");
     }
   }
 );

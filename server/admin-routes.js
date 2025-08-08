@@ -12,14 +12,61 @@ const {
   downloadBackup,
 } = require("./backup-utils");
 
+// Helper function for consistent error handling and logging
+const handleError = (error, res, operation, entity = 'item') => {
+  const timestamp = new Date().toISOString();
+  const errorMessage = error.message || 'Unknown error';
+  
+  // Determine error code based on error type
+  let errorCode = 'UNKNOWN_ERROR';
+  let statusCode = 500;
+  
+  if (error.name === 'SequelizeValidationError') {
+    errorCode = 'VALIDATION_ERROR';
+    statusCode = 400;
+  } else if (error.name === 'SequelizeUniqueConstraintError') {
+    errorCode = 'DUPLICATE_ENTRY';
+    statusCode = 409;
+  } else if (error.message && error.message.includes('not found')) {
+    errorCode = 'NOT_FOUND';
+    statusCode = 404;
+  } else if (error.message && error.message.includes('unauthorized')) {
+    errorCode = 'UNAUTHORIZED';
+    statusCode = 401;
+  } else if (error.message && error.message.includes('forbidden')) {
+    errorCode = 'FORBIDDEN';
+    statusCode = 403;
+  }
+  
+  // Log error for production monitoring
+  console.error(`[${timestamp}] ${operation} failed:`, {
+    error: errorMessage,
+    code: errorCode,
+    statusCode: statusCode,
+    stack: error.stack,
+    entity: entity,
+    operation: operation
+  });
+
+  // Return structured error response
+  res.status(statusCode).json({
+    message: errorCode,
+    params: {
+      operation: operation,
+      entity: entity,
+      timestamp: timestamp,
+      details: errorMessage
+    }
+  });
+};
+
 // ------------- CONFIG ENDPOINTS -------------
 router.post("/config", verifyToken, checkRole("admin"), async (req, res) => {
   try {
     const updatedConfig = await db.updateConfiguration(req.body);
     res.status(200).json(updatedConfig);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+    handleError(error, res, "updateConfiguration");
   }
 });
 
@@ -28,8 +75,7 @@ router.get("/config", verifyToken, checkRole("admin"), async (req, res) => {
     const config = await db.getConfiguration();
     res.json(config);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+    handleError(error, res, "getConfiguration");
   }
 });
 
@@ -39,7 +85,7 @@ router.post("/backup", verifyToken, checkRole("admin"), async (req, res) => {
     await uploadDatabaseToS3();
     res.status(201).send("Backup completed.");
   } catch (error) {
-    res.status(500).send("Backup failed.");
+    handleError(error, res, "uploadDatabaseToS3");
   }
 });
 
@@ -48,7 +94,7 @@ router.get("/backups", verifyToken, checkRole("admin"), async (req, res) => {
     const backups = await listBackups();
     res.status(200).json(backups);
   } catch (error) {
-    res.status(500).send("Error fetching backup list.");
+    handleError(error, res, "listBackups");
   }
 });
 
@@ -75,8 +121,7 @@ router.post("/restore", verifyToken, checkRole("admin"), async (req, res) => {
 
     res.status(201).send("Database restored successfully.");
   } catch (error) {
-    console.error("Failed to restore database backup:", error);
-    res.status(500).send("Failed to restore database backup.");
+    handleError(error, res, "downloadBackup and restoreDatabase");
   }
 });
 
@@ -100,15 +145,11 @@ router.get("/download/database", verifyToken, checkRole("admin"), async (req, re
     fileStream.pipe(res);
     
     fileStream.on('error', (error) => {
-      console.error("Error downloading database:", error);
-      if (!res.headersSent) {
-        res.status(500).json({ error: "Failed to download database" });
-      }
+      handleError(error, res, "downloadDatabase");
     });
 
   } catch (error) {
-    console.error("Error downloading database:", error);
-    res.status(500).json({ error: "Failed to download database" });
+    handleError(error, res, "getDatabaseDownload");
   }
 });
 
@@ -140,8 +181,7 @@ router.post(
       const categories = await db.getCategoriesWithItems();
       res.status(201).json(categories);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+      handleError(error, res, "addCategory");
     }
   }
 );
@@ -163,7 +203,13 @@ router.put(
       const existingCategory = await db.findCategory(category.uuid);
 
       if (!existingCategory) {
-        return res.status(404).send("Category not found");
+        return res.status(404).json({
+          message: "CATEGORY_NOT_FOUND",
+          params: {
+            categoryId: category.uuid,
+            operation: "updateCategory"
+          }
+        });
       }
 
       // Check if there's a new image
@@ -179,19 +225,13 @@ router.put(
         category.imageUrl = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${req.file.key}`;
       }
 
-      // else {
-      //   // Keep the existing image URL if no new image is uploaded
-      //   category.imageUrl = existingCategory.imageUrl;
-      // }
-
       // Update the category
       await db.updateCategory(category);
 
       const categories = await db.getCategoriesWithItems();
       res.status(200).json(categories);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+      handleError(error, res, "updateCategory", "category");
     }
   }
 );
@@ -206,7 +246,13 @@ router.delete(
       const category = await db.findCategory(categoryId);
 
       if (!category) {
-        return res.status(404).send("Category not found");
+        return res.status(404).json({
+          message: "CATEGORY_NOT_FOUND",
+          params: {
+            categoryId: categoryId,
+            operation: "deleteCategory"
+          }
+        });
       }
 
       // Delete the category's image from S3 if it exists
@@ -225,8 +271,7 @@ router.delete(
       const categories = await db.getCategoriesWithItems();
       res.status(200).json(categories);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+      handleError(error, res, "deleteCategory", "category");
     }
   }
 );
@@ -295,8 +340,7 @@ router.post(
       // 
       res.status(201).json(categories);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+      handleError(error, res, "addItem");
     }
   }
 );
@@ -306,7 +350,13 @@ router.get("/item/:id", verifyToken, checkRole("admin"), async (req, res) => {
   try {
     const item = await db.findItem(req.params.id);
     if (!item) {
-      return res.status(404).send("Item not found");
+      return res.status(404).json({
+        message: "ITEM_NOT_FOUND",
+        params: {
+          itemId: req.params.id,
+          operation: "findItem"
+        }
+      });
     }
 
     const plainItem = item.get({ plain: true });
@@ -336,8 +386,7 @@ router.get("/item/:id", verifyToken, checkRole("admin"), async (req, res) => {
 
     res.json(plainItem);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+    handleError(error, res, "findItem", "item");
   }
 });
 
@@ -356,7 +405,13 @@ router.put(
 
       const existingItem = await db.findItem(req.params.id);
       if (!existingItem) {
-        return res.status(404).send("Item not found");
+        return res.status(404).json({
+          message: "ITEM_NOT_FOUND",
+          params: {
+            itemId: req.params.id,
+            operation: "updateItem"
+          }
+        });
       }
 
       // Ensure the item keeps its UUID
@@ -373,11 +428,6 @@ router.put(
         // Set new image URL
         item.imageUrl = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${req.file.key}`;
       }
-
-      // else {
-      //   // Keep existing image
-      //   item.imageUrl = existingItem.imageUrl;
-      // }
 
       // Convert availability object to individual fields if provided
       if (item.availability) {
@@ -401,8 +451,7 @@ router.put(
       const categories = await db.getCategoriesWithItems();
       res.status(200).json(categories);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+      handleError(error, res, "updateItem", "item");
     }
   }
 );
@@ -418,7 +467,13 @@ router.delete(
       const item = await db.findItem(itemId);
 
       if (!item) {
-        return res.status(404).send("Item not found");
+        return res.status(404).json({
+          message: "ITEM_NOT_FOUND",
+          params: {
+            itemId: itemId,
+            operation: "deleteItem"
+          }
+        });
       }
 
       // Delete the item's image from S3 if it exists
@@ -432,8 +487,7 @@ router.delete(
       const categories = await db.getCategoriesWithItems();
       res.status(200).json(categories);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+      handleError(error, res, "deleteItem", "item");
     }
   }
 );
@@ -464,8 +518,7 @@ router.post("/add-on", verifyToken, checkRole("admin"), async (req, res) => {
     const addOns = await db.getAddOns();
     res.status(201).json(addOns);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+    handleError(error, res, "addAddOn");
   }
 });
 
@@ -474,12 +527,17 @@ router.get("/add-on/:id", verifyToken, checkRole("admin"), async (req, res) => {
   try {
     const addOn = await db.findAddOn(req.params.id);
     if (!addOn) {
-      return res.status(404).send("Add-on not found");
+      return res.status(404).json({
+        message: "ADDON_NOT_FOUND",
+        params: {
+          addOnId: req.params.id,
+          operation: "findAddOn"
+        }
+      });
     }
     res.json(addOn.get({ plain: true }));
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+    handleError(error, res, "findAddOn", "addon");
   }
 });
 
@@ -494,7 +552,13 @@ router.put("/add-on/:id", verifyToken, checkRole("admin"), async (req, res) => {
 
     const existingAddOn = await db.findAddOn(req.params.id);
     if (!existingAddOn) {
-      return res.status(404).send("Add-on not found");
+      return res.status(404).json({
+        message: "ADDON_NOT_FOUND",
+        params: {
+          addOnId: req.params.id,
+          operation: "updateAddOn"
+        }
+      });
     }
 
     // Ensure UUID is preserved
@@ -505,8 +569,7 @@ router.put("/add-on/:id", verifyToken, checkRole("admin"), async (req, res) => {
     const addOns = await db.getAddOns();
     res.status(200).json(addOns);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+    handleError(error, res, "updateAddOn", "addon");
   }
 });
 
@@ -521,7 +584,13 @@ router.delete(
 
       const existingAddOn = await db.findAddOn(addOnId);
       if (!existingAddOn) {
-        return res.status(404).send("Add-on not found");
+        return res.status(404).json({
+          message: "ADDON_NOT_FOUND",
+          params: {
+            addOnId: addOnId,
+            operation: "deleteAddOn"
+          }
+        });
       }
 
       await db.deleteAddOn(addOnId);
@@ -529,8 +598,7 @@ router.delete(
       const addOns = await db.getAddOns();
       res.status(200).json(addOns);
     } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+      handleError(error, res, "deleteAddOn", "addon");
     }
   }
 );
@@ -553,8 +621,7 @@ router.get("/orders", verifyToken, checkRole("admin"), async (req, res) => {
 
     res.json(orders);
   } catch (error) {
-    console.error("Error fetching orders:", error);
-    res.status(500).json({ error: "Failed to fetch orders" });
+    handleError(error, res, "getOrders");
   }
 });
 
@@ -584,8 +651,7 @@ router.get(
         ...stats,
       });
     } catch (error) {
-      console.error("Error fetching order statistics:", error);
-      res.status(500).json({ error: "Failed to fetch order statistics" });
+      handleError(error, res, "getOrderStats");
     }
   }
 );
