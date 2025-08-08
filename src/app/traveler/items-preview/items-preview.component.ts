@@ -1,4 +1,4 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input, signal, Output, EventEmitter } from '@angular/core';
 import { CartItem } from '../../services/cart.service';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../material.module';
@@ -20,6 +20,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 })
 export class ItemsPreviewComponent {
   @Input() cartItems: CartItem[] | undefined;
+  @Output() allItemsRemoved = new EventEmitter<void>();
 
   expandedItem = signal<number | null>(null);
 

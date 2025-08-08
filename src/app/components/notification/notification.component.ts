@@ -95,6 +95,7 @@ export class NotificationComponent implements OnDestroy {
     ],
   ]);
   show = false;
+  initNotificationBox: boolean = false;
   showNotification: 'hide' | 'show' = 'hide';
   isRtl = false;
   title: NotificationTitle | undefined;
@@ -108,6 +109,10 @@ export class NotificationComponent implements OnDestroy {
     private notificationsService: NotificationsService,
     private translate: TranslateService
   ) {
+    // TODO: fix notification should override the previous one
+    setTimeout(() => {
+      this.initNotificationBox = true;
+    }, 0);
     this.languageService.rtl$
       .pipe(takeUntil(this.destroy$))
       .subscribe((rtl) => (this.isRtl = rtl));

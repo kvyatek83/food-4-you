@@ -1,0 +1,74 @@
+<div
+  *ngIf="lang$ | async; let lang"
+  class="order-dialog-container"
+  appLanguageDirection
+  (languageChanged)="languageChanged($event)"
+>
+  <h2 mat-dialog-title class="dialog-title">
+    {{ 'cart.orderDialog.title' | translate }}
+  </h2>
+  
+  <mat-dialog-content class="order-dialog-content">
+    <!-- Order Type Selection -->
+    <div class="order-type-section">
+      <mat-button-toggle-group 
+        class="order-type-toggle"
+        [hideSingleSelectionIndicator]="true"
+        [(ngModel)]="orderType" 
+        name="orderType" 
+        class="order-type-toggle">
+        <mat-button-toggle value="takeaway" class="toggle-button">
+          <span class="toggle-text">{{ 'cart.orderDialog.takeaway' | translate }}</span>
+        </mat-button-toggle>
+        <mat-button-toggle value="sitdown" class="toggle-button">
+          <span class="toggle-text">{{ 'cart.orderDialog.sitdown' | translate }}</span>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <!-- Customer Name Input -->
+    <div class="customer-name-section">
+      <mat-form-field appearance="outline" class="full-width customer-name-field" [dir]="dir">
+        <mat-label>{{ 'cart.orderDialog.customerName' | translate }}</mat-label>
+        <input 
+          matInput 
+          [(ngModel)]="customerName" 
+          [placeholder]="'cart.orderDialog.customerNamePlaceholder' | translate"
+          required
+          class="customer-name-input">
+      </mat-form-field>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+      <h3 class="summary-title">{{ 'cart.orderDialog.orderSummary' | translate }}</h3>
+      <mat-divider class="summary-divider"></mat-divider>
+      <div class="summary-items">
+        <div *ngFor="let item of data.items" class="summary-item">
+          <span class="item-quantity">x{{ item.quantity }}</span>
+          <span class="item-name">{{ item.itemName  }}</span>
+          <span class="item-price">{{ item.itemTotalPrice | currency:'GTQ':'symbol':'1.2-2' }}</span>
+        </div>
+      </div>
+      <div class="total-section">
+        <span class="total-label">{{ 'cart.orderDialog.total' | translate }}</span>
+        <span class="total-amount">{{ data.totalAmount | currency:'GTQ':'symbol':'1.2-2' }}</span>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-button class="cancel-button" (click)="onCancel()">
+      {{ 'cart.orderDialog.cancel' | translate }}
+    </button>
+    <button 
+      mat-raised-button 
+      color="primary" 
+      class="confirm-button"
+      (click)="onConfirm()"
+      [disabled]="!isValid()">
+      <mat-icon class="confirm-icon">shopping_cart</mat-icon>
+      <span class="confirm-text">{{ 'cart.orderDialog.finishOrder' | translate }}</span>
+    </button>
+  </mat-dialog-actions>
+</div> 

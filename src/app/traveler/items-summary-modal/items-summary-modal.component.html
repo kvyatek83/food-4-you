@@ -7,7 +7,10 @@
     {{ "itemPreview.title" | translate : { itemName: itemName } }}
   </h2>
   <mat-dialog-content class="modal-content">
-    <app-items-preview [cartItems]="[cartItems]"></app-items-preview>
+    <app-items-preview 
+      [cartItems]="[cartItems]"
+      (allItemsRemoved)="onAllItemsRemoved()"
+    ></app-items-preview>
   </mat-dialog-content>
   <mat-dialog-actions align="center">
     <button mat-button mat-dialog-close>
