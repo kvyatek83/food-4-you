@@ -49,6 +49,7 @@ export class ItemPreviewComponent {
   @Input() expanded = false;
 
   @Output() opened = new EventEmitter<number>();
+  @Output() allItemsRemoved = new EventEmitter<void>();
 
   public lang$: Observable<LanguageType> = new Observable<LanguageType>();
   public groupedCartItem: GroupedCartItem[] = [];
@@ -97,6 +98,29 @@ export class ItemPreviewComponent {
     group.items.forEach((item) => {
       this.cartService.removeVariant(this.cartItem!.itemUuid, item.id);
     });
+    
+    // Check if all items are removed
+    const updatedCartItem = this.cartService.getCartItem(this.cartItem.itemUuid);
+    if (!updatedCartItem || updatedCartItem.items.size === 0) {
+      this.allItemsRemoved.emit();
+    }
+    
+    this.groupedCartItem = this.groupSimilarItems();
+  }
+
+  // Add one more item with the same add-ons
+  addOneItem(group: GroupedCartItem): void {
+    if (!this.cartItem?.itemUuid || !this.cartItem?.item) return;
+
+    this.cartService.addItemWithSameAddOns(this.cartItem.item, group.addOns);
+    this.groupedCartItem = this.groupSimilarItems();
+  }
+
+  // Remove one item from the group
+  removeOneItem(group: GroupedCartItem): void {
+    if (!this.cartItem?.itemUuid) return;
+
+    this.cartService.removeOneItemFromGroup(this.cartItem.itemUuid, group.addOns);
     this.groupedCartItem = this.groupSimilarItems();
   }
 }

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MaterialModule } from '../../material.module';
 import { CommonModule } from '@angular/common';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CartItem } from '../../services/cart.service';
 import { ItemsPreviewComponent } from '../items-preview/items-preview.component';
 import { Observable } from 'rxjs';
@@ -32,7 +32,8 @@ export class ItemsSummaryModalComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: CartItem,
     private languageService: LanguageService,
-    private propertiesTranslationPipe: PropertiesTranslationPipe
+    private propertiesTranslationPipe: PropertiesTranslationPipe,
+    private dialogRef: MatDialogRef<ItemsSummaryModalComponent>
   ) {
     // TODOL: add sub for cart item remove and close modal
     this.lang$ = this.languageService.currentLanguage$;
@@ -42,5 +43,9 @@ export class ItemsSummaryModalComponent {
       this.languageService.currentLanguage,
       'Name'
     );
+  }
+
+  onAllItemsRemoved(): void {
+    this.dialogRef.close();
   }
 }

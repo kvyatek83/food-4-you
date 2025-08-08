@@ -222,6 +222,12 @@ export class CartService {
     return `${totalPrice.toFixed(2)} GTQ`;
   }
 
+  calculateCartItemTotal(cartItem: CartItem): number {
+    const costString = this.calcCartItemCost(cartItem);
+    // Extract number from "XX.XX GTQ" format
+    return parseFloat(costString.replace(' GTQ', ''));
+  }
+
   placeOrder(customerDetails: CustomerDetails): Observable<OrderResponse> {
     // Get current cart items
     const cartItems = this.cartItems.value.map((cartItem) => {
@@ -231,15 +237,45 @@ export class CartService {
       };
     });
 
-    console.log(cartItems);
+    // Calculate total amount
+    const totalAmount = this.cartItems.value.reduce((sum, cartItem) => {
+      return sum + this.calculateCartItemTotal(cartItem);
+    }, 0);
 
     // Prepare order payload
     const orderPayload = {
-      customerDetails,
+      customerName: customerDetails.name,
+      customerPhone: customerDetails.phone,
       cartItems,
+      totalAmount: Number(totalAmount.toFixed(2))
     };
 
     // Send order to server
     return this.http.post<OrderResponse>(`/api/traveler/orders`, orderPayload);
+  }
+
+  // Add a new item with the same add-ons as an existing group
+  addItemWithSameAddOns(item: Item, addOns: string[]): void {
+    this.addItem(item, addOns);
+  }
+
+  // Remove one item from a specific group (by add-ons)
+  removeOneItemFromGroup(itemUuid: string, addOns: string[]): void {
+    const currentItems = this.cartItems.value;
+    const itemIndex = currentItems.findIndex((i) => i.itemUuid === itemUuid);
+
+    if (itemIndex > -1) {
+      const cartItem = currentItems[itemIndex];
+      const sortedAddOns = [...addOns].sort();
+      
+      // Find the first item with matching add-ons
+      for (const [cartItemId, itemAddOns] of cartItem.items.entries()) {
+        const sortedItemAddOns = [...itemAddOns].sort();
+        if (JSON.stringify(sortedItemAddOns) === JSON.stringify(sortedAddOns)) {
+          this.removeVariant(itemUuid, cartItemId);
+          break;
+        }
+      }
+    }
   }
 }

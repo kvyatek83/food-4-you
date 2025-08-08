@@ -25,6 +25,7 @@ import { AndroidPrinterService } from '../../services/android-printer.service';
 import { NotificationsService } from '../../services/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomerDetails } from '../traveler.models';
+import { PropertiesTranslationPipe } from '../../pipes/properties-translation.pipe';
 
 @Component({
   selector: 'app-cart',
@@ -58,7 +59,8 @@ export class CartComponent implements OnInit {
     private kitchenReceiptService: KitchenReceiptService,
     private androidPrinterService: AndroidPrinterService,
     private notificationsService: NotificationsService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private propertiesTranslationPipe: PropertiesTranslationPipe
   ) {
     this.lang$ = this.languageService.currentLanguage$;
   }
@@ -113,14 +115,16 @@ export class CartComponent implements OnInit {
   }
 
   calculateTotalAmount(): number {
-    return this.cartItems.reduce((sum, cartItem) => {
+    const total = this.cartItems.reduce((sum, cartItem) => {
       return sum + this.calculateCartItemTotal(cartItem);
     }, 0);
+    return Number(total.toFixed(2));
   }
 
   private createDialogItems(): any[] {
+    const currentLang = this.languageService.currentLanguage;
     return this.cartItems.map(cartItem => ({
-      itemName: cartItem.item.enName, // Use English name for dialog
+      itemName: this.propertiesTranslationPipe.transform(cartItem.item, currentLang, 'Name'),
       quantity: cartItem.items.size,
       price: cartItem.item.price,
       itemTotalPrice: this.calculateCartItemTotal(cartItem)
@@ -158,7 +162,7 @@ export class CartComponent implements OnInit {
       this.printKitchenReceipt(formattedReceipt, orderDetails, orderNumber);
     } else {
       // For browser testing, just save the order
-      this.saveOrderToDatabase(orderDetails, orderNumber, totalAmount);
+      this.saveOrderToDatabase(orderDetails, orderNumber);
     }
   }
 
@@ -199,7 +203,7 @@ export class CartComponent implements OnInit {
       next: (printResult) => {
         if (printResult.success) {
           console.log('Kitchen receipt printed successfully');
-          this.saveOrderToDatabase(orderDetails, orderNumber, this.calculateTotalAmount());
+          this.saveOrderToDatabase(orderDetails, orderNumber);
           
           this.notificationsService.setNotification({
             type: 'SUCCESS',
@@ -225,7 +229,7 @@ export class CartComponent implements OnInit {
     });
   }
 
-  private saveOrderToDatabase(orderDetails: OrderDialogResult, orderNumber: string, totalAmount: number): void {
+  private saveOrderToDatabase(orderDetails: OrderDialogResult, orderNumber: string): void {
     // Prepare order data for database using CustomerDetails interface
     const customerDetails: CustomerDetails = {
       name: orderDetails.customerName,
@@ -238,6 +242,9 @@ export class CartComponent implements OnInit {
         console.log('Order saved to database:', response);
         
         // Clear cart after successful order
+        // TODO: nav to menu
+        // TODO: order number should be in the order details
+        // TODO: print receipt should be before the order is saved
         this.cartService.clearCart();
         
         this.notificationsService.setNotification({

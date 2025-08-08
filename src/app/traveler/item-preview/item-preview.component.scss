@@ -48,6 +48,14 @@
   min-width: 45%;
 }
 
+.cart-item-permutation-name span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
 .cart-item-permutation-price-and-actions {
   display: flex;
   flex-grow: 2;
@@ -56,11 +64,40 @@
   justify-content: space-between;
 }
 
+.action-icons-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .action-icon {
+  transition: all 0.2s ease-in-out;
+  border-radius: 50%;
+  padding: 2px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.amount-icon {
   color: black;
   height: 30px;
   width: 30px;
   font-size: 30px;
+  
+
+  &:hover {
+    color: #1976d2;
+  }
 }
 
 .delete-item {
@@ -68,6 +105,12 @@
   height: 30px;
   width: 30px;
   font-size: 30px;
+  border-radius: 50%;
+
+  &:hover {
+    color: #d32f2f;
+    background-color: rgba(211, 47, 47, 0.1);
+  }
 }
 
 .mat-expansion-panel-header,

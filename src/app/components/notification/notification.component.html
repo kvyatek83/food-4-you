@@ -1,4 +1,5 @@
 <div
+  *ngIf="initNotificationBox"
   class="toast"
   [class.rtl]="isRtl"
   [ngClass]="{ 'stick-left': !isRtl, 'stick-right': isRtl }"
