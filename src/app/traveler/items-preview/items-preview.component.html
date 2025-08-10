@@ -6,6 +6,7 @@
         [cartItem]="cartItem"
         [expanded]="expandedItem() === i"
         (opened)="setExpandedItem(i)"
+        (allItemsRemoved)="allItemsRemoved.emit()"
       ></app-item-preview>
     </div>
   </ng-container>

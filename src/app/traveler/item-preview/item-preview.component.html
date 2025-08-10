@@ -30,28 +30,34 @@
 
       <div class="cart-item-permutation-price-and-actions">
         <span>{{ cartItem | previewItemCost : group.permutationUuids }}</span>
-        <div>
-          <mat-icon
-            *ngIf="group.count > 1"
-            class="action-icon"
+        <div class="action-icons-container">
+          <div class="action-icon" *ngIf="group.count > 1">
+            <mat-icon
+            class="amount-icon"
             aria-hidden="false"
             aria-label="Remove one item"
             fontIcon="remove"
+            (click)="removeOneItem(group)"
           ></mat-icon>
-          <mat-icon
+          </div>
+          <div class="action-icon">
+            <mat-icon
             class="delete-item"
             aria-hidden="false"
             aria-label="Remove all items"
             fontIcon="delete_forever__outline"
             (click)="removeItemGroup(group)"
           ></mat-icon>
-
-          <mat-icon
-            class="action-icon enable-icon"
+          </div>
+          <div class="action-icon">
+            <mat-icon
+            class="amount-icon"
             aria-hidden="false"
             aria-label="Add one more item"
             fontIcon="add"
+            (click)="addOneItem(group)"
           ></mat-icon>
+          </div>
         </div>
       </div>
     </div>
