@@ -168,6 +168,19 @@
     }
   }
 
+  &.bottom-gradient-2 {
+    &::after {
+      bottom: 140px;
+      opacity: 1;
+      background: linear-gradient(
+        to top,
+        rgba(111, 82, 55, 1) 0%,
+        rgba(111, 82, 55, 0.8) 0%,
+        rgba(111, 82, 55, 0) 100%
+      );
+    }
+  }
+
   &.mid-bottom-gradient {
     &::after {
       bottom: 140px;

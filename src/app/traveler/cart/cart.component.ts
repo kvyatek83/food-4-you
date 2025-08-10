@@ -78,7 +78,7 @@ export class CartComponent implements OnInit {
       });
 
       // TODO: optimize for Android
-    // this.checkPrinter();
+    this.checkPrinter();
   }
 
   processOrder(): void {
@@ -157,6 +157,7 @@ export class CartComponent implements OnInit {
     // Format receipt for kitchen (in Spanish)
     const formattedReceipt = this.kitchenReceiptService.formatForKitchen(kitchenReceiptData);
 
+    // TODO: print receipt should be after the order is saved and need to update the order details with the receipt data is success
     // Print to kitchen if Android environment
     if (this.androidPrinterService.isAndroidEnvironment) {
       this.printKitchenReceipt(formattedReceipt, orderDetails, orderNumber);
@@ -239,7 +240,6 @@ export class CartComponent implements OnInit {
     // Save order to database
     this.cartService.placeOrder(customerDetails).pipe(take(1)).subscribe({
       next: (response) => {
-        console.log('Order saved to database:', response);
         
         // Clear cart after successful order
         // TODO: nav to menu
@@ -273,53 +273,12 @@ export class CartComponent implements OnInit {
     this.printerService.isPrinterAvailable().subscribe((available) => {
       this.printerAvailable = available;
       if (available) {
-        this.printSampleReceipt();
+      } else {  
+        
       }
     });
   }
 
-  // TODO: change to kitchen order
-  printSampleReceipt(): void {
-    const sampleReceipt: ReceiptData = {
-      headerInfo: {
-        storeName: 'My Angular Store',
-        storeAddress: '123 Web Avenue',
-        storeCity: 'Internet City, Web 54321',
-      },
-      date: new Date().toLocaleString(),
-      transactionType: 'SALE',
-      items: [
-        {
-          sku: 'ANG001',
-          description: 'Angular Book',
-          price: 29.99,
-        },
-        {
-          sku: 'TS002',
-          description: 'TypeScript Guide',
-          price: 19.99,
-        },
-      ],
-      subtotal: 49.98,
-      tax: 3.0,
-      total: 52.98,
-      paymentInfo: {
-        method: 'Credit Card',
-        amount: '52.98',
-        cardNumber: 'Visa XXXX-XXXX-XXXX-4321',
-      },
-      footerInfo: {
-        refundPolicy: 'Return Policy',
-        returnPolicy: 'Returns accepted within 14 days',
-        thankYouMessage: 'Thank you for your purchase!',
-      },
-    };
-
-    this.printerService.printReceipt(sampleReceipt).subscribe((result) => {
-      this.printResult = result;
-      console.log('Print completed with result:', result);
-    });
-  }
 
   languageChanged(languageDirection: LanguageDirection): void {
     this.dir = languageDirection;
