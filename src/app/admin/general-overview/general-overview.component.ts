@@ -89,7 +89,6 @@ export class GeneralOverviewComponent implements OnInit, OnDestroy {
 
   loadBackups() {
     this.backupService.backup$.subscribe((backups) => {
-      console.log(backups);
       this.backupList.clear();
 
       backups?.forEach((backup) => {
