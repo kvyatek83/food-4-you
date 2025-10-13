@@ -328,6 +328,24 @@ const Configuration = sequelize.define("Configuration", {
     type: DataTypes.TEXT,
     allowNull: true,
   },
+  // Enhanced printer error categorization
+  printerErrorType: {
+    type: DataTypes.ENUM('no_paper', 'lid_open', 'not_connected', 'communication_error', 'device_error', 'unknown'),
+    allowNull: true,
+  },
+  printerErrorDetails: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  printerErrorCount: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
+  lastErrorTimestamp: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   // Add more configuration fields as needed
 }, {
   // Ensure only one configuration record exists
@@ -722,6 +740,82 @@ async function getOrderStats(startDate, endDate) {
   };
 }
 
+async function getOrderStatsByTimeFrame(startDate, endDate) {
+  // Count of orders
+  const totalOrders = await Order.count({
+    where: {
+      orderDate: {
+        [Sequelize.Op.between]: [startDate, endDate],
+      },
+    },
+  });
+
+  // Sum of all items across orders (total quantity)
+  const totalItems = await OrderItem.sum("quantity", {
+    include: [
+      {
+        model: Order,
+        as: "order",
+        attributes: [],
+        where: {
+          orderDate: {
+            [Sequelize.Op.between]: [startDate, endDate],
+          },
+        },
+      },
+    ],
+  });
+
+  // Count of unique categories that have items ordered
+  const totalCategories = await sequelize.query(
+    `
+    SELECT COUNT(DISTINCT i.categoryId) as categoryCount
+    FROM OrderItems oi
+    JOIN Orders o ON o.uuid = oi.orderUuid
+    JOIN Items i ON i.uuid = oi.itemUuid
+    WHERE o.orderDate BETWEEN :startDate AND :endDate
+    `,
+    {
+      replacements: { startDate, endDate },
+      type: Sequelize.QueryTypes.SELECT,
+    }
+  );
+
+  // Total revenue from all orders in time frame
+  const totalRevenue = await Order.sum("totalAmount", {
+    where: {
+      orderDate: {
+        [Sequelize.Op.between]: [startDate, endDate],
+      },
+    },
+  });
+
+  // Top 10 most wanted items by total quantity ordered
+  const topItems = await sequelize.query(
+    `
+    SELECT oi.itemName, SUM(oi.quantity) as orderCount
+    FROM OrderItems oi
+    JOIN Orders o ON o.uuid = oi.orderUuid
+    WHERE o.orderDate BETWEEN :startDate AND :endDate
+    GROUP BY oi.itemUuid, oi.itemName
+    ORDER BY orderCount DESC
+    LIMIT 10
+    `,
+    {
+      replacements: { startDate, endDate },
+      type: Sequelize.QueryTypes.SELECT,
+    }
+  );
+
+  return {
+    totalOrders: totalOrders || 0,
+    totalItems: totalItems || 0,
+    totalCategories: totalCategories[0]?.categoryCount || 0,
+    totalRevenue: totalRevenue || 0,
+    topItems: topItems || []
+  };
+}
+
 async function updateOrderPrintStatus(orderId, printed) {
   await Order.update({ printed }, { where: { uuid: orderId } });
 }
@@ -786,6 +880,7 @@ module.exports = {
   getAllOrders,
   getOrdersByDateRange,
   getOrderStats,
+  getOrderStatsByTimeFrame,
   updateOrderPrintStatus,
   clearDatabase,
   closeConnections,

@@ -52,14 +52,23 @@
     },
     "printerStatus": {
       "title": "Printer Status",
+      "printerSettings": "Printer Settings",
       "refresh": "Refresh Status",
       "enabled": "Enabled",
       "yes": "Yes",
-      "no": "No"
+      "no": "No",
+      "notConfigured": "Not configured",
+      "lastCheck": "Last check:",
+      "lastPrint": "Last print:",
+      "success": "Success",
+      "failed": "Failed",
+      "printError": "Print error:",
+      "noStatusAvailable": "No printer status available"
     },
     "backups": {
       "title": "Database Backups",
       "createBackup": "Create New Backup",
+      "downloadDatabase": "Download Database",
       "selectBackup": "Select Backup",
       "restoreBackup": "Restore Selected Backup",
       "noBackups": "No backups available. Create your first backup."
@@ -80,6 +89,20 @@
     },
     "statistics": {
       "title": "Order Statistics",
+      "timeFrames": {
+        "oneDay": "1 Day",
+        "oneWeek": "1 Week",
+        "oneMonth": "1 Month"
+      },
+      "overview": "Overview",
+      "totalOrders": "Total Orders",
+      "totalItemsOrdered": "Total Items Ordered",
+      "orderedCategories": "Ordered Categories",
+      "totalRevenue": "Total Revenue",
+      "loadingStatistics": "Loading statistics...",
+      "topItemsTitle": "Top 10 Most Ordered Items (by quantity)",
+      "timesOrdered": "times ordered",
+      "noDataAvailable": "No order data available for the selected time frame",
       "today": "Today",
       "thisWeek": "This Week",
       "thisMonth": "This Month",
@@ -366,11 +389,19 @@
       "emptyCart": "Your cart is empty. Please add items before ordering.",
       "printFailed": "Failed to print kitchen receipt: {{error}}",
       "printError": "Error occurred while printing. Please try again.",
-      "orderSaveFailed": "Failed to save order to database. Please try again."
+      "orderSaveFailed": "Failed to save order to database. Please try again.",
+      "printerUnavailable": "Printer is currently unavailable.",
+      "printingIssue": "Order #{{orderNumber}} was saved but couldn't be printed: {{error}}"
     },
     "success": {
       "orderPrinted": "Order #{{orderNumber}} printed successfully to kitchen!",
-      "orderPlaced": "Order #{{orderNumber}} placed successfully!"
+      "orderPlaced": "Order #{{orderNumber}} placed successfully!",
+      "orderPrintedAndSaved": "Order #{{orderNumber}} saved and printed successfully!"
+    },
+    "warnings": {
+      "printerDisabled": "Order #{{orderNumber}} was saved but printer is disabled. Please notify kitchen staff.",
+      "orderSavedPrintFailed": "Order #{{orderNumber}} was saved but printing failed: {{error}}. Please notify kitchen staff.",
+      "orderSavedPrintError": "Order #{{orderNumber}} was saved but couldn't be printed due to an error. Please notify kitchen staff."
     }
   },
   "printerTest": {
