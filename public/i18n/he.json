@@ -52,14 +52,23 @@
     },
     "printerStatus": {
       "title": "מצב המדפסת",
+      "printerSettings": "הגדרות מדפסת",
       "refresh": "רענן מצב",
       "enabled": "מופעל",
       "yes": "כן",
-      "no": "לא"
+      "no": "לא",
+      "notConfigured": "לא מוגדר",
+      "lastCheck": "בדיקה אחרונה:",
+      "lastPrint": "הדפסה אחרונה:",
+      "success": "הצליח",
+      "failed": "נכשל",
+      "printError": "שגיאת הדפסה:",
+      "noStatusAvailable": "אין מצב מדפסת זמין"
     },
     "backups": {
       "title": "גיבויי מסד נתונים",
       "createBackup": "צור גיבוי חדש",
+      "downloadDatabase": "הורד מסד נתונים",
       "selectBackup": "בחר גיבוי",
       "restoreBackup": "שחזר גיבוי נבחר",
       "noBackups": "אין גיבויים זמינים. צור את הגיבוי הראשון שלך."
@@ -80,6 +89,20 @@
     },
     "statistics": {
       "title": "סטטיסטיקת הזמנות",
+      "timeFrames": {
+        "oneDay": "יום אחד",
+        "oneWeek": "שבוע אחד",
+        "oneMonth": "חודש אחד"
+      },
+      "overview": "סקירה",
+      "totalOrders": "סה\"כ הזמנות",
+      "totalItemsOrdered": "סה\"כ פריטים שהוזמנו",
+      "orderedCategories": "קטגוריות שהוזמנו",
+      "totalRevenue": "סה\"כ הכנסות",
+      "loadingStatistics": "טוען סטטיסטיקות...",
+      "topItemsTitle": "10 הפריטים הנמכרים ביותר (לפי כמות)",
+      "timesOrdered": "פעמים הוזמן",
+      "noDataAvailable": "אין נתוני הזמנות זמינים לתקופה שנבחרה",
       "today": "היום",
       "thisWeek": "השבוע",
       "thisMonth": "החודש",

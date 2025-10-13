@@ -149,7 +149,10 @@ router.get("/download/database", verifyToken, checkRole("admin"), async (req, re
     });
 
   } catch (error) {
-    handleError(error, res, "getDatabaseDownload");
+    console.error("Error downloading database:", error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to download database" });
+    }
   }
 });
 
@@ -336,8 +339,6 @@ router.post(
         });
         return category;
       });
-      res.json(categories);
-      // 
       res.status(201).json(categories);
     } catch (error) {
       handleError(error, res, "addItem");
@@ -652,6 +653,42 @@ router.get(
       });
     } catch (error) {
       handleError(error, res, "getOrderStats");
+    }
+  }
+);
+
+// Get order statistics by time frame (1 day, 1 week, 1 month)
+router.get(
+  "/order-statistics",
+  verifyToken,
+  checkRole("admin"),
+  async (req, res) => {
+    try {
+      const timeFrame = parseInt(req.query.timeFrame) || 7; // Default to 1 week
+      
+      // Calculate date range based on time frame
+      const endDate = new Date();
+      const startDate = new Date();
+      
+      if (timeFrame === 1) {
+        // 1 day
+        startDate.setDate(endDate.getDate() - 1);
+      } else if (timeFrame === 7) {
+        // 1 week
+        startDate.setDate(endDate.getDate() - 7);
+      } else if (timeFrame === 30) {
+        // 1 month
+        startDate.setMonth(endDate.getMonth() - 1);
+      } else {
+        return res.status(400).json({ error: "Invalid time frame. Use 1, 7, or 30." });
+      }
+
+      const stats = await db.getOrderStatsByTimeFrame(startDate, endDate);
+
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching order statistics:", error);
+      res.status(500).json({ error: "Failed to fetch order statistics" });
     }
   }
 );

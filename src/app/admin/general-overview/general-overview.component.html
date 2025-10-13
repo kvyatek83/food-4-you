@@ -7,86 +7,78 @@
     <h1 class="page-title">{{ "generalOverview.title" | translate }}</h1>
 
     <div class="section-container">
-      <!-- System Information Section -->
-      <div class="card system-info">
+      <!-- Printer Status Section -->
+      <div class="card printer-status-card">
         <div class="card-header">
-          <mat-icon>info</mat-icon>
-          <!-- print_error
-          print_connect -->
-          <h2>{{ "generalOverview.systemInfo.title" | translate }}</h2>
+          <mat-icon>print</mat-icon>
+          <h2>{{ "generalOverview.printerStatus.printerSettings" | translate }}</h2>
         </div>
 
         <div class="card-content">
-          <div class="info-row">
-            <span class="info-label"
-              >{{ "generalOverview.systemInfo.appVersion" | translate }}:</span
-            >
-            <span class="info-value">{{ systemInfo.version }}</span>
-          </div>
-
-          <div class="info-row">
-            <span class="info-label"
-              >{{ "generalOverview.systemInfo.dbVersion" | translate }}:</span
-            >
-            <span class="info-value">{{ systemInfo.dbVersion }}</span>
-          </div>
-
-          <div class="info-row">
-            <span class="info-label"
-              >{{ "generalOverview.systemInfo.lastUpdate" | translate }}:</span
-            >
-            <span class="info-value">{{ systemInfo.lastUpdated | date }}</span>
-          </div>
-
-          <!-- Printer Status Section -->
-           <!-- TODO: i18n -->
-          <div class="printer-status-section">
-            <mat-divider></mat-divider>
-            <h3>{{ "generalOverview.printerStatus.title" | translate }}</h3>
-            
-            <div *ngIf="printerStatusFromDb" class="printer-status">
-              <div class="status-row">
-                <mat-icon [color]="getPrinterStatusColor(printerStatusFromDb)">
-                  {{ getPrinterStatusIcon(printerStatusFromDb) }}
-                </mat-icon>
-                <span class="status-text">{{ getPrinterStatusMessage(printerStatusFromDb) }}</span>
-                <button mat-icon-button (click)="refreshPrinterStatus()" 
-                        matTooltip="{{ 'generalOverview.printerStatus.refresh' | translate }}">
-                  <mat-icon>refresh</mat-icon>
-                </button>
-              </div>
-              
-              <div class="status-details">
-                <small>IP: {{ printerStatusFromDb.ip || 'Not configured' }}</small>
-                <small>{{ "generalOverview.printerStatus.enabled" | translate }}: 
-                  {{ printerStatusFromDb.enabled ? ('generalOverview.printerStatus.yes' | translate) : ('generalOverview.printerStatus.no' | translate) }}
-                </small>
-                <small *ngIf="printerStatusFromDb.lastStatusCheck">
-                  Last check: {{ printerStatusFromDb.lastStatusCheck | date:'short' }}
-                </small>
-                <small *ngIf="printerStatusFromDb.lastPrintAttempt">
-                  Last print: {{ printerStatusFromDb.lastPrintAttempt | date:'short' }}
-                  <span [style.color]="printerStatusFromDb.lastPrintSuccess ? 'green' : 'red'">
-                    ({{ printerStatusFromDb.lastPrintSuccess ? 'Success' : 'Failed' }})
-                  </span>
-                </small>
-                <small *ngIf="printerStatusFromDb.lastPrintError" style="color: red;">
-                  Print error: {{ printerStatusFromDb.lastPrintError }}
-                </small>
-              </div>
+          <div *ngIf="printerStatusFromDb" class="printer-status">
+            <div class="status-row">
+              <mat-icon [color]="getPrinterStatusColor(printerStatusFromDb)">
+                {{ getPrinterStatusIcon(printerStatusFromDb) }}
+              </mat-icon>
+              <span class="status-text">{{ getPrinterStatusMessage(printerStatusFromDb) }}</span>
+              <button mat-icon-button (click)="refreshPrinterStatus()" 
+                      matTooltip="{{ 'generalOverview.printerStatus.refresh' | translate }}">
+                <mat-icon>refresh</mat-icon>
+              </button>
             </div>
             
-            <div *ngIf="!printerStatusFromDb" class="printer-status">
-              <div class="status-row">
-                <mat-icon color="accent">help_outline</mat-icon>
-                <span class="status-text">No printer status available</span>
-                <button mat-icon-button (click)="refreshPrinterStatus()" 
-                        matTooltip="{{ 'generalOverview.printerStatus.refresh' | translate }}">
-                  <mat-icon>refresh</mat-icon>
-                </button>
-              </div>
+            <div class="status-details">
+              <small>IP: {{ printerStatusFromDb.ip || ('generalOverview.printerStatus.notConfigured' | translate) }}</small>
+              <small>{{ "generalOverview.printerStatus.enabled" | translate }}: 
+                {{ printerStatusFromDb.enabled ? ('generalOverview.printerStatus.yes' | translate) : ('generalOverview.printerStatus.no' | translate) }}
+              </small>
+              <small *ngIf="printerStatusFromDb.lastStatusCheck">
+                {{ 'generalOverview.printerStatus.lastCheck' | translate }} {{ printerStatusFromDb.lastStatusCheck | date:'short' }}
+              </small>
+              <small *ngIf="printerStatusFromDb.lastPrintAttempt">
+                {{ 'generalOverview.printerStatus.lastPrint' | translate }} {{ printerStatusFromDb.lastPrintAttempt | date:'short' }}
+                <span [style.color]="printerStatusFromDb.lastPrintSuccess ? 'green' : 'red'">
+                  ({{ printerStatusFromDb.lastPrintSuccess ? ('generalOverview.printerStatus.success' | translate) : ('generalOverview.printerStatus.failed' | translate) }})
+                </span>
+              </small>
+              <small *ngIf="printerStatusFromDb.lastPrintError" style="color: red;">
+                {{ 'generalOverview.printerStatus.printError' | translate }} {{ printerStatusFromDb.lastPrintError }}
+              </small>
             </div>
           </div>
+          
+          <div *ngIf="!printerStatusFromDb" class="printer-status">
+            <div class="status-row">
+              <mat-icon color="accent">help_outline</mat-icon>
+              <span class="status-text">{{ 'generalOverview.printerStatus.noStatusAvailable' | translate }}</span>
+              <button mat-icon-button (click)="refreshPrinterStatus()" 
+                      matTooltip="{{ 'generalOverview.printerStatus.refresh' | translate }}">
+                <mat-icon>refresh</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Printer IP Configuration -->
+          <mat-divider style="margin: 20px 0;"></mat-divider>
+          
+          <form [formGroup]="configForm" class="config-form">
+            <mat-form-field appearance="outline">
+              <mat-label>{{
+                "generalOverview.configuration.printerIp" | translate
+              }}</mat-label>
+              <input matInput type="text" formControlName="printerIp" placeholder="192.168.1.100" />
+              <mat-hint>{{ "generalOverview.configuration.printerIpHint" | translate }}</mat-hint>
+            </mat-form-field>
+
+            <div class="form-actions">
+              <button mat-button (click)="resetConfig()">
+                {{ "generalOverview.configuration.reset" | translate }}
+              </button>
+              <button mat-raised-button color="primary" (click)="saveConfig()">
+                {{ "generalOverview.configuration.save" | translate }}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 
@@ -125,7 +117,7 @@
               style="margin-left: 10px;"
             >
               <mat-icon>download</mat-icon>
-              <span>Download Database</span>
+              <span>{{ 'generalOverview.backups.downloadDatabase' | translate }}</span>
               <mat-spinner
                 *ngIf="isDownloadingDatabase"
                 diameter="20"
@@ -177,193 +169,62 @@
         </div>
       </div>
 
-      <!-- Configuration Section -->
-      <div class="card configuration">
-        <div class="card-header">
-          <mat-icon>settings</mat-icon>
-          <h2>{{ "generalOverview.configuration.title" | translate }}</h2>
-        </div>
-
-        <div class="card-content">
-          <form [formGroup]="configForm" class="config-form">
-            <mat-form-field appearance="outline">
-              <mat-label>{{
-                "generalOverview.configuration.printerIp" | translate
-              }}</mat-label>
-              <input matInput type="text" formControlName="printerIp" placeholder="192.168.1.100" />
-              <mat-hint>{{ "generalOverview.configuration.printerIpHint" | translate }}</mat-hint>
-            </mat-form-field>
-
-            <div class="checkbox-options">
-              <mat-checkbox color="primary" formControlName="printerEnabled">
-                {{
-                  "generalOverview.configuration.printerEnabled" | translate
-                }}
-              </mat-checkbox>
-            </div>
-
-            <mat-form-field appearance="outline">
-              <mat-label>{{
-                "generalOverview.configuration.taxRate" | translate
-              }}</mat-label>
-              <input matInput type="number" formControlName="taxRate" />
-              <span matSuffix>%</span>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>{{
-                "generalOverview.configuration.defaultCurrency" | translate
-              }}</mat-label>
-              <mat-select formControlName="defaultCurrency">
-                <mat-option value="GTQ">GTQ (Quetzal)</mat-option>
-                <mat-option value="USD">USD (US Dollar)</mat-option>
-                <mat-option value="EUR">EUR (Euro)</mat-option>
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>{{
-                "generalOverview.configuration.maxItemsPerOrder" | translate
-              }}</mat-label>
-              <input
-                matInput
-                type="number"
-                formControlName="maxItemsPerOrder"
-              />
-            </mat-form-field>
-
-            <div class="checkbox-options">
-              <mat-checkbox color="primary" formControlName="allowReservations">
-                {{
-                  "generalOverview.configuration.allowReservations" | translate
-                }}
-              </mat-checkbox>
-
-              <mat-checkbox
-                color="primary"
-                formControlName="notifyAdminOnNewOrder"
-              >
-                {{ "generalOverview.configuration.notifyAdmin" | translate }}
-              </mat-checkbox>
-            </div>
-
-            <div class="form-actions">
-              <button mat-button (click)="resetConfig()">
-                {{ "generalOverview.configuration.reset" | translate }}
-              </button>
-              <button mat-raised-button color="primary" (click)="saveConfig()">
-                {{ "generalOverview.configuration.save" | translate }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
       <!-- Order Statistics Section -->
       <div class="card order-statistics">
         <div class="card-header">
-          <mat-icon>assessment</mat-icon>
-          <h2>{{ "generalOverview.statistics.title" | translate }}</h2>
+          <mat-icon>analytics</mat-icon>
+          <h2>{{ 'generalOverview.statistics.title' | translate }}</h2>
         </div>
 
         <div class="card-content">
-          <div class="stats-period">
-            <h3>{{ "generalOverview.statistics.today" | translate }}</h3>
-            <div class="stats-grid">
+          <!-- Time Frame Selector -->
+          <div class="time-frame-selector">
+            <mat-button-toggle-group [(value)]="selectedTimeFrame" (change)="onTimeFrameSelectionChange($event)" hideSingleSelectionIndicator>
+              <mat-button-toggle value="1">{{ 'generalOverview.statistics.timeFrames.oneDay' | translate }}</mat-button-toggle>
+              <mat-button-toggle value="7">{{ 'generalOverview.statistics.timeFrames.oneWeek' | translate }}</mat-button-toggle>
+              <mat-button-toggle value="30">{{ 'generalOverview.statistics.timeFrames.oneMonth' | translate }}</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+
+          <!-- Order Counts Section -->
+          <div class="stats-section">
+            <h3>{{ 'generalOverview.statistics.overview' | translate }}</h3>
+            <div class="stats-grid" *ngIf="!isLoadingOrderStats">
               <div class="stat-item">
-                <div class="stat-value">{{ orderStats.today.count }}</div>
-                <div class="stat-label">
-                  {{ "generalOverview.statistics.orders" | translate }}
-                </div>
+                <div class="stat-number">{{ orderStats.totalOrders || 0 }}</div>
+                <div class="stat-label">{{ 'generalOverview.statistics.totalOrders' | translate }}</div>
               </div>
               <div class="stat-item">
-                <div class="stat-value">
-                  {{ orderStats.today.revenue | currency : "GTQ" : "symbol" }}
-                </div>
-                <div class="stat-label">
-                  {{ "generalOverview.statistics.revenue" | translate }}
-                </div>
+                <div class="stat-number">{{ orderStats.totalItems || 0 }}</div>
+                <div class="stat-label">{{ 'generalOverview.statistics.totalItemsOrdered' | translate }}</div>
               </div>
               <div class="stat-item">
-                <div class="stat-value">
-                  {{
-                    orderStats.today.averageValue | currency : "GTQ" : "symbol"
-                  }}
-                </div>
-                <div class="stat-label">
-                  {{ "generalOverview.statistics.average" | translate }}
-                </div>
+                <div class="stat-number">{{ orderStats.totalCategories || 0 }}</div>
+                <div class="stat-label">{{ 'generalOverview.statistics.orderedCategories' | translate }}</div>
               </div>
+              <div class="stat-item">
+                <div class="stat-number">GTQ {{ (orderStats.totalRevenue || 0).toFixed(2) }}</div>
+                <div class="stat-label">{{ 'generalOverview.statistics.totalRevenue' | translate }}</div>
+              </div>
+            </div>
+            <div class="loading-stats" *ngIf="isLoadingOrderStats">
+              <mat-spinner diameter="40"></mat-spinner>
+              <p>{{ 'generalOverview.statistics.loadingStatistics' | translate }}</p>
             </div>
           </div>
 
-          <mat-divider></mat-divider>
-
-          <div class="stats-period">
-            <h3>{{ "generalOverview.statistics.thisWeek" | translate }}</h3>
-            <div class="stats-grid">
-              <div class="stat-item">
-                <div class="stat-value">{{ orderStats.thisWeek.count }}</div>
-                <div class="stat-label">
-                  {{ "generalOverview.statistics.orders" | translate }}
-                </div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">
-                  {{
-                    orderStats.thisWeek.revenue | currency : "GTQ" : "symbol"
-                  }}
-                </div>
-                <div class="stat-label">
-                  {{ "generalOverview.statistics.revenue" | translate }}
-                </div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">
-                  {{
-                    orderStats.thisWeek.averageValue
-                      | currency : "GTQ" : "symbol"
-                  }}
-                </div>
-                <div class="stat-label">
-                  {{ "generalOverview.statistics.average" | translate }}
-                </div>
+          <!-- Top Items Section -->
+          <div class="stats-section">
+            <h3>{{ 'generalOverview.statistics.topItemsTitle' | translate }}</h3>
+            <div class="top-items-list" *ngIf="!isLoadingOrderStats && orderStats.topItems && orderStats.topItems.length > 0">
+              <div class="top-item" *ngFor="let item of orderStats.topItems; let i = index">
+                <div class="item-rank">#{{ i + 1 }}</div>
+                <div class="item-name">{{ item.itemName }}</div>
+                <div class="item-count">{{ item.orderCount }} {{ 'generalOverview.statistics.timesOrdered' | translate }}</div>
               </div>
             </div>
-          </div>
-
-          <mat-divider></mat-divider>
-
-          <div class="stats-period">
-            <h3>{{ "generalOverview.statistics.thisMonth" | translate }}</h3>
-            <div class="stats-grid">
-              <div class="stat-item">
-                <div class="stat-value">{{ orderStats.thisMonth.count }}</div>
-                <div class="stat-label">
-                  {{ "generalOverview.statistics.orders" | translate }}
-                </div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">
-                  {{
-                    orderStats.thisMonth.revenue | currency : "GTQ" : "symbol"
-                  }}
-                </div>
-                <div class="stat-label">
-                  {{ "generalOverview.statistics.revenue" | translate }}
-                </div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">
-                  {{
-                    orderStats.thisMonth.averageValue
-                      | currency : "GTQ" : "symbol"
-                  }}
-                </div>
-                <div class="stat-label">
-                  {{ "generalOverview.statistics.average" | translate }}
-                </div>
-              </div>
+            <div class="no-data" *ngIf="!isLoadingOrderStats && (!orderStats.topItems || orderStats.topItems.length === 0)">
+              <p>{{ 'generalOverview.statistics.noDataAvailable' | translate }}</p>
             </div>
           </div>
         </div>

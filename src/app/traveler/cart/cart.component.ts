@@ -21,7 +21,7 @@ import { MaterialModule } from '../../material.module';
 import { MatDialog } from '@angular/material/dialog';
 import { OrderDialogComponent, OrderDialogData, OrderDialogResult } from './order-dialog.component';
 import { KitchenReceiptService, KitchenReceiptData } from '../../services/kitchen-receipt.service';
-import { AndroidPrinterService } from '../../services/android-printer.service';
+import { AndroidPrinterService, DetailedPrinterStatus } from '../../services/android-printer.service';
 import { NotificationsService } from '../../services/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomerDetails } from '../traveler.models';
@@ -144,6 +144,50 @@ export class CartComponent implements OnInit {
     // Generate order number
     const orderNumber = this.kitchenReceiptService.generateOrderNumber();
 
+    // Always save order to database first (ensures manager can see it even if printing fails)
+    this.saveOrderToDatabase(orderDetails, orderNumber, () => {
+      // After successful save, attempt to print
+      if (this.androidPrinterService.isAndroidEnvironment) {
+        this.checkPrinterAndPrint(orderDetails, orderNumber, totalAmount);
+      } else {
+        // For browser testing, order is already saved - just show success
+        this.notificationsService.setNotification({
+          type: 'SUCCESS',
+          message: this.translate.instant('cart.success.orderPlaced', { orderNumber })
+        });
+        this.isProcessingOrder = false;
+      }
+    });
+  }
+
+  private checkPrinterAndPrint(orderDetails: OrderDialogResult, orderNumber: string, totalAmount: number): void {
+    // Check printer status before attempting to print
+    this.androidPrinterService.getDetailedPrinterStatus().subscribe({
+      next: (printerStatus) => {
+        if (!printerStatus.printerEnabled) {
+          this.showPrinterDisabledMessage(orderNumber);
+          this.isProcessingOrder = false;
+          return;
+        }
+
+        if (!printerStatus.printerAvailable || printerStatus.printerErrorType) {
+          this.showPrinterErrorMessage(printerStatus, orderNumber);
+          this.isProcessingOrder = false;
+          return;
+        }
+
+        // Printer is available, proceed with printing
+        this.proceedWithPrinting(orderDetails, orderNumber, totalAmount);
+      },
+      error: (error) => {
+        console.error('Error checking printer status:', error);
+        // Proceed with printing attempt even if status check failed
+        this.proceedWithPrinting(orderDetails, orderNumber, totalAmount);
+      }
+    });
+  }
+
+  private proceedWithPrinting(orderDetails: OrderDialogResult, orderNumber: string, totalAmount: number): void {
     // Create kitchen receipt data with proper format
     const kitchenReceiptData: KitchenReceiptData = {
       customerName: orderDetails.customerName,
@@ -157,14 +201,28 @@ export class CartComponent implements OnInit {
     // Format receipt for kitchen (in Spanish)
     const formattedReceipt = this.kitchenReceiptService.formatForKitchen(kitchenReceiptData);
 
-    // TODO: print receipt should be after the order is saved and need to update the order details with the receipt data is success
-    // Print to kitchen if Android environment
-    if (this.androidPrinterService.isAndroidEnvironment) {
-      this.printKitchenReceipt(formattedReceipt, orderDetails, orderNumber);
-    } else {
-      // For browser testing, just save the order
-      this.saveOrderToDatabase(orderDetails, orderNumber);
-    }
+    // Attempt to print
+    this.printKitchenReceipt(formattedReceipt, orderNumber);
+  }
+
+  private showPrinterDisabledMessage(orderNumber: string): void {
+    this.notificationsService.setNotification({
+      type: 'WARNING',
+      message: this.translate.instant('cart.warnings.printerDisabled', { orderNumber })
+    });
+  }
+
+  private showPrinterErrorMessage(printerStatus: DetailedPrinterStatus, orderNumber: string): void {
+    const errorMessage = printerStatus.userFriendlyError || 
+      this.translate.instant('cart.errors.printerUnavailable');
+    
+    this.notificationsService.setNotification({
+      type: 'ERROR',
+      message: this.translate.instant('cart.errors.printingIssue', { 
+        orderNumber, 
+        error: errorMessage 
+      })
+    });
   }
 
   private createKitchenItems(): any[] {
@@ -199,22 +257,23 @@ export class CartComponent implements OnInit {
     return totalPrice;
   }
 
-  private printKitchenReceipt(receiptData: any, orderDetails: OrderDialogResult, orderNumber: string): void {
+  private printKitchenReceipt(receiptData: any, orderNumber: string): void {
     this.androidPrinterService.printReceipt(receiptData).subscribe({
       next: (printResult) => {
         if (printResult.success) {
           console.log('Kitchen receipt printed successfully');
-          this.saveOrderToDatabase(orderDetails, orderNumber);
-          
           this.notificationsService.setNotification({
             type: 'SUCCESS',
-            message: this.translate.instant('cart.success.orderPrinted', { orderNumber })
+            message: this.translate.instant('cart.success.orderPrintedAndSaved', { orderNumber })
           });
         } else {
           console.error('Failed to print kitchen receipt:', printResult.message);
           this.notificationsService.setNotification({
-            type: 'ERROR',
-            message: this.translate.instant('cart.errors.printFailed', { error: printResult.message })
+            type: 'WARNING',
+            message: this.translate.instant('cart.warnings.orderSavedPrintFailed', { 
+              orderNumber, 
+              error: printResult.message 
+            })
           });
         }
         this.isProcessingOrder = false;
@@ -222,15 +281,15 @@ export class CartComponent implements OnInit {
       error: (error) => {
         console.error('Error printing kitchen receipt:', error);
         this.notificationsService.setNotification({
-          type: 'ERROR',
-          message: this.translate.instant('cart.errors.printError')
+          type: 'WARNING',
+          message: this.translate.instant('cart.warnings.orderSavedPrintError', { orderNumber })
         });
         this.isProcessingOrder = false;
       }
     });
   }
 
-  private saveOrderToDatabase(orderDetails: OrderDialogResult, orderNumber: string): void {
+  private saveOrderToDatabase(orderDetails: OrderDialogResult, orderNumber: string, onSuccess?: () => void): void {
     // Prepare order data for database using CustomerDetails interface
     const customerDetails: CustomerDetails = {
       name: orderDetails.customerName,
@@ -240,19 +299,22 @@ export class CartComponent implements OnInit {
     // Save order to database
     this.cartService.placeOrder(customerDetails).pipe(take(1)).subscribe({
       next: (response) => {
+        console.log('Order saved to database successfully');
         
         // Clear cart after successful order
-        // TODO: nav to menu
-        // TODO: order number should be in the order details
-        // TODO: print receipt should be before the order is saved
         this.cartService.clearCart();
         
-        this.notificationsService.setNotification({
-          type: 'SUCCESS',
-          message: this.translate.instant('cart.success.orderPlaced', { orderNumber })
-        });
-        
-        this.isProcessingOrder = false;
+        // Call success callback if provided (for continuing with printing)
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          // If no callback, just show success and finish
+          this.notificationsService.setNotification({
+            type: 'SUCCESS',
+            message: this.translate.instant('cart.success.orderPlaced', { orderNumber })
+          });
+          this.isProcessingOrder = false;
+        }
       },
       error: (error) => {
         console.error('Error saving order to database:', error);

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { FormattedReceiptData } from './kitchen-receipt.service';
 
 // Extend Window interface for TypeScript
@@ -38,6 +40,22 @@ export interface PrintResult {
   timestamp: number;
 }
 
+export interface DetailedPrinterStatus {
+  printerAvailable: boolean;
+  printerEnabled: boolean;
+  printerIp: string;
+  lastPrinterError: string | null;
+  printerErrorType: 'no_paper' | 'lid_open' | 'not_connected' | 'communication_error' | 'device_error' | 'unknown' | null;
+  printerErrorDetails: string | null;
+  printerErrorCount: number;
+  lastErrorTimestamp: string | null;
+  lastStatusCheck: string | null;
+  lastPrintAttempt: string | null;
+  lastPrintSuccess: boolean | null;
+  lastPrintError: string | null;
+  userFriendlyError: string | null;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -46,7 +64,7 @@ export class AndroidPrinterService {
   private _printerStatus$ = new BehaviorSubject<PrinterStatus | null>(null);
   private _authStatus$ = new BehaviorSubject<AuthStatus | null>(null);
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.detectEnvironment();
     this.setupTokenExpirationListener();
   }
@@ -254,5 +272,30 @@ export class AndroidPrinterService {
   isMonitoring(): boolean {
     const authStatus = this._authStatus$.value;
     return authStatus?.isMonitoring ?? false;
+  }
+
+  /**
+   * Get detailed printer status with error information from server
+   */
+  getDetailedPrinterStatus(): Observable<DetailedPrinterStatus> {
+    return this.http.get<DetailedPrinterStatus>('/api/traveler/printer-status-details');
+  }
+
+  /**
+   * Check if printer has errors that would prevent printing
+   */
+  hasPrinterErrors(): Observable<boolean> {
+    return this.getDetailedPrinterStatus().pipe(
+      map(status => !status.printerAvailable || !!status.printerErrorType)
+    );
+  }
+
+  /**
+   * Get user-friendly error message for current printer status
+   */
+  getPrinterErrorMessage(): Observable<string | null> {
+    return this.getDetailedPrinterStatus().pipe(
+      map(status => status.userFriendlyError)
+    );
   }
 } 

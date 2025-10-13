@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../material.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { Observable, take } from 'rxjs';
+import { Observable, take, Subscription } from 'rxjs';
 import { LanguageDirectionDirective } from '../../directives/language-direction.directive';
 import {
   LanguageDirection,
@@ -28,17 +28,10 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './general-overview.component.html',
   styleUrls: ['./general-overview.component.scss'],
 })
-export class GeneralOverviewComponent implements OnInit {
+export class GeneralOverviewComponent implements OnInit, OnDestroy {
   public backupList = new Map<string, string>();
   public lang$: Observable<LanguageType>;
   dir: LanguageDirection = 'ltr';
-
-  // System Info
-  systemInfo = {
-    version: '1.0.0',
-    dbVersion: '2.3.1',
-    lastUpdated: new Date(),
-  };
 
   // Configuration
   configForm: FormGroup;
@@ -46,30 +39,22 @@ export class GeneralOverviewComponent implements OnInit {
   // Printer status from database
   printerStatusFromDb: any = null;
 
-  // Statistics
-  orderStats = {
-    today: {
-      count: 45,
-      revenue: 2345.5,
-      averageValue: 52.12,
-    },
-    thisWeek: {
-      count: 237,
-      revenue: 12456.75,
-      averageValue: 52.56,
-    },
-    thisMonth: {
-      count: 982,
-      revenue: 51234.6,
-      averageValue: 52.17,
-    },
-  };
-
   // For backup operations
   isCreatingBackup = false;
   isRestoringBackup = false;
   isDownloadingDatabase = false;
   selectedBackup: string | null = null;
+
+  // For order statistics
+  selectedTimeFrame: '1' | '7'| '30' = '7';
+  orderStats: any = {
+    totalOrders: 0,
+    totalItems: 0,
+    totalCategories: 0,
+    totalRevenue: 0,
+    topItems: []
+  };
+  isLoadingOrderStats = false;
 
   constructor(
     private backupService: BackupService,
@@ -81,15 +66,9 @@ export class GeneralOverviewComponent implements OnInit {
   ) {
     this.lang$ = this.languageService.currentLanguage$;
 
-    // Initialize form
+    // Initialize form with only printer IP
     this.configForm = this.fb.group({
       printerIp: [''],
-      printerEnabled: [true],
-      taxRate: [18],
-      defaultCurrency: ['GTQ'],
-      allowReservations: [true],
-      maxItemsPerOrder: [50],
-      notifyAdminOnNewOrder: [true],
     });
   }
 
@@ -99,6 +78,13 @@ export class GeneralOverviewComponent implements OnInit {
     
     // Load current configuration
     this.loadConfiguration();
+    
+    // Load initial order statistics
+    this.loadOrderStatistics(this.selectedTimeFrame);
+  }
+
+  ngOnDestroy() {
+    // No subscriptions to clean up
   }
 
   loadBackups() {
@@ -144,7 +130,7 @@ export class GeneralOverviewComponent implements OnInit {
     const formValue = this.configForm.value;
     const configToSave = {
       printerIp: formValue.printerIp || null,
-      printerEnabled: formValue.printerEnabled,
+      printerEnabled: true, // Keep printer enabled by default
     };
     
     this.configurationService.setVariables(configToSave).pipe(take(1)).subscribe((success) => {
@@ -158,12 +144,6 @@ export class GeneralOverviewComponent implements OnInit {
   resetConfig() {
     this.configForm.reset({
       printerIp: '',
-      printerEnabled: true,
-      taxRate: 18,
-      defaultCurrency: 'GTQ',
-      allowReservations: true,
-      maxItemsPerOrder: 50,
-      notifyAdminOnNewOrder: true,
     });
   }
 
@@ -182,7 +162,6 @@ export class GeneralOverviewComponent implements OnInit {
       if (config) {
         this.configForm.patchValue({
           printerIp: config.printerIp || '',
-          printerEnabled: config.printerEnabled,
         });
         
         // Store printer status from database
@@ -264,5 +243,27 @@ export class GeneralOverviewComponent implements OnInit {
         // You might want to show a toast/snackbar error message here
       }
     });
+  }
+
+  loadOrderStatistics(value: '1' | '7'| '30') {
+    this.isLoadingOrderStats = true;
+    this.http.get(`/api/admin/order-statistics?timeFrame=${value}`).pipe(take(1)).subscribe({
+      next: (data: any) => {
+        this.orderStats = data;
+      },
+      error: (error) => {
+        console.error('Error loading order statistics:', error);
+      },
+      complete: () => {
+        this.isLoadingOrderStats = false;
+      }
+    });
+  }
+
+  onTimeFrameSelectionChange(event: any) {
+    const newValue = event.value;
+    this.selectedTimeFrame = newValue;
+    this.loadOrderStatistics(newValue);
+    console.log('Time frame selection changed to:', newValue);
   }
 }
